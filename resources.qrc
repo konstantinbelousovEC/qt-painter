@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images/buttons">
+        <file>imgs/circleimg.png</file>
+        <file>imgs/trianimg.png</file>
+        <file>imgs/rectimg.png</file>
+        <file>imgs/squareimg.png</file>
+        <file>imgs/modimg.png</file>
+    </qresource>
+</RCC>
