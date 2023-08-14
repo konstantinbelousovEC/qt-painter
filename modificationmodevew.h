@@ -23,9 +23,10 @@ private:
     bool isShiftPressed_{false};
     bool isMoving_{false};
     bool isRotating_{false};
+    bool& isModified_;
 
 public:
-    ModificationModeVew(QGraphicsScene*);
+    ModificationModeVew(QGraphicsScene*, bool& isModified);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;

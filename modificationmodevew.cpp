@@ -36,8 +36,8 @@ qreal calculateAngle(const QPointF &O, const QPointF &A, const QPointF &B) noexc
     return qRadiansToDegrees(angle);
 }
 
-ModificationModeVew::ModificationModeVew(QGraphicsScene* graphic_scene)
-    : QGraphicsView(graphic_scene), selectionArea_(new QGraphicsRectItem())
+ModificationModeVew::ModificationModeVew(QGraphicsScene* graphic_scene, bool& isModified)
+    : QGraphicsView(graphic_scene), selectionArea_(new QGraphicsRectItem()), isModified_(isModified)
 {
     setSelectionAreaProperties();
     scene()->addItem(selectionArea_);
@@ -68,8 +68,10 @@ void ModificationModeVew::mouseMoveEvent(QMouseEvent* event) {
     if (event->buttons() & (Qt::LeftButton | Qt::RightButton)) {
         if (isRotating_) {
             rotateSelectedItems(event);
+            isModified_ = true;
         } else if (isMoving_) {
             moveSelectedItems(mousePos);
+            isModified_ = true;
         } else if (selectionArea_ && !isMoving_ && !isRotating_) {
             updateSelectionArea(mousePos);
         }
@@ -88,6 +90,7 @@ void ModificationModeVew::keyPressEvent(QKeyEvent* event) {
         isCtrlPressed_ = true;
     } else if (event->key() == Qt::Key_D) {
         deleteSelectedItems();
+        isModified_ = true;
     } else if (event->key() == Qt::Key_Shift) {
         isShiftPressed_ = true;
     } else {
@@ -119,18 +122,18 @@ QGraphicsItem* ModificationModeVew::cloneGraphicsItem(QGraphicsItem* originalIte
 
     if (QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(originalItem)) {
         QGraphicsRectItem* temporaryRectItem = new QGraphicsRectItem(rectItem->rect());
-        temporaryRectItem->setPen(rectItem->pen());     // Копируем QPen
-        temporaryRectItem->setBrush(rectItem->brush()); // Копируем QBrush
+        temporaryRectItem->setPen(rectItem->pen());
+        temporaryRectItem->setBrush(rectItem->brush());
         copiedItem = temporaryRectItem;
     } else if (QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
         QGraphicsEllipseItem* temporaryEllipseItem = new QGraphicsEllipseItem(ellipseItem->rect());
-        temporaryEllipseItem->setPen(ellipseItem->pen());     // Копируем QPen
-        temporaryEllipseItem->setBrush(ellipseItem->brush()); // Копируем QBrush
+        temporaryEllipseItem->setPen(ellipseItem->pen());
+        temporaryEllipseItem->setBrush(ellipseItem->brush());
         copiedItem = temporaryEllipseItem;
     } else if (QGraphicsPolygonItem* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
         QGraphicsPolygonItem* temporaryPolygonItem = new QGraphicsPolygonItem(polygonItem->polygon());
-        temporaryPolygonItem->setPen(polygonItem->pen());     // Копируем QPen
-        temporaryPolygonItem->setBrush(polygonItem->brush()); // Копируем QBrush
+        temporaryPolygonItem->setPen(polygonItem->pen());
+        temporaryPolygonItem->setBrush(polygonItem->brush());
         copiedItem = temporaryPolygonItem;
     }
 

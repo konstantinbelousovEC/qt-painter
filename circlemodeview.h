@@ -7,7 +7,7 @@
 class CircleModeView : public QGraphicsView
 {
 public:
-    CircleModeView(QGraphicsScene *scene);
+    CircleModeView(QGraphicsScene*, bool& isModified);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -18,5 +18,6 @@ private:
     QGraphicsEllipseItem* currentItem_;
     QPointF centerPos_;
     bool drawing_;
+    bool& isModified_;
 
 };

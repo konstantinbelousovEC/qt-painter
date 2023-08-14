@@ -15,6 +15,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QMessageBox>
 
 namespace {
 
@@ -100,11 +101,11 @@ void MainWindow::setUpToolbar() {
 }
 
 void MainWindow::setUpGraphicViews() {
-    stackedWidget_->addWidget(new ModificationModeVew(scene_));
-    stackedWidget_->addWidget(new SquareModeView(scene_));
-    stackedWidget_->addWidget(new RectangleModeView(scene_));
-    stackedWidget_->addWidget(new TriangleModeView(scene_));
-    stackedWidget_->addWidget(new CircleModeView(scene_));
+    stackedWidget_->addWidget(new ModificationModeVew(scene_, isModified_));
+    stackedWidget_->addWidget(new SquareModeView(scene_, isModified_));
+    stackedWidget_->addWidget(new RectangleModeView(scene_, isModified_));
+    stackedWidget_->addWidget(new TriangleModeView(scene_, isModified_));
+    stackedWidget_->addWidget(new CircleModeView(scene_, isModified_));
 }
 
 void MainWindow::setUpLayout() {
@@ -142,19 +143,60 @@ void MainWindow::setUpMenuBar() {
     connect(loadAction, &QAction::triggered, this, &MainWindow::loadFile);
     connect(saveAction, &QAction::triggered, this, &MainWindow::saveFile);
     connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveFileAs);
-    connect(someAction, &QAction::triggered, this, &MainWindow::someApp);
+    connect(someAction, &QAction::triggered, this, &MainWindow::exitApp);
 }
 
 void MainWindow::newFile() {
+    if (isModified_) {
+        int ret = QMessageBox::warning(this, "Save Changes",
+                                       "Do you want to save your changes?",
+                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save) {
+            saveFile();
+        } else if (ret == QMessageBox::Cancel) {
+            return;
+        }
+    }
 
+    scene_->clear();
+    isModified_ = false;
 }
 
 void MainWindow::loadFile() {
+    if (isModified_) {
+        int ret = QMessageBox::warning(this, "Save Changes",
+                                       "Do you want to save your changes?",
+                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save) {
+            saveFile();
+        } else if (ret == QMessageBox::Cancel) {
+            return;
+        }
+    }
 
+    QString filePath = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath(), "Images (*.png *.jpg)");
+    if (!filePath.isEmpty()) {
+        QImage image(filePath);
+        if (!image.isNull()) {
+            scene_->clear();
+            scene_->addPixmap(QPixmap::fromImage(image));
+            isModified_ = false;
+        }
+    }
 }
 
 void MainWindow::saveFile() {
-
+    if (currentFilePath_.isEmpty()) {
+        saveFileAs();
+    } else {
+        scene_->clearSelection();
+        QImage image(scene_->sceneRect().size().toSize(), QImage::Format_ARGB32);
+        image.fill(Qt::white);
+        QPainter painter(&image);
+        scene_->render(&painter);
+        image.save(currentFilePath_);
+        isModified_ = false;
+    }
 }
 
 void MainWindow::saveFileAs() {
@@ -170,9 +212,20 @@ void MainWindow::saveFileAs() {
         QPainter painter(&pixmap);
         scene_->render(&painter);
         pixmap.save(filePath);
+        isModified_ = false;
     }
 }
 
-void MainWindow::someApp() {
+void MainWindow::exitApp() {
+    if (isModified_) {
+        int ret = QMessageBox::warning(this, "Save Changes and Exit",
+                                       "Do you want to save your changes before exiting?",
+                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save) {
+            saveFile();
+        } else if (ret == QMessageBox::Cancel) {
+            return;
+        }
+    }
     QCoreApplication::exit();
 }

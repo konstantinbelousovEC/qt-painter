@@ -1,7 +1,7 @@
 #include "squaremodeview.h"
 
-SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false) {}
+SquareModeView::SquareModeView(QGraphicsScene* scene, bool& isModified)
+    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false), isModified_(isModified) {}
 
 void SquareModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && !drawing_) {
@@ -24,6 +24,7 @@ void SquareModeView::mouseMoveEvent(QMouseEvent* event) {
 
         QRectF rect(centerPos_.x() - halfDistance / 2, centerPos_.y() - halfDistance / 2, halfDistance, halfDistance);
         currentItem_->setRect(rect.normalized());
+        isModified_ = true;
     }
 }
 

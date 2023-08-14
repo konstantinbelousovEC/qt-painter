@@ -1,7 +1,7 @@
 #include "rectanglemodeview.h"
 
-RectangleModeView::RectangleModeView(QGraphicsScene *scene)
-    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false) {}
+RectangleModeView::RectangleModeView(QGraphicsScene *scene, bool& isModified)
+    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false), isModified_(isModified) {}
 
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && !drawing_) {
@@ -23,6 +23,7 @@ void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
 
         QRectF rect(startPos_, QSizeF(width, height));
         currentItem_->setRect(rect.normalized());
+        isModified_ = true;
     }
 }
 

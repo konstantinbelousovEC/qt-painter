@@ -6,7 +6,7 @@
 
 class RectangleModeView : public QGraphicsView {
 public:
-    RectangleModeView(QGraphicsScene*);
+    RectangleModeView(QGraphicsScene*, bool& isModified);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -17,5 +17,6 @@ private:
     QGraphicsRectItem *currentItem_;
     QPointF startPos_;
     bool drawing_;
+    bool& isModified_;
 
 };

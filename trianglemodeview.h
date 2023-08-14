@@ -8,7 +8,7 @@
 
 class TriangleModeView : public QGraphicsView {
 public:
-    TriangleModeView(QGraphicsScene*);
+    TriangleModeView(QGraphicsScene*, bool& isModified);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -20,6 +20,7 @@ private:
     QPointF startPoint_{};
     QPointF secondPoint_{};
     int clickCount_{};
+    bool& isModified_;
 
 private:
     void resetTemporaryItems();

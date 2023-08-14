@@ -17,6 +17,8 @@ private:
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;
+    bool isModified_{false};
+    QString currentFilePath_;
 
 private:
     void setUpToolbar();
@@ -30,6 +32,6 @@ private slots:
     void loadFile();
     void saveFile();
     void saveFileAs();
-    void someApp();
+    void exitApp();
 
 };

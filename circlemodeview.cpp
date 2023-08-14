@@ -1,12 +1,12 @@
 #include "circlemodeview.h"
 
-CircleModeView::CircleModeView(QGraphicsScene *scene)
-    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false)
+CircleModeView::CircleModeView(QGraphicsScene* scene, bool& isModified)
+    : QGraphicsView(scene), currentItem_(nullptr), drawing_(false), isModified_(isModified)
 {
     setRenderHint(QPainter::Antialiasing);
 }
 
-void CircleModeView::mousePressEvent(QMouseEvent *event) {
+void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && !drawing_) {
 
         centerPos_ = mapToScene(event->pos());
@@ -24,6 +24,7 @@ void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
         QPointF currentPos = mapToScene(event->pos());
         qreal radius = QLineF(centerPos_, currentPos).length();
         currentItem_->setRect(QRectF(centerPos_.x() - radius, centerPos_.y() - radius, radius * 2, radius * 2));
+        isModified_ = true;
     }
 }
 

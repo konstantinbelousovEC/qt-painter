@@ -1,13 +1,14 @@
 #include "trianglemodeview.h"
 
-TriangleModeView::TriangleModeView(QGraphicsScene* scene)
-    : QGraphicsView(scene), lineItem1_(nullptr), lineItem2_(nullptr)
+TriangleModeView::TriangleModeView(QGraphicsScene* scene, bool& isModified)
+    : QGraphicsView(scene), lineItem1_(nullptr), lineItem2_(nullptr), isModified_(isModified)
 {
     setRenderHint(QPainter::Antialiasing);
     setMouseTracking(true);
 }
 
 void TriangleModeView::mousePressEvent(QMouseEvent* event) {
+    isModified_ = true;
     if (event->button() == Qt::LeftButton) {
         if (clickCount_ == 0) {
             startPoint_ = mapToScene(event->pos());

@@ -6,7 +6,7 @@
 
 class SquareModeView : public QGraphicsView {
 public:
-    SquareModeView(QGraphicsScene*);
+    SquareModeView(QGraphicsScene*, bool& isModified);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -17,5 +17,6 @@ private:
     QGraphicsRectItem* currentItem_;
     QPointF centerPos_;
     bool drawing_;
+    bool& isModified_;
 
 };
