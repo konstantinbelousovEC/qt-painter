@@ -1,4 +1,4 @@
-#include "modificationmodevew.h"
+#include "modificationmodeview.h"
 
 template<typename RectLikeItem>
 QPointF getItemCenter(const RectLikeItem* rectItem) noexcept {
@@ -14,11 +14,11 @@ QPointF getTriangleCenter(const QGraphicsPolygonItem *triangleItem) {
 }
 
 QPointF getGraphicsItemCenterPos(const QGraphicsItem* const item) {
-    if (const QGraphicsRectItem* rectItem = qgraphicsitem_cast<const QGraphicsRectItem*>(item)) {
+    if (const auto* rectItem = qgraphicsitem_cast<const QGraphicsRectItem*>(item)) {
         return getItemCenter(rectItem);
-    } else if (const QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
+    } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
         return getItemCenter(ellipseItem);
-    } else if (const QGraphicsPolygonItem* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
+    } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
         return getTriangleCenter(triangleItem);
     } else {
         throw std::runtime_error("Can not define figure's center: unknown figure type");
@@ -36,8 +36,8 @@ qreal calculateAngle(const QPointF &O, const QPointF &A, const QPointF &B) noexc
     return qRadiansToDegrees(angle);
 }
 
-ModificationModeVew::ModificationModeVew(QGraphicsScene* graphic_scene, bool& isModified)
-    : QGraphicsView(graphic_scene), selectionArea_(new QGraphicsRectItem()), isModified_(isModified)
+ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
+    : QGraphicsView(graphic_scene), selectionArea_(new QGraphicsRectItem())
 {
     setSelectionAreaProperties();
     scene()->addItem(selectionArea_);
@@ -45,9 +45,10 @@ ModificationModeVew::ModificationModeVew(QGraphicsScene* graphic_scene, bool& is
 
 // ------------------------------------------------------------------------------------------------
 
-void ModificationModeVew::mousePressEvent(QMouseEvent* event) {
+void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     QPointF currentClickPosition = mapToScene(event->pos());
     QGraphicsItem *itemUnderCursor = scene()->itemAt(currentClickPosition, QTransform());
+    qDebug() << "press mouse coords:" << currentClickPosition;
 
     if (isStartingRotatingEvent(event)) {
         handleRotatingEvent(itemUnderCursor, event);
@@ -60,37 +61,36 @@ void ModificationModeVew::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-void ModificationModeVew::mouseMoveEvent(QMouseEvent* event) {
+void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
     QGraphicsView::mouseMoveEvent(event);
 
     QPointF mousePos = mapToScene(event->pos());
+    qDebug() << "moving coords:" << mousePos;
 
     if (event->buttons() & (Qt::LeftButton | Qt::RightButton)) {
         if (isRotating_) {
             rotateSelectedItems(event);
-            isModified_ = true;
         } else if (isMoving_) {
             moveSelectedItems(mousePos);
-            isModified_ = true;
         } else if (selectionArea_ && !isMoving_ && !isRotating_) {
             updateSelectionArea(mousePos);
         }
     }
 }
 
-void ModificationModeVew::mouseReleaseEvent(QMouseEvent* event) {
+void ModificationModeView::mouseReleaseEvent(QMouseEvent* event) {
     isMoving_ = false;
     isRotating_ = false;
     selectionArea_->hide();
+    qDebug() << "mouse release coords:" << mapToScene(event->pos());
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void ModificationModeVew::keyPressEvent(QKeyEvent* event) {
+void ModificationModeView::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Control) {
         isCtrlPressed_ = true;
     } else if (event->key() == Qt::Key_D) {
         deleteSelectedItems();
-        isModified_ = true;
     } else if (event->key() == Qt::Key_Shift) {
         isShiftPressed_ = true;
     } else {
@@ -98,7 +98,7 @@ void ModificationModeVew::keyPressEvent(QKeyEvent* event) {
     }
 }
 
-void ModificationModeVew::keyReleaseEvent(QKeyEvent* event) {
+void ModificationModeView::keyReleaseEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Control) {
         isCtrlPressed_ = false;
     } else if (event->key() == Qt::Key_Shift) {
@@ -110,28 +110,29 @@ void ModificationModeVew::keyReleaseEvent(QKeyEvent* event) {
 
 // ------------------------------------------------------------------------------------------------
 
-void ModificationModeVew::deleteSelectedItems() {
+void ModificationModeView::deleteSelectedItems() {
     foreach (QGraphicsItem *item, scene()->selectedItems()) {
         scene()->removeItem(item);
         delete item;
     }
 }
 
-QGraphicsItem* ModificationModeVew::cloneGraphicsItem(QGraphicsItem* originalItem) {
+QGraphicsItem* ModificationModeView::cloneGraphicsItem(QGraphicsItem* originalItem) {
     QGraphicsItem* copiedItem = nullptr;
-
-    if (QGraphicsRectItem* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(originalItem)) {
-        QGraphicsRectItem* temporaryRectItem = new QGraphicsRectItem(rectItem->rect());
+    //qDebug() << getGraphicsItemCenterPos(originalItem);
+    if (auto* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(originalItem)) {
+        auto* temporaryRectItem = new QGraphicsRectItem();
+        temporaryRectItem->setRect(rectItem->rect().x(),rectItem->rect().y(), rectItem->rect().width(), rectItem->rect().height());
         temporaryRectItem->setPen(rectItem->pen());
         temporaryRectItem->setBrush(rectItem->brush());
         copiedItem = temporaryRectItem;
-    } else if (QGraphicsEllipseItem* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
-        QGraphicsEllipseItem* temporaryEllipseItem = new QGraphicsEllipseItem(ellipseItem->rect());
+    } else if (auto* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
+        auto* temporaryEllipseItem = new QGraphicsEllipseItem(ellipseItem->rect());
         temporaryEllipseItem->setPen(ellipseItem->pen());
         temporaryEllipseItem->setBrush(ellipseItem->brush());
         copiedItem = temporaryEllipseItem;
-    } else if (QGraphicsPolygonItem* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
-        QGraphicsPolygonItem* temporaryPolygonItem = new QGraphicsPolygonItem(polygonItem->polygon());
+    } else if (auto* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
+        auto* temporaryPolygonItem = new QGraphicsPolygonItem(polygonItem->polygon());
         temporaryPolygonItem->setPen(polygonItem->pen());
         temporaryPolygonItem->setBrush(polygonItem->brush());
         copiedItem = temporaryPolygonItem;
@@ -146,7 +147,7 @@ QGraphicsItem* ModificationModeVew::cloneGraphicsItem(QGraphicsItem* originalIte
     return copiedItem;
 }
 
-void ModificationModeVew::rotateItem(QGraphicsItem* item, QMouseEvent *event) {
+void ModificationModeView::rotateItem(QGraphicsItem* item, QMouseEvent *event) {
     QPointF pointO = getGraphicsItemCenterPos(item);
     QPointF pointB = mapToScene(event->pos());
 
@@ -159,18 +160,14 @@ void ModificationModeVew::rotateItem(QGraphicsItem* item, QMouseEvent *event) {
     transform.rotate(angle);
     transform.translate(-pointO.x(), -pointO.y());
 
-    qDebug() << "shape center" << pointO;
-    qDebug() << "start pos" << rotationPointA_;
-    qDebug() << "current pos" << pointB;
-
     item->setTransform(transform);
 }
 
-bool ModificationModeVew::isStartingRotatingEvent(QMouseEvent* event) {
+bool ModificationModeView::isStartingRotatingEvent(QMouseEvent* event) {
     return event->button() == Qt::LeftButton && isCtrlPressed_ && isShiftPressed_;
 }
 
-void ModificationModeVew::setSelectionAreaProperties() {
+void ModificationModeView::setSelectionAreaProperties() {
     selectionArea_->setPen(QPen(Qt::black, 1, Qt::DashLine));
     selectionArea_->hide();
     selectionArea_->setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -178,7 +175,7 @@ void ModificationModeVew::setSelectionAreaProperties() {
     selectionArea_->setZValue(1.0);
 }
 
-QRectF ModificationModeVew::normalizeSelectionAreaRect(QPointF mousePos) {
+QRectF ModificationModeView::normalizeSelectionAreaRect(QPointF mousePos) {
     qreal x = qMin(selectionStartPos_.x(), mousePos.x());
     qreal y = qMin(selectionStartPos_.y(), mousePos.y());
     qreal width = qAbs(mousePos.x() - selectionStartPos_.x());
@@ -187,14 +184,14 @@ QRectF ModificationModeVew::normalizeSelectionAreaRect(QPointF mousePos) {
     return QRectF{x, y, width, height};
 }
 
-void ModificationModeVew::handleRotatingEvent(QGraphicsItem* itemUnderCursor, QMouseEvent* event) {
+void ModificationModeView::handleRotatingEvent(QGraphicsItem* itemUnderCursor, QMouseEvent* event) {
     if (itemUnderCursor != nullptr) {
         isRotating_ = true;
         rotationPointA_ = mapToScene(event->pos());
     }
 }
 
-void ModificationModeVew::handleRightButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentClickPosition) {
+void ModificationModeView::handleRightButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentClickPosition) {
     if (itemUnderCursor != nullptr) {
         QList<QGraphicsItem*> clonedItems = cloneSelectedItems();
         updateSceneSelection(clonedItems);
@@ -203,7 +200,7 @@ void ModificationModeVew::handleRightButtonClick(QGraphicsItem* itemUnderCursor,
     }
 }
 
-void ModificationModeVew::handleLeftButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentClickPosition) {
+void ModificationModeView::handleLeftButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentClickPosition) {
     if (itemUnderCursor == nullptr) {
         handleSelectionClear(currentClickPosition);
     } else {
@@ -212,13 +209,11 @@ void ModificationModeVew::handleLeftButtonClick(QGraphicsItem* itemUnderCursor, 
     }
 }
 
-QList<QGraphicsItem*> ModificationModeVew::cloneSelectedItems() {
+QList<QGraphicsItem*> ModificationModeView::cloneSelectedItems() {
     QList<QGraphicsItem*> clonedItems;
     foreach (QGraphicsItem* item, scene()->selectedItems()) {
         QGraphicsItem* clonedItem = cloneGraphicsItem(item);
         if (clonedItem) {
-            clonedItem->setPos(item->pos());
-            clonedItem->pos();
             clonedItems.append(clonedItem);
             scene()->addItem(clonedItem);
         }
@@ -226,42 +221,43 @@ QList<QGraphicsItem*> ModificationModeVew::cloneSelectedItems() {
     return clonedItems;
 }
 
-void ModificationModeVew::updateSceneSelection(const QList<QGraphicsItem*>& items) {
+void ModificationModeView::updateSceneSelection(const QList<QGraphicsItem*>& items) {
     scene()->clearSelection();
     foreach (QGraphicsItem* item, items) {
         item->setSelected(true);
     }
 }
 
-void ModificationModeVew::handleSelectionClear(const QPointF& currentClickPosition) {
+void ModificationModeView::handleSelectionClear(const QPointF& currentClickPosition) {
     if (!isCtrlPressed_) {
         scene()->clearSelection();
     }
     selectionStartPos_ = currentClickPosition;
 }
 
-void ModificationModeVew::rotateSelectedItems(QMouseEvent* event) {
+void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
     foreach (QGraphicsItem* item, scene()->selectedItems()) {
         rotateItem(item, event);
     }
 }
 
-void ModificationModeVew::moveSelectedItems(const QPointF& mousePos) {
+void ModificationModeView::moveSelectedItems(const QPointF& mousePos) {
     QPointF delta = mousePos - lastMousePos_;
     foreach (QGraphicsItem* item, scene()->selectedItems()) {
-        item->setPos(item->pos() + delta);
+        qDebug() << "scene pos" << item->scenePos();
+        item->setPos(item->scenePos() + delta);
     }
     lastMousePos_ = mousePos;
 }
 
-void ModificationModeVew::updateSelectionArea(const QPointF& mousePos) {
+void ModificationModeView::updateSelectionArea(const QPointF& mousePos) {
     selectionArea_->show();
     QRectF rect = normalizeSelectionAreaRect(mousePos);
     selectionArea_->setRect(rect);
     updateItemsSelection(rect);
 }
 
-void ModificationModeVew::updateItemsSelection(const QRectF &rect) {
+void ModificationModeView::updateItemsSelection(const QRectF &rect) {
     QList<QGraphicsItem*> itemsInRect = scene()->items(rect);
     foreach (QGraphicsItem *item, scene()->items()) {
         if (!isCtrlPressed_) {

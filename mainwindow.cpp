@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "rectanglemodeview.h"
-#include "squaremodeview.h"
-#include "circlemodeview.h"
-#include "trianglemodeview.h"
-#include "modificationmodevew.h"
+#include "modificationmodeview.h"
 
 #include <QMainWindow>
 #include <QGraphicsView>
@@ -21,7 +18,7 @@ namespace {
 
     using namespace std::string_view_literals;
 
-    constexpr std::string_view MODIFING_MODE_ICON_PATH{":/images/buttons/imgs/modimg.png"sv};
+    constexpr std::string_view MODIFIING_MODE_ICON_PATH{":/images/buttons/imgs/modimg.png"sv};
     constexpr std::string_view SQUARE_MODE_ICON_PATH{":/images/buttons/imgs/squareimg.png"};
     constexpr std::string_view RECT_MODE_ICON_PATH{":/images/buttons/imgs/rectimg.png"};
     constexpr std::string_view TRIANGLE_MODE_ICON_PATH{":/images/buttons/imgs/trianimg.png"};
@@ -36,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
       stackedWidget_(new QStackedWidget(this)),
       toolBar_(new QToolBar(this))
 {
-    setMinimumSize(800, 600);
+    setMinimumSize(1000, 700);
     setUpScene();
     setUpGraphicViews();
     setUpToolbar();
@@ -51,37 +48,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setUpToolbar() {
-    QPushButton *button1 = new QPushButton();
-    QPushButton *button2 = new QPushButton();
-    QPushButton *button3 = new QPushButton();
-    QPushButton *button4 = new QPushButton();
-    QPushButton *button5 = new QPushButton();
+    auto* button1 = new QPushButton();
+    auto* button2 = new QPushButton();
 
-    QPixmap pixmap1(MODIFING_MODE_ICON_PATH.data());
+    QPixmap pixmap1(MODIFIING_MODE_ICON_PATH.data());
     button1->setIcon(QIcon(pixmap1));
     button1->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
 
-    QPixmap pixmap2(SQUARE_MODE_ICON_PATH.data());
+    QPixmap pixmap2(RECT_MODE_ICON_PATH.data());
     button2->setIcon(QIcon(pixmap2));
     button2->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
 
-    QPixmap pixmap3(RECT_MODE_ICON_PATH.data());
-    button3->setIcon(QIcon(pixmap3));
-    button3->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
-
-    QPixmap pixmap4(TRIANGLE_MODE_ICON_PATH.data());
-    button4->setIcon(QIcon(pixmap4));
-    button4->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
-
-    QPixmap pixmap5(CIRCLE_MODE_ICON_PATH.data());
-    button5->setIcon(QIcon(pixmap5));
-    button5->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
-
     toolBar_->addWidget(button1);
     toolBar_->addWidget(button2);
-    toolBar_->addWidget(button3);
-    toolBar_->addWidget(button4);
-    toolBar_->addWidget(button5);
 
     connect(button1, &QPushButton::clicked, this, [=]() {
         stackedWidget_->setCurrentIndex(0);
@@ -89,49 +68,37 @@ void MainWindow::setUpToolbar() {
     connect(button2, &QPushButton::clicked, this, [=]() {
         stackedWidget_->setCurrentIndex(1);
     });
-    connect(button3, &QPushButton::clicked, this, [=]() {
-        stackedWidget_->setCurrentIndex(2);
-    });
-    connect(button4, &QPushButton::clicked, this, [=]() {
-        stackedWidget_->setCurrentIndex(3);
-    });
-    connect(button5, &QPushButton::clicked, this, [=]() {
-        stackedWidget_->setCurrentIndex(4);
-    });
 }
 
 void MainWindow::setUpGraphicViews() {
-    stackedWidget_->addWidget(new ModificationModeVew(scene_, isModified_));
-    stackedWidget_->addWidget(new SquareModeView(scene_, isModified_));
-    stackedWidget_->addWidget(new RectangleModeView(scene_, isModified_));
-    stackedWidget_->addWidget(new TriangleModeView(scene_, isModified_));
-    stackedWidget_->addWidget(new CircleModeView(scene_, isModified_));
+    stackedWidget_->addWidget(new ModificationModeView(scene_));
+    stackedWidget_->addWidget(new RectangleModeView(scene_));
 }
 
 void MainWindow::setUpLayout() {
-    QVBoxLayout* layout = new QVBoxLayout;
+    auto* layout = new QVBoxLayout;
     layout->addWidget(toolBar_);
     layout->addWidget(stackedWidget_);
 
-    QWidget* centralWidget = new QWidget;
+    auto* centralWidget = new QWidget;
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
 }
 
 void MainWindow::setUpScene() {
     scene_->setBackgroundBrush(QBrush{Qt::white});
-    scene_->setStickyFocus(true);
-    scene_->setSceneRect(0, 0, 750, 450);
+    scene_->setStickyFocus(false);
+    auto* item = scene_->addRect(QRectF(QPointF{0,0}, QSizeF(1, 1)), QPen(Qt::black), QBrush(Qt::black));
 }
 
 void MainWindow::setUpMenuBar() {
     QMenu* fileMenu = menuBar()->addMenu(tr("File"));
 
-    QAction *newAction = new QAction(tr("New"), this);
-    QAction *loadAction = new QAction(tr("Load"), this);
-    QAction *saveAction = new QAction(tr("Save"), this);
-    QAction *saveAsAction = new QAction(tr("Save as..."), this);
-    QAction *someAction = new QAction(tr("Leave"), this);
+    auto* newAction = new QAction(tr("New"), this);
+    auto* loadAction = new QAction(tr("Load"), this);
+    auto* saveAction = new QAction(tr("Save"), this);
+    auto* saveAsAction = new QAction(tr("Save as..."), this);
+    auto* someAction = new QAction(tr("Leave"), this);
 
     fileMenu->addAction(newAction);
     fileMenu->addAction(loadAction);
@@ -189,6 +156,12 @@ void MainWindow::saveFile() {
     if (currentFilePath_.isEmpty()) {
         saveFileAs();
     } else {
+        QFile file(currentFilePath_);
+        if (file.open(QIODevice::WriteOnly)) {
+            foreach(const auto item, scene_->items()) {
+                //item->
+            }
+        }
         scene_->clearSelection();
         QImage image(scene_->sceneRect().size().toSize(), QImage::Format_ARGB32);
         image.fill(Qt::white);

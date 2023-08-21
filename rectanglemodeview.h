@@ -5,18 +5,26 @@
 #include <QGraphicsRectItem>
 
 class RectangleModeView : public QGraphicsView {
+    Q_OBJECT
 public:
-    RectangleModeView(QGraphicsScene*, bool& isModified);
+    RectangleModeView(QGraphicsScene* scene);
 
 protected:
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+private slots:
+    void changeFillColor(const QColor& color);
+    void changeStrokeColor(const QColor& color);
+
+signals:
+    void changeStateOfScene();
 
 private:
-    QGraphicsRectItem *currentItem_;
+    QGraphicsRectItem* currentItem_;
     QPointF startPos_;
-    bool drawing_;
-    bool& isModified_;
+    QColor fillColor_;
+    QColor strokeColor_;
 
 };
