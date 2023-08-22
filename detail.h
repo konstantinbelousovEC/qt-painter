@@ -18,4 +18,19 @@ namespace detail {
         delete item;
     }
 
+    template<typename GraphicScene>
+    void deleteSelectedItems(GraphicScene* scene) {
+        foreach (QGraphicsItem *item, scene->selectedItems()) {
+            scene->removeItem(item);
+            delete item;
+        }
+    }
+
+    inline QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept {
+        qreal currentWidth = currentCursorPos.x() - startCursorPos.x();
+        qreal currentHeight = currentCursorPos.y() - startCursorPos.y();
+        QRectF rectangle{startCursorPos, QSizeF{currentWidth, currentHeight}};
+        return rectangle;
+    }
+
 }

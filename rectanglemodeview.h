@@ -23,7 +23,7 @@ signals:
 
 private:
     QGraphicsRectItem* currentItem_;
-    QPointF startPos_;
+    QPointF startCursorPos_;
     QColor fillColor_;
     QColor strokeColor_;
 

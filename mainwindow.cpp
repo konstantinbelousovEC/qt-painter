@@ -88,6 +88,7 @@ void MainWindow::setUpLayout() {
 void MainWindow::setUpScene() {
     scene_->setBackgroundBrush(QBrush{Qt::white});
     scene_->setStickyFocus(false);
+    // scene_->setSceneRect(0, 0, 900, 600);
     auto* item = scene_->addRect(QRectF(QPointF{0,0}, QSizeF(1, 1)), QPen(Qt::black), QBrush(Qt::black));
 }
 
