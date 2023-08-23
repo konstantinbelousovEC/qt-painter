@@ -1,3 +1,5 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
 #include "rectanglemodeview.h"
 #include "detail.h"
 

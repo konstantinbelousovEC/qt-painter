@@ -1,3 +1,5 @@
+# @copyright Copyright (c) 2023 by Konstantin Belousov
+
 cmake_minimum_required(VERSION 3.12)
 
 project(qt_painter)

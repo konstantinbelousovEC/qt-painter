@@ -1,3 +1,5 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
 #include "mainwindow.h"
 
 #include <QApplication>
