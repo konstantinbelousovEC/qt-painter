@@ -26,7 +26,6 @@ private:
     void moveSelectedItems(const QPointF& mousePos);
     void rotateSelectedItems(QMouseEvent* event);
     void rotateItem(QMouseEvent *event, QGraphicsItem* item);
-    QGraphicsItem* getItemUnderCursor(QPointF currentCursorPos);
 
 private:
     QGraphicsRectItem* selectionArea_;
