@@ -13,7 +13,11 @@ public:
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
+
+private:
+    void createPolygon();
+    void deleteTemporaryLines();
+    void addNewTemporaryLine(QMouseEvent* event);
 
 private slots:
     void changeFillColor(const QColor& color);
@@ -23,11 +27,10 @@ signals:
     void changeStateOfScene();
 
 private:
-    QGraphicsLineItem* lineItem1_;
-    QGraphicsLineItem* lineItem2_;
-    QPointF startPoint_{};
-    QPointF secondPoint_{};
+    QVector<QPointF> points_;
+    QVector<QGraphicsLineItem*> lineItems_;
+    QPointF lastClickPos_;
     QColor fillColor_;
     QColor strokeColor_;
-    int clickCount_{};
+    int clickCount_;
 };

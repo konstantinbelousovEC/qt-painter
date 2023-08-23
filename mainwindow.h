@@ -19,11 +19,11 @@ private:
     QString currentFilePath_;
 
 private:
-    void setUpToolbar();
     void setUpGraphicViews();
     void setUpLayout();
     void setUpScene();
     void setUpMenuBar();
+    void addMode(std::string_view iconPath, int btnIndex);
 
 private slots:
     void newFile();
