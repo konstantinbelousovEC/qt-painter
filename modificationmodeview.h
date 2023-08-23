@@ -1,15 +1,6 @@
 #pragma once
 
-#include <QApplication>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QGraphicsItem>
-#include <QGraphicsRectItem>
-#include <QGraphicsEllipseItem>
-#include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QPointF>
-#include <QKeyEvent>
 
 class ModificationModeView : public QGraphicsView {
     Q_OBJECT
@@ -29,15 +20,20 @@ private:
     void setSelectionAreaProperties();
     void handleLeftButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos);
     void handleMiddleButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos);
+    void handleRightButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor);
     void updateSelectionArea(QMouseEvent* event, const QPointF& mouseCurrentPos);
     void updateItemsSelection(QMouseEvent* event, const QRectF& rect);
+    void moveSelectedItems(const QPointF& mousePos);
+    void rotateSelectedItems(QMouseEvent* event);
+    void rotateItem(QMouseEvent *event, QGraphicsItem* item);
+    QGraphicsItem* getItemUnderCursor(QPointF currentCursorPos);
 
 private:
     QGraphicsRectItem* selectionArea_;
-    QPointF selectionStartPos_{};
-    QPointF lastClickPos_{};
-    QPointF rotationPointA_{};
-    bool isMoving_{false};
-    bool isRotating_{false};
+    QPointF selectionStartPos_;
+    QPointF lastClickPos_;
+    QPointF rotationPointA_;
+    bool isMoving_;
+    bool isRotating_;
 
 };

@@ -1,18 +1,24 @@
 #include "rectanglemodeview.h"
 #include "detail.h"
 
+namespace {
+    constexpr QSizeF kZeroSize{0, 0};
+    constexpr QPointF kZeroPoint{0, 0};
+}
+
 bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, QPointF startPos);
 
 RectangleModeView::RectangleModeView(QGraphicsScene *scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
+      startCursorPos_(kZeroPoint),
       fillColor_(Qt::yellow),
       strokeColor_(Qt::black) {}
 
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         startCursorPos_ = mapToScene(event->pos());
-        currentItem_ = scene()->addRect(QRectF{startCursorPos_, QSizeF(0, 0)},
+        currentItem_ = scene()->addRect(QRectF{startCursorPos_, kZeroSize},
                                         QPen{strokeColor_},
                                         QBrush{fillColor_});
         detail::makeItemSelectableAndMovable(currentItem_);
