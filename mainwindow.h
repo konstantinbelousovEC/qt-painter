@@ -1,10 +1,8 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QVector>
-#include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QStackedWidget>
-#include <QCoreApplication>
 
 class MainWindow : public QMainWindow {
     Q_OBJECT

@@ -11,14 +11,14 @@ namespace {
     constexpr Qt::GlobalColor kDefaultCircleStrokeColor{Qt::black};
 }
 
-CircleModeView::CircleModeView(QGraphicsScene *scene)
+CircleModeView::CircleModeView(QGraphicsScene* scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
       ellipseCenterPos_(detail::kZeroPointF),
       fillColor_(kDefaultCircleFillColor),
       strokeColor_(kDefaultCircleStrokeColor) {}
 
-void CircleModeView::mousePressEvent(QMouseEvent *event) {
+void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         ellipseCenterPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addEllipse(QRectF{ellipseCenterPos_, detail::kZeroSizeF},
@@ -28,7 +28,7 @@ void CircleModeView::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void CircleModeView::mouseMoveEvent(QMouseEvent *event) {
+void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
     if (event->buttons() & Qt::LeftButton) {
         QPointF currentPos = mapToScene(event->pos());
         qreal radius = QLineF{ellipseCenterPos_, currentPos}.length();
@@ -38,7 +38,7 @@ void CircleModeView::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void CircleModeView::mouseReleaseEvent(QMouseEvent *event) {
+void CircleModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
         if (detail::shouldDeleteZeroSizeItem(currentItem_, ellipseCenterPos_)) {
             qDebug() << "delete zero ellipse";
@@ -48,10 +48,10 @@ void CircleModeView::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-void CircleModeView::changeFillColor(const QColor &color) {
+void CircleModeView::changeFillColor(const QColor& color) {
     fillColor_ = color;
 }
 
-void CircleModeView::changeStrokeColor(const QColor &color) {
+void CircleModeView::changeStrokeColor(const QColor& color) {
     strokeColor_ = color;
 }

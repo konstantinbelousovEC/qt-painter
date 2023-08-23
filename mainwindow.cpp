@@ -4,12 +4,11 @@
 #include "circlemodeview.h"
 #include "squaremodeview.h"
 
-#include <QMainWindow>
+#include <QCoreApplication>
 #include <QGraphicsView>
 #include <QToolBar>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QStackedWidget>
 #include <QStringView>
 #include <QMenu>
 #include <QMenuBar>
@@ -26,7 +25,8 @@ namespace {
     constexpr std::string_view TRIANGLE_MODE_ICON_PATH{":/images/buttons/imgs/trianimg.png"};
     constexpr std::string_view CIRCLE_MODE_ICON_PATH{":/images/buttons/imgs/circleimg.png"};
 
-    constexpr QSize DEFAULT_BUTTON_ICON_SIZE{30,30};
+    constexpr QSize kDefaultBtnIconSize{30,30};
+    
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -58,19 +58,19 @@ void MainWindow::setUpToolbar() {
 
     QPixmap pixmap1{MODIFIING_MODE_ICON_PATH.data()};
     button1->setIcon(QIcon{pixmap1});
-    button1->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
+    button1->setIconSize(kDefaultBtnIconSize);
 
     QPixmap pixmap2{RECT_MODE_ICON_PATH.data()};
     button2->setIcon(QIcon{pixmap2});
-    button2->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
+    button2->setIconSize(kDefaultBtnIconSize);
 
     QPixmap pixmap3{CIRCLE_MODE_ICON_PATH.data()};
     button3->setIcon(QIcon{pixmap3});
-    button3->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
+    button3->setIconSize(kDefaultBtnIconSize);
 
     QPixmap pixmap4{SQUARE_MODE_ICON_PATH.data()};
     button4->setIcon(QIcon{pixmap4});
-    button4->setIconSize(DEFAULT_BUTTON_ICON_SIZE);
+    button4->setIconSize(kDefaultBtnIconSize);
 
     toolBar_->addWidget(button1);
     toolBar_->addWidget(button2);

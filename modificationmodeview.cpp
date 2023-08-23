@@ -22,11 +22,11 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
 template<typename RectLikeItem>
 QPointF getItemCenter(const RectLikeItem* rectItem) noexcept;
 
-QPointF getTriangleCenter(const QGraphicsPolygonItem *triangleItem);
+QPointF getTriangleCenter(const QGraphicsPolygonItem* triangleItem);
 QPointF getGraphicsItemCenterPos(const QGraphicsItem* item);
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene);
 QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem);
-qreal calculateRotationAngle(const QPointF &O, const QPointF &A, const QPointF &B) noexcept;
+qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept;
 inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos);
 void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items);
 
