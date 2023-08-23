@@ -1,24 +1,28 @@
 #include "rectanglemodeview.h"
 #include "detail.h"
 
+#include <QMouseEvent>
+
 namespace {
-    constexpr QSizeF kZeroSize{0, 0};
-    constexpr QPointF kZeroPoint{0, 0};
+    constexpr QSizeF kZeroSizeF{0, 0};
+    constexpr QPointF kZeroPointF{0, 0};
+    constexpr Qt::GlobalColor kDefaultRectFillColor{Qt::yellow};
+    constexpr Qt::GlobalColor kDefaultRectStrokeColor{Qt::black};
 }
 
-bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, QPointF startPos);
+bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, const QPointF& startPos);
 
-RectangleModeView::RectangleModeView(QGraphicsScene *scene)
+RectangleModeView::RectangleModeView(QGraphicsScene* scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
-      startCursorPos_(kZeroPoint),
-      fillColor_(Qt::yellow),
-      strokeColor_(Qt::black) {}
+      startCursorPos_(kZeroPointF),
+      fillColor_(kDefaultRectFillColor),
+      strokeColor_(kDefaultRectStrokeColor) {}
 
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         startCursorPos_ = mapToScene(event->pos());
-        currentItem_ = scene()->addRect(QRectF{startCursorPos_, kZeroSize},
+        currentItem_ = scene()->addRect(QRectF{startCursorPos_, kZeroSizeF},
                                         QPen{strokeColor_},
                                         QBrush{fillColor_});
         detail::makeItemSelectableAndMovable(currentItem_);
@@ -51,7 +55,7 @@ void RectangleModeView::changeStrokeColor(const QColor& color) {
     strokeColor_ = color;
 }
 
-bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, QPointF startPos) {
+bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, const QPointF& startPos) {
     auto rect = currentItem->rect();
-    return rect.topLeft() == startPos && rect.size() == QSizeF(0, 0);
+    return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
 }

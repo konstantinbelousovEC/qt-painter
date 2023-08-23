@@ -3,20 +3,16 @@
 
 #include <QApplication>
 #include <QMouseEvent>
-#include <QKeyEvent>
 #include <QGraphicsItem>
-#include <QGraphicsRectItem>
-#include <QGraphicsEllipseItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPointF>
-#include <QKeyEvent>
 
 namespace {
     constexpr QColor kSelectionAreaBrush{0, 0, 200, 15};
     constexpr QColor kSelectionAreaPen{0 , 0, 255};
-    constexpr QRectF kZeroSizeRectangle{0, 0, 0, 0};
-    constexpr QPointF kZeroPoint{0, 0};
+    constexpr QRectF kZeroSizeFRectangle{0, 0, 0, 0};
+    constexpr QPointF kZeroPointF{0, 0};
     constexpr qreal kSelectionAreaZValue{1.0};
     constexpr qreal kZeroAngle{0};
 }
@@ -40,9 +36,9 @@ void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& it
 ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
     : QGraphicsView(graphic_scene),
       selectionArea_(new QGraphicsRectItem()),
-      selectionStartPos_(kZeroPoint),
-      lastClickPos_(kZeroPoint),
-      rotationPointA_(kZeroPoint),
+      selectionStartPos_(kZeroPointF),
+      lastClickPos_(kZeroPointF),
+      rotationPointA_(kZeroPointF),
       isMoving_(false),
       isRotating_(false)
 {
@@ -54,7 +50,7 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
     QGraphicsItem* itemUnderCursor = getItemUnderCursor(scene(), currentCursorPos);
 
-    if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::ShiftModifier)) { // todo: копирование // Qt::MiddleButton
+    if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::ShiftModifier)) { // todo: Qt::MiddleButton
         handleMiddleButtonClick(itemUnderCursor, currentCursorPos);
     } else if (event->button() == Qt::LeftButton) { // todo: выделение
         handleLeftButtonClick(event, itemUnderCursor, currentCursorPos);
@@ -82,8 +78,12 @@ void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
 void ModificationModeView::mouseReleaseEvent(QMouseEvent* event) {
     isMoving_ = false;
     isRotating_ = false;
-    selectionArea_->setRect(kZeroSizeRectangle);
+    selectionArea_->setRect(kZeroSizeFRectangle);
     selectionArea_->hide();
+}
+
+void ModificationModeView::wheelEvent(QWheelEvent* event) {
+    // todo: обработка скроллинга
 }
 
 void ModificationModeView::keyPressEvent(QKeyEvent* event) {
@@ -177,6 +177,8 @@ void ModificationModeView::setSelectionAreaProperties() {
     selectionArea_->setZValue(kSelectionAreaZValue);
 }
 
+// ------------------------------------------------------------------------------------------------------------
+
 void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
     scene->clearSelection();
     foreach (QGraphicsItem* item, items) {
@@ -200,14 +202,25 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
     destinationElement->setBrush(originalItem->brush());
 }
 
-template<typename ItemType>
+enum class GraphicItemType {
+    kRect,
+    kCircle,
+    kTriangle
+};
+
+template<GraphicItemType type, typename ItemType>
 auto copyGraphicsItem(ItemType originalItem) {
-    auto rotation = originalItem->rotation();
+    auto rotationAngle = originalItem->rotation();
     originalItem->setRotation(kZeroAngle);
-    auto* temporaryRectItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
+    ItemType temporaryRectItem;
+    if constexpr (type == GraphicItemType::kRect) {
+        temporaryRectItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
+    } else if constexpr (type == GraphicItemType::kCircle) {
+        temporaryRectItem = new QGraphicsEllipseItem(originalItem->sceneBoundingRect());
+    }
     temporaryRectItem->setTransformOriginPoint(getGraphicsItemCenterPos(temporaryRectItem));
-    temporaryRectItem->setRotation(rotation);
-    originalItem->setRotation(rotation);
+    temporaryRectItem->setRotation(rotationAngle);
+    originalItem->setRotation(rotationAngle);
     copyGraphicProperties(originalItem, temporaryRectItem);
     return temporaryRectItem;
 }
@@ -216,12 +229,10 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     QGraphicsItem* copiedItem = nullptr;
 
     if (auto* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(originalItem)) {
-        copiedItem = copyGraphicsItem(rectItem);
-    } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(originalItem)) {
-        auto* temporaryEllipseItem = new QGraphicsEllipseItem(ellipseItem->rect());
-        copyGraphicProperties(ellipseItem, temporaryEllipseItem);
-        copiedItem = temporaryEllipseItem;
-    } else if (const auto* polygonItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(originalItem)) {
+        copiedItem = copyGraphicsItem<GraphicItemType::kRect>(rectItem);
+    } else if (auto* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
+        copiedItem = copyGraphicsItem<GraphicItemType::kCircle>(ellipseItem);
+    } else if (auto* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
 //        auto* temporaryPolygonItem = new QGraphicsPolygonItem(polygonItem->polygon());
 //        temporaryPolygonItem->setPen(polygonItem->pen());
 //        temporaryPolygonItem->setBrush(polygonItem->brush());

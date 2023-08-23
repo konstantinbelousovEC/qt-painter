@@ -1,12 +1,14 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
 #pragma once
 
 #include <QGraphicsView>
 
-class RectangleModeView : public QGraphicsView {
+class CircleModeView : public QGraphicsView {
     Q_OBJECT
 
 public:
-    RectangleModeView(QGraphicsScene* scene);
+    CircleModeView(QGraphicsScene* scene);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -21,8 +23,8 @@ signals:
     void changeStateOfScene();
 
 private:
-    QGraphicsRectItem* currentItem_;
-    QPointF startCursorPos_;
+    QGraphicsEllipseItem* currentItem_;
+    QPointF ellipseCenterPos_;
     QColor fillColor_;
     QColor strokeColor_;
 

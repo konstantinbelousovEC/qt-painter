@@ -17,7 +17,7 @@ private:
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;
-    bool isModified_{false};
+    bool isModified_;
     QString currentFilePath_;
 
 private:

@@ -1,12 +1,14 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
 #pragma once
 
 #include <QGraphicsView>
 
-class RectangleModeView : public QGraphicsView {
+class SquareModeView : public QGraphicsView {
     Q_OBJECT
 
 public:
-    RectangleModeView(QGraphicsScene* scene);
+    SquareModeView(QGraphicsScene* scene);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -22,7 +24,7 @@ signals:
 
 private:
     QGraphicsRectItem* currentItem_;
-    QPointF startCursorPos_;
+    QPointF centerPos_;
     QColor fillColor_;
     QColor strokeColor_;
 
