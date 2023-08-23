@@ -6,6 +6,8 @@
 
 namespace detail {
 
+    constexpr QSizeF kZeroSizeF{0, 0};
+
     template<typename ItemType>
     void makeItemSelectableAndMovable(ItemType* item) {
         item->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -26,11 +28,12 @@ namespace detail {
         }
     }
 
-    inline QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept {
-        qreal currentWidth = currentCursorPos.x() - startCursorPos.x();
-        qreal currentHeight = currentCursorPos.y() - startCursorPos.y();
-        QRectF rectangle{startCursorPos, QSizeF{currentWidth, currentHeight}};
-        return rectangle;
+    template<typename GraphicsItem>
+    bool shouldDeleteZeroSizeItem(const GraphicsItem* currentItem, const QPointF& startPos) {
+        auto rect = currentItem->rect();
+        return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
     }
+
+    QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept;
 
 }

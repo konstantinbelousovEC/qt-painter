@@ -4,13 +4,10 @@
 #include <QMouseEvent>
 
 namespace {
-    constexpr QSizeF kZeroSizeF{0, 0};
     constexpr QPointF kZeroPointF{0, 0};
     constexpr Qt::GlobalColor kDefaultRectFillColor{Qt::yellow};
     constexpr Qt::GlobalColor kDefaultRectStrokeColor{Qt::black};
 }
-
-bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, const QPointF& startPos);
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
     : QGraphicsView(scene),
@@ -22,7 +19,7 @@ RectangleModeView::RectangleModeView(QGraphicsScene* scene)
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         startCursorPos_ = mapToScene(event->pos());
-        currentItem_ = scene()->addRect(QRectF{startCursorPos_, kZeroSizeF},
+        currentItem_ = scene()->addRect(QRectF{startCursorPos_, detail::kZeroSizeF},
                                         QPen{strokeColor_},
                                         QBrush{fillColor_});
         detail::makeItemSelectableAndMovable(currentItem_);
@@ -40,7 +37,8 @@ void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
 
 void RectangleModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
-        if (shouldDeleteZeroSizeItem(currentItem_, startCursorPos_)) {
+        if (detail::shouldDeleteZeroSizeItem(currentItem_, startCursorPos_)) {
+            qDebug() << "deleting zero rectangle";
             detail::deleteItem(scene(), currentItem_);
         }
         currentItem_ = nullptr;
@@ -53,9 +51,4 @@ void RectangleModeView::changeFillColor(const QColor& color) {
 
 void RectangleModeView::changeStrokeColor(const QColor& color) {
     strokeColor_ = color;
-}
-
-bool shouldDeleteZeroSizeItem(QGraphicsRectItem* currentItem, const QPointF& startPos) {
-    auto rect = currentItem->rect();
-    return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
 }
