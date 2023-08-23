@@ -50,11 +50,11 @@ void TriangleModeView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void TriangleModeView::createPolygon() {
-    QPolygonF triangle;
+    QPolygonF polygon;
     foreach(const auto& point, points_) {
-        triangle << point;
+        polygon << point;
     }
-    auto* polygonItem = scene()->addPolygon(triangle,
+    auto* polygonItem = scene()->addPolygon(polygon,
                                             QPen{strokeColor_},
                                             QBrush{fillColor_});
     detail::makeItemSelectableAndMovable(polygonItem);

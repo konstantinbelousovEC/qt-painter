@@ -24,6 +24,7 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
 template<typename RectLikeItem>
 QPointF getItemCenter(const RectLikeItem* rectItem) noexcept;
 
+QPolygonF copyPolygon(QGraphicsPolygonItem* originalItem);
 QPointF getTriangleCenter(const QGraphicsPolygonItem* triangleItem);
 QPointF getGraphicsItemCenterPos(const QGraphicsItem* item);
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene);
@@ -51,18 +52,16 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
     QGraphicsItem* itemUnderCursor = getItemUnderCursor(scene(), currentCursorPos);
 
-    if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::ShiftModifier)) { // todo: Qt::MiddleButton
+    if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::ShiftModifier)) {
         handleMiddleButtonClick(itemUnderCursor, currentCursorPos);
-    } else if (event->button() == Qt::LeftButton) { // todo: выделение
+    } else if (event->button() == Qt::LeftButton) {
         handleLeftButtonClick(event, itemUnderCursor, currentCursorPos);
-    } else if (event->button() == Qt::RightButton) { // todo: вращение
+    } else if (event->button() == Qt::RightButton) {
         handleRightButtonClick(event, itemUnderCursor);
     }
 }
 
 void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
-    QGraphicsView::mouseMoveEvent(event);
-
     QPointF mouseCurrentPos = mapToScene(event->pos());
     if (isRotating_) {
         rotateSelectedItems(event);
@@ -81,10 +80,6 @@ void ModificationModeView::mouseReleaseEvent(QMouseEvent* event) {
     isRotating_ = false;
     selectionArea_->setRect(kZeroSizeFRectangle);
     selectionArea_->hide();
-}
-
-void ModificationModeView::wheelEvent(QWheelEvent* event) {
-    // todo: обработка скроллинга
 }
 
 void ModificationModeView::keyPressEvent(QKeyEvent* event) {
@@ -156,9 +151,9 @@ void ModificationModeView::moveSelectedItems(const QPointF& mouseCurrentPos) {
 }
 
 void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
-            foreach (QGraphicsItem* item, scene()->selectedItems()) {
-            rotateItem(event, item);
-        }
+    foreach (QGraphicsItem* item, scene()->selectedItems()) {
+        rotateItem(event, item);
+    }
 }
 
 void ModificationModeView::rotateItem(QMouseEvent *event, QGraphicsItem* item) {
@@ -187,7 +182,7 @@ void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& it
     }
 }
 
-qreal calculateRotationAngle(const QPointF &O, const QPointF &A, const QPointF &B) noexcept {
+qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept {
     qreal angleAO = qAtan2(A.y() - O.y(), A.x() - O.x());
     qreal angleBO = qAtan2(B.y() - O.y(), B.x() - O.x());
     qreal angle = angleBO - angleAO;
@@ -213,17 +208,19 @@ template<GraphicItemType type, typename ItemType>
 auto copyGraphicsItem(ItemType originalItem) {
     auto rotationAngle = originalItem->rotation();
     originalItem->setRotation(kZeroAngle);
-    ItemType temporaryRectItem;
+    ItemType temporaryItem;
     if constexpr (type == GraphicItemType::kRect) {
-        temporaryRectItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
+        temporaryItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
     } else if constexpr (type == GraphicItemType::kCircle) {
-        temporaryRectItem = new QGraphicsEllipseItem(originalItem->sceneBoundingRect());
+        temporaryItem = new QGraphicsEllipseItem(originalItem->sceneBoundingRect());
+    } else if constexpr (type == GraphicItemType::kTriangle) {
+        temporaryItem = new QGraphicsPolygonItem(copyPolygon(originalItem));
     }
-    temporaryRectItem->setTransformOriginPoint(getGraphicsItemCenterPos(temporaryRectItem));
-    temporaryRectItem->setRotation(rotationAngle);
+    temporaryItem->setTransformOriginPoint(getGraphicsItemCenterPos(temporaryItem));
+    temporaryItem->setRotation(rotationAngle);
     originalItem->setRotation(rotationAngle);
-    copyGraphicProperties(originalItem, temporaryRectItem);
-    return temporaryRectItem;
+    copyGraphicProperties(originalItem, temporaryItem);
+    return temporaryItem;
 }
 
 QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
@@ -234,10 +231,7 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     } else if (auto* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
         copiedItem = copyGraphicsItem<GraphicItemType::kCircle>(ellipseItem);
     } else if (auto* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
-//        auto* temporaryPolygonItem = new QGraphicsPolygonItem(polygonItem->polygon());
-//        temporaryPolygonItem->setPen(polygonItem->pen());
-//        temporaryPolygonItem->setBrush(polygonItem->brush());
-//        copiedItem = temporaryPolygonItem;
+        copiedItem = copyGraphicsItem<GraphicItemType::kTriangle>(polygonItem);
     }
 
     if (copiedItem != nullptr) detail::makeItemSelectableAndMovable(copiedItem);
@@ -259,7 +253,11 @@ QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
 
 template<typename RectLikeItem>
 QPointF getItemCenter(const RectLikeItem* rectItem) noexcept {
-    qDebug() << rectItem->rect().center();
+//    auto w = rectItem->rect().width();
+//    auto h = rectItem->rect().width();
+//    auto tl = rectItem->mapToScene(rectItem->rect().topLeft());
+//    QPointF center(tl.x() + w / 2, tl.y() + h / 2);
+//    return center;
     return rectItem->rect().center();
 }
 
@@ -283,4 +281,13 @@ QPointF getGraphicsItemCenterPos(const QGraphicsItem* item) {
 
 inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos) {
     return scene->itemAt(currentCursorPos, QTransform{});
+}
+
+QPolygonF copyPolygon(QGraphicsPolygonItem* originalItem) {
+    auto originalPolygon = originalItem->polygon();
+    QPolygonF newPolygon;
+    foreach(auto& point, originalPolygon) {
+        newPolygon << originalItem->mapToScene(point);
+    }
+    return newPolygon;
 }

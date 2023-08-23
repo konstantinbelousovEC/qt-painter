@@ -18,8 +18,8 @@ private:
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;
-    bool isModified_;
     QString currentFilePath_;
+    bool isModified_;
 
 private:
     void setUpGraphicViews();
@@ -31,7 +31,13 @@ private:
     template<typename Func>
     void addMenuAction(QMenu* menu, std::string_view actionName, Func func);
 
+    template<typename View, typename Func>
+    void connectViewsSignals(View view, Func func) {
+        connect(view, func, this, &MainWindow::changeSceneState);
+    }
+
 private slots:
+    void changeSceneState();
     void newFile();
     void loadFile();
     void saveFile();

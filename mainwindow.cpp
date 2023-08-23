@@ -62,11 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUpMenuBar();
 }
 
-MainWindow::~MainWindow() {
-    delete scene_;
-    delete stackedWidget_;
-    delete toolBar_;
-}
+MainWindow::~MainWindow() {}
 
 void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
     auto* button = new QPushButton{};
@@ -80,16 +76,30 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
 }
 
 void MainWindow::setUpGraphicViews() {
-    auto modificationSceneIndex = stackedWidget_->addWidget(new ModificationModeView{scene_});
+    auto modificationScene = new ModificationModeView{scene_};
+    auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
     addMode(kModificationModeIconPath, modificationSceneIndex);
-    auto squareSceneIndex = stackedWidget_->addWidget(new SquareModeView{scene_});
+    connectViewsSignals(modificationScene, &ModificationModeView::changeStateOfScene);
+
+    auto squareScene = new SquareModeView{scene_};
+    auto squareSceneIndex = stackedWidget_->addWidget(squareScene);
     addMode(kSquareModeIconPath, squareSceneIndex);
-    auto rectangleSceneIndex = stackedWidget_->addWidget(new RectangleModeView{scene_});
+    connectViewsSignals(squareScene, &SquareModeView::changeStateOfScene);
+
+    auto rectangleScene = new RectangleModeView{scene_};
+    auto rectangleSceneIndex = stackedWidget_->addWidget(rectangleScene);
     addMode(kRectangleModeIconPath, rectangleSceneIndex);
-    auto triangleSceneIndex = stackedWidget_->addWidget(new TriangleModeView{scene_});
+    connectViewsSignals(rectangleScene, &RectangleModeView::changeStateOfScene);
+
+    auto triangleScene = new TriangleModeView{scene_};
+    auto triangleSceneIndex = stackedWidget_->addWidget(triangleScene);
     addMode(kTriangleModeIconPath, triangleSceneIndex);
-    auto circleSceneIndex = stackedWidget_->addWidget(new CircleModeView{scene_});
+    connectViewsSignals(triangleScene, &TriangleModeView::changeStateOfScene);
+
+    auto circleScene = new CircleModeView{scene_};
+    auto circleSceneIndex = stackedWidget_->addWidget(circleScene);
     addMode(kCircleModeIconPath, circleSceneIndex);
+    connectViewsSignals(circleScene, &CircleModeView::changeStateOfScene);
 }
 
 void MainWindow::setUpLayout() {
@@ -104,9 +114,6 @@ void MainWindow::setUpLayout() {
 
 void MainWindow::setUpScene() {
     scene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
-    auto* item = scene_->addRect(QRectF{QPointF{0,0}, QSizeF(1, 1)},
-                                                         QPen{Qt::black},
-                                                         QBrush{Qt::black}); // todo: center for tests
 }
 
 void MainWindow::setUpMenuBar() {
@@ -116,6 +123,10 @@ void MainWindow::setUpMenuBar() {
     addMenuAction(menu, kSaveActionName, &MainWindow::saveFile);
     addMenuAction(menu, kSaveAsActionName, &MainWindow::saveFileAs);
     addMenuAction(menu, kExitActionName, &MainWindow::exitApp);
+}
+
+void MainWindow::changeSceneState() {
+    isModified_ = true;
 }
 
 void MainWindow::newFile() {
