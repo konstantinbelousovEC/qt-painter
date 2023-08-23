@@ -7,6 +7,7 @@
 namespace detail {
 
     constexpr QSizeF kZeroSizeF{0, 0};
+    constexpr QPointF kZeroPointF{0, 0};
 
     template<typename ItemType>
     void makeItemSelectableAndMovable(ItemType* item) {

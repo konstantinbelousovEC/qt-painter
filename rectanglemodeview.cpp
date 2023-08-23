@@ -4,7 +4,6 @@
 #include <QMouseEvent>
 
 namespace {
-    constexpr QPointF kZeroPointF{0, 0};
     constexpr Qt::GlobalColor kDefaultRectFillColor{Qt::yellow};
     constexpr Qt::GlobalColor kDefaultRectStrokeColor{Qt::black};
 }
@@ -12,7 +11,7 @@ namespace {
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
-      startCursorPos_(kZeroPointF),
+      startCursorPos_(detail::kZeroPointF),
       fillColor_(kDefaultRectFillColor),
       strokeColor_(kDefaultRectStrokeColor) {}
 

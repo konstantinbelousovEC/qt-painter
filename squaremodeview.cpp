@@ -7,7 +7,6 @@
 #include <QGraphicsItem>
 
 namespace {
-    constexpr QPointF kZeroPointF{0, 0};
     constexpr Qt::GlobalColor kDefaultSquareFillColor{Qt::red};
     constexpr Qt::GlobalColor kDefaultSquareStrokeColor{Qt::black};
 }
@@ -15,7 +14,7 @@ namespace {
 SquareModeView::SquareModeView(QGraphicsScene* scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
-      centerPos_(kZeroPointF),
+      centerPos_(detail::kZeroPointF),
       fillColor_(kDefaultSquareFillColor),
       strokeColor_(kDefaultSquareStrokeColor) {}
 

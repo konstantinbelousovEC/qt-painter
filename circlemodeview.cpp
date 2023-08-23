@@ -7,7 +7,6 @@
 #include <QGraphicsItem>
 
 namespace {
-    constexpr QPointF kZeroPointF{0, 0};
     constexpr Qt::GlobalColor kDefaultCircleFillColor{Qt::green};
     constexpr Qt::GlobalColor kDefaultCircleStrokeColor{Qt::black};
 }
@@ -15,7 +14,7 @@ namespace {
 CircleModeView::CircleModeView(QGraphicsScene *scene)
     : QGraphicsView(scene),
       currentItem_(nullptr),
-      ellipseCenterPos_(kZeroPointF),
+      ellipseCenterPos_(detail::kZeroPointF),
       fillColor_(kDefaultCircleFillColor),
       strokeColor_(kDefaultCircleStrokeColor) {}
 

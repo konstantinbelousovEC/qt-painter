@@ -12,7 +12,6 @@ namespace {
     constexpr QColor kSelectionAreaBrush{0, 0, 200, 15};
     constexpr QColor kSelectionAreaPen{0 , 0, 255};
     constexpr QRectF kZeroSizeFRectangle{0, 0, 0, 0};
-    constexpr QPointF kZeroPointF{0, 0};
     constexpr qreal kSelectionAreaZValue{1.0};
     constexpr qreal kZeroAngle{0};
 }
@@ -36,9 +35,9 @@ void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& it
 ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
     : QGraphicsView(graphic_scene),
       selectionArea_(new QGraphicsRectItem()),
-      selectionStartPos_(kZeroPointF),
-      lastClickPos_(kZeroPointF),
-      rotationPointA_(kZeroPointF),
+      selectionStartPos_(detail::kZeroPointF),
+      lastClickPos_(detail::kZeroPointF),
+      rotationPointA_(detail::kZeroPointF),
       isMoving_(false),
       isRotating_(false)
 {
