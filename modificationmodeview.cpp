@@ -9,24 +9,34 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPointF>
+#include <qmath.h>
+#include <stdexcept>
 
 namespace {
-    constexpr QColor kSelectionAreaBrush{0, 0, 200, 15};
-    constexpr QColor kSelectionAreaPen{0 , 0, 255};
+    const QColor kSelectionAreaBrush{0, 0, 200, 15};
+    const QColor kSelectionAreaPen{0 , 0, 255};
     constexpr QRectF kZeroSizeFRectangle{0, 0, 0, 0};
     constexpr qreal kSelectionAreaZValue{1.0};
     constexpr qreal kZeroAngle{0};
+
+    enum class GraphicItemType {
+        kRect,
+        kCircle,
+        kTriangle
+    };
 }
 
 template<typename ItemT, typename ItemU>
 void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement);
 
-template<typename RectLikeItem>
-QPointF getItemCenter(const RectLikeItem* rectItem) noexcept;
+template<GraphicItemType type, typename ItemType>
+auto copyGraphicsItem(ItemType originalItem);
 
-QPolygonF copyPolygon(QGraphicsPolygonItem* originalItem);
-QPointF getTriangleCenter(const QGraphicsPolygonItem* triangleItem);
-QPointF getGraphicsItemCenterPos(const QGraphicsItem* item);
+QPolygonF copyPolygon(const QGraphicsPolygonItem* originalItem);
+QPointF getTriangleSceneCenter(const QGraphicsPolygonItem* triangleItem);
+QPointF getTriangleOwnCenter(const QGraphicsPolygonItem* triangleItem);
+QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item);
+QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item);
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene);
 QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem);
 qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept;
@@ -157,10 +167,10 @@ void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
 }
 
 void ModificationModeView::rotateItem(QMouseEvent *event, QGraphicsItem* item) {
-    QPointF pointO = getGraphicsItemCenterPos(item);
+    QPointF pointO = getGraphicsItemSceneCenterPos(item);
     QPointF pointB = mapToScene(event->pos());
     qreal rotationAngle = calculateRotationAngle(pointO, rotationPointA_, pointB);
-    item->setTransformOriginPoint(pointO);
+    item->setTransformOriginPoint(getGraphicsItemOwnCenterPos(item));
     item->setRotation(rotationAngle);
 }
 
@@ -175,21 +185,51 @@ void ModificationModeView::setSelectionAreaProperties() {
 
 // ------------------------------------------------------------------------------------------------------------
 
-void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
-    scene->clearSelection();
-    foreach (QGraphicsItem* item, items) {
-        item->setSelected(true);
+QPolygonF copyPolygon(const QGraphicsPolygonItem* originalItem) {
+    auto originalPolygon = originalItem->polygon();
+    QPolygonF newPolygon;
+    foreach(auto& point, originalPolygon) {
+        newPolygon << originalItem->mapToScene(point);
+    }
+    return newPolygon;
+}
+
+QPointF getTriangleSceneCenter(const QGraphicsPolygonItem* triangleItem) {
+    auto points = triangleItem->polygon().toVector();
+    QPointF sum{};
+    foreach(const auto& point, points) {
+        sum += triangleItem->mapToScene(point);
+    }
+    return sum / static_cast<qreal>(points.size());
+}
+
+QPointF getTriangleOwnCenter(const QGraphicsPolygonItem* triangleItem) {
+    QPolygonF trianglePolygon = triangleItem->polygon();
+    return (trianglePolygon.at(0) + trianglePolygon.at(1) + trianglePolygon.at(2)) / 3.0;
+}
+
+QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
+    if (const auto* rectItem = qgraphicsitem_cast<const QGraphicsRectItem*>(item)) {
+        return rectItem->sceneBoundingRect().center();
+    } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
+        return ellipseItem->sceneBoundingRect().center();
+    } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
+        return getTriangleSceneCenter(triangleItem);
+    } else {
+        throw std::runtime_error("Can not define figure's center: unknown figure type");
     }
 }
 
-qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept {
-    qreal angleAO = qAtan2(A.y() - O.y(), A.x() - O.x());
-    qreal angleBO = qAtan2(B.y() - O.y(), B.x() - O.x());
-    qreal angle = angleBO - angleAO;
-
-    if (angle < 0) angle += 2 * M_PI;
-
-    return qRadiansToDegrees(angle);
+QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item) {
+    if (const auto* rectItem = qgraphicsitem_cast<const QGraphicsRectItem*>(item)) {
+        return rectItem->boundingRect().center();
+    } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
+        return ellipseItem->boundingRect().center();
+    } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
+        return getTriangleOwnCenter(triangleItem);
+    } else {
+        throw std::runtime_error("Can not define figure's center: unknown figure type");
+    }
 }
 
 template<typename ItemT, typename ItemU>
@@ -198,17 +238,12 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
     destinationElement->setBrush(originalItem->brush());
 }
 
-enum class GraphicItemType {
-    kRect,
-    kCircle,
-    kTriangle
-};
-
 template<GraphicItemType type, typename ItemType>
 auto copyGraphicsItem(ItemType originalItem) {
     auto rotationAngle = originalItem->rotation();
     originalItem->setRotation(kZeroAngle);
     ItemType temporaryItem;
+
     if constexpr (type == GraphicItemType::kRect) {
         temporaryItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
     } else if constexpr (type == GraphicItemType::kCircle) {
@@ -216,11 +251,24 @@ auto copyGraphicsItem(ItemType originalItem) {
     } else if constexpr (type == GraphicItemType::kTriangle) {
         temporaryItem = new QGraphicsPolygonItem(copyPolygon(originalItem));
     }
-    temporaryItem->setTransformOriginPoint(getGraphicsItemCenterPos(temporaryItem));
+
+    temporaryItem->setTransformOriginPoint(getGraphicsItemSceneCenterPos(temporaryItem));
     temporaryItem->setRotation(rotationAngle);
     originalItem->setRotation(rotationAngle);
     copyGraphicProperties(originalItem, temporaryItem);
     return temporaryItem;
+}
+
+QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
+    QList<QGraphicsItem*> clonedItems;
+            foreach (QGraphicsItem* item, scene->selectedItems()) {
+            QGraphicsItem* clonedItem = cloneGraphicsItem(item);
+            if (clonedItem) {
+                clonedItems.append(clonedItem);
+                scene->addItem(clonedItem);
+            }
+        }
+    return clonedItems;
 }
 
 QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
@@ -239,55 +287,23 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     return copiedItem;
 }
 
-QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
-    QList<QGraphicsItem*> clonedItems;
-    foreach (QGraphicsItem* item, scene->selectedItems()) {
-        QGraphicsItem* clonedItem = cloneGraphicsItem(item);
-        if (clonedItem) {
-            clonedItems.append(clonedItem);
-            scene->addItem(clonedItem);
-        }
-    }
-    return clonedItems;
-}
+qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept {
+    qreal angleAO = qAtan2(A.y() - O.y(), A.x() - O.x());
+    qreal angleBO = qAtan2(B.y() - O.y(), B.x() - O.x());
+    qreal angle = angleBO - angleAO;
 
-template<typename RectLikeItem>
-QPointF getItemCenter(const RectLikeItem* rectItem) noexcept {
-//    auto w = rectItem->rect().width();
-//    auto h = rectItem->rect().width();
-//    auto tl = rectItem->mapToScene(rectItem->rect().topLeft());
-//    QPointF center(tl.x() + w / 2, tl.y() + h / 2);
-//    return center;
-    return rectItem->rect().center();
-}
+    if (angle < 0) angle += 2 * M_PI;
 
-QPointF getTriangleCenter(const QGraphicsPolygonItem *triangleItem) {
-    QPolygonF trianglePolygon = triangleItem->polygon();
-    if (trianglePolygon.size() != 3) throw std::runtime_error("App supports only triangles, see you later");
-    return (trianglePolygon.at(0) + trianglePolygon.at(1) + trianglePolygon.at(2)) / 3.0;
-}
-
-QPointF getGraphicsItemCenterPos(const QGraphicsItem* item) {
-    if (const auto* rectItem = qgraphicsitem_cast<const QGraphicsRectItem*>(item)) {
-        return getItemCenter(rectItem);
-    } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
-        return getItemCenter(ellipseItem);
-    } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
-        return getTriangleCenter(triangleItem);
-    } else {
-        throw std::runtime_error("Can not define figure's center: unknown figure type");
-    }
+    return qRadiansToDegrees(angle);
 }
 
 inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos) {
     return scene->itemAt(currentCursorPos, QTransform{});
 }
 
-QPolygonF copyPolygon(QGraphicsPolygonItem* originalItem) {
-    auto originalPolygon = originalItem->polygon();
-    QPolygonF newPolygon;
-    foreach(auto& point, originalPolygon) {
-        newPolygon << originalItem->mapToScene(point);
+void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
+    scene->clearSelection();
+    foreach (QGraphicsItem* item, items) {
+        item->setSelected(true);
     }
-    return newPolygon;
 }

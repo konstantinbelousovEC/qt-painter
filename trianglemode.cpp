@@ -17,6 +17,7 @@ TriangleModeView::TriangleModeView(QGraphicsScene* scene)
       strokeColor_(kDefaultTriangleStrokeColor),
       clickCount_(0)
 {
+    setRenderHint(QPainter::Antialiasing);
     setMouseTracking(true);
     points_.reserve(3);
     lineItems_.reserve(2);

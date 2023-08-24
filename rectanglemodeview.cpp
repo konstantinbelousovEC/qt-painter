@@ -15,7 +15,10 @@ RectangleModeView::RectangleModeView(QGraphicsScene* scene)
       currentItem_(nullptr),
       startCursorPos_(detail::kZeroPointF),
       fillColor_(kDefaultRectFillColor),
-      strokeColor_(kDefaultRectStrokeColor) {}
+      strokeColor_(kDefaultRectStrokeColor)
+{
+    setRenderHint(QPainter::Antialiasing);
+}
 
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

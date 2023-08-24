@@ -16,7 +16,10 @@ SquareModeView::SquareModeView(QGraphicsScene* scene)
       currentItem_(nullptr),
       centerPos_(detail::kZeroPointF),
       fillColor_(kDefaultSquareFillColor),
-      strokeColor_(kDefaultSquareStrokeColor) {}
+      strokeColor_(kDefaultSquareStrokeColor)
+{
+    setRenderHint(QPainter::Antialiasing);
+}
 
 void SquareModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

@@ -16,7 +16,10 @@ CircleModeView::CircleModeView(QGraphicsScene* scene)
       currentItem_(nullptr),
       ellipseCenterPos_(detail::kZeroPointF),
       fillColor_(kDefaultCircleFillColor),
-      strokeColor_(kDefaultCircleStrokeColor) {}
+      strokeColor_(kDefaultCircleStrokeColor)
+{
+    setRenderHint(QPainter::Antialiasing);
+}
 
 void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
