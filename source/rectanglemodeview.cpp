@@ -43,7 +43,6 @@ void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
 void RectangleModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
         if (detail::shouldDeleteZeroSizeItem(currentItem_, startCursorPos_)) {
-            qDebug() << "deleting zero rectangle";
             detail::deleteItem(scene(), currentItem_);
         }
         currentItem_ = nullptr;

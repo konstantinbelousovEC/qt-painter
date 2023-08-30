@@ -45,7 +45,6 @@ void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
 void CircleModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
         if (detail::shouldDeleteZeroSizeItem(currentItem_, ellipseCenterPos_)) {
-            qDebug() << "delete zero ellipse";
             detail::deleteItem(scene(), currentItem_);
         }
         currentItem_ = nullptr;

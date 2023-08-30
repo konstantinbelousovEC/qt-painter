@@ -23,18 +23,20 @@ namespace detail {
 
     template<typename GraphicScene>
     void deleteSelectedItems(GraphicScene* scene) {
-        foreach (QGraphicsItem *item, scene->selectedItems()) {
+        foreach(QGraphicsItem *item, scene->selectedItems()) {
             scene->removeItem(item);
             delete item;
         }
     }
 
     template<typename GraphicsItem>
-    bool shouldDeleteZeroSizeItem(const GraphicsItem* currentItem, const QPointF& startPos) {
+    bool shouldDeleteZeroSizeItem(const GraphicsItem* currentItem,
+                                  const QPointF& startPos) {
         auto rect = currentItem->rect();
         return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
     }
 
-    QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept;
+    QRectF updateRectangleSize(const QPointF& startCursorPos,
+                               const QPointF& currentCursorPos) noexcept;
 
-}
+}  // namespace detail

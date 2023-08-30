@@ -44,7 +44,6 @@ void SquareModeView::mouseMoveEvent(QMouseEvent* event) {
 void SquareModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
         if (detail::shouldDeleteZeroSizeItem(currentItem_, centerPos_)) {
-            qDebug() << "deleting zero square";
             detail::deleteItem(scene(), currentItem_);
         }
         currentItem_ = nullptr;

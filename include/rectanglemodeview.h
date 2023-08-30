@@ -7,25 +7,24 @@
 class RectangleModeView : public QGraphicsView {
     Q_OBJECT
 
-public:
-    RectangleModeView(QGraphicsScene* scene);
+ public:
+    explicit RectangleModeView(QGraphicsScene* scene);
 
-protected:
+ protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
-private slots:
+ private slots:
     void changeFillColor(const QColor& color);
     void changeStrokeColor(const QColor& color);
 
-signals:
+ signals:
     void changeStateOfScene();
 
-private:
+ private:
     QGraphicsRectItem* currentItem_;
     QPointF startCursorPos_;
     QColor fillColor_;
     QColor strokeColor_;
-
 };

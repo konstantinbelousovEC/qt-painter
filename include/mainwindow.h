@@ -11,8 +11,8 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
  public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow() override;
 
  private:
     QGraphicsScene* scene_;
@@ -32,8 +32,8 @@ class MainWindow : public QMainWindow {
     template<typename Func>
     void addMenuAction(QMenu* menu, std::string_view actionName, Func func);
 
-    template<typename View, typename Func>
-    void connectViewsSignals(View view, Func func);
+    template<typename GraphicViewType, typename Signal>
+    void connectViewsSignals(GraphicViewType view, Signal signal);
 
     template<typename GraphicViewType>
     void setUpGraphicView(std::string_view iconPath);

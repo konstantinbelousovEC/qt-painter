@@ -7,26 +7,26 @@
 class TriangleModeView : public QGraphicsView {
     Q_OBJECT
 
-public:
-    TriangleModeView(QGraphicsScene* scene);
+ public:
+    explicit TriangleModeView(QGraphicsScene* scene);
 
-protected:
+ protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
 
-private:
-    bool createPolygon();
+ private:
     void deleteTemporaryLines();
     bool addNewTemporaryLine(QMouseEvent* event);
+    bool createPolygon();
 
-private slots:
+ private slots:
     void changeFillColor(const QColor& color);
     void changeStrokeColor(const QColor& color);
 
-signals:
+ signals:
     void changeStateOfScene();
 
-private:
+ private:
     QVector<QPointF> points_;
     QVector<QGraphicsLineItem*> lineItems_;
     QPointF lastClickPos_;

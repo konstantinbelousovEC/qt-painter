@@ -8,7 +8,7 @@ class CircleModeView : public QGraphicsView {
     Q_OBJECT
 
  public:
-    CircleModeView(QGraphicsScene *scene);
+    explicit CircleModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

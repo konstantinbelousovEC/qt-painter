@@ -1,12 +1,5 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "../include/mainwindow.h"
-#include "../include/rectanglemodeview.h"
-#include "../include/modificationmodeview.h"
-#include "../include/squaremodeview.h"
-#include "../include/trianglemode.h"
-#include "../include/circlemodeview.h"
-
 #include <QCoreApplication>
 #include <QGuiApplication>
 #include <QGraphicsView>
@@ -18,6 +11,14 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScreen>
+#include <string_view>
+#include "../include/mainwindow.h"
+#include "../include/rectanglemodeview.h"
+#include "../include/modificationmodeview.h"
+#include "../include/squaremodeview.h"
+#include "../include/trianglemode.h"
+#include "../include/circlemodeview.h"
+
 
 namespace {
     using namespace std::string_view_literals;
@@ -41,14 +42,14 @@ namespace {
     constexpr std::string_view kPngJpeg{"Images (*.png *.jpg)"sv};
     constexpr std::string_view kSaveImageTitle{"Save Image"sv};
     constexpr std::string_view kPngJpegBmpAllFiles{"PNG Image (*.png);;JPEG Image (*.jpg *.jpeg);;BMP Image (*.bmp);;All Files (*)"sv};
-    constexpr std::string_view kSaveChagesAndExitTitle{"Save Changes and Exit"sv};
-    constexpr std::string_view kSaveChagesAndExitQuestion{"Do you want to save your changes before exiting?"sv};
+    constexpr std::string_view kSaveChangesAndExitTitle{"Save Changes and Exit"sv};
+    constexpr std::string_view kSaveChangesAndExitQuestion{"Do you want to save your changes before exiting?"sv};
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
-    constexpr QSize kDefaultBtnIconSize{30,30};
+    constexpr QSize kDefaultBtnIconSize{30, 30};
     constexpr int kMinimumWidth{1000};
     constexpr int kMinimumHeight{700};
-}
+}  // namespace
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
@@ -108,7 +109,10 @@ void MainWindow::setUpScreen() {
     int windowWidth = screenWidth - static_cast<int>(screenWidth * 0.15);
     int windowHeight = screenHeight - static_cast<int>(screenHeight * 0.15);
     setMinimumSize(windowWidth, windowHeight);
-    setGeometry((screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2, windowWidth, windowHeight);
+    setGeometry((screenWidth - windowWidth) / 2,
+                (screenHeight - windowHeight) / 2,
+                windowWidth,
+                windowHeight);
 }
 
 void MainWindow::setUpMenuBar() {
@@ -129,7 +133,9 @@ void MainWindow::newFile() {
         auto answer = QMessageBox::warning(this,
                                            kSaveChangesTitle.data(),
                                            kSaveChangesQuestion.data(),
-                                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+                                           QMessageBox::Save |
+                                           QMessageBox::Discard |
+                                           QMessageBox::Cancel);
         if (answer == QMessageBox::Save) {
             saveFile();
         } else if (answer == QMessageBox::Cancel) {
@@ -145,7 +151,9 @@ void MainWindow::loadFile() {
     if (isModified_) {
         auto answer = QMessageBox::warning(this, kSaveChangesTitle.data(),
                                            kSaveChangesQuestion.data(),
-                                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+                                           QMessageBox::Save |
+                                           QMessageBox::Discard |
+                                           QMessageBox::Cancel);
         if (answer == QMessageBox::Save) {
             saveFile();
         } else if (answer == QMessageBox::Cancel) {
@@ -172,7 +180,8 @@ void MainWindow::saveFile() {
         saveFileAs();
     } else {
         scene_->clearSelection();
-        QImage image(scene_->sceneRect().size().toSize(), QImage::Format_ARGB32);
+        QImage image(scene_->sceneRect().size().toSize(),
+                     QImage::Format_ARGB32);
         image.fill(Qt::white);
         QPainter painter(&image);
         scene_->render(&painter);
@@ -197,9 +206,12 @@ void MainWindow::saveFileAs() {
 
 void MainWindow::exitApp() {
     if (isModified_) {
-        auto answer = QMessageBox::warning(this, kSaveChagesAndExitTitle.data(),
-                                           kSaveChagesAndExitQuestion.data(),
-                                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        auto answer = QMessageBox::warning(this,
+                                           kSaveChangesAndExitTitle.data(),
+                                           kSaveChangesAndExitQuestion.data(),
+                                           QMessageBox::Save |
+                                           QMessageBox::Discard |
+                                           QMessageBox::Cancel);
         if (answer == QMessageBox::Save) {
             saveFile();
         } else if (answer == QMessageBox::Cancel) {
