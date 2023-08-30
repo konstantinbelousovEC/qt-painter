@@ -15,9 +15,9 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
-    void createPolygon();
+    bool createPolygon();
     void deleteTemporaryLines();
-    void addNewTemporaryLine(QMouseEvent* event);
+    bool addNewTemporaryLine(QMouseEvent* event);
 
 private slots:
     void changeFillColor(const QColor& color);
