@@ -1,8 +1,5 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "../include/modificationmodeview.h"
-#include "../include/detail.h"
-
 #include <QApplication>
 #include <QMouseEvent>
 #include <QGraphicsItem>
@@ -11,6 +8,8 @@
 #include <QPointF>
 #include <qmath.h>
 #include <stdexcept>
+#include "../include/modificationmodeview.h"
+#include "../include/detail.h"
 
 namespace {
     const QColor kSelectionAreaBrush{0, 0, 200, 15};
@@ -24,7 +23,7 @@ namespace {
         kCircle,
         kTriangle
     };
-}
+}  // namespace
 
 template<typename ItemT, typename ItemU>
 void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement);
@@ -60,9 +59,10 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
-    QGraphicsItem* itemUnderCursor = getItemUnderCursor(scene(), currentCursorPos);
+    QGraphicsItem* itemUnderCursor =
+            getItemUnderCursor(scene(), currentCursorPos);
 
-    if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::ShiftModifier)) {
+    if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier) {
         handleMiddleButtonClick(itemUnderCursor, currentCursorPos);
     } else if (event->button() == Qt::LeftButton) {
         handleLeftButtonClick(event, itemUnderCursor, currentCursorPos);
@@ -99,7 +99,9 @@ void ModificationModeView::keyPressEvent(QKeyEvent* event) {
     }
 }
 
-void ModificationModeView::handleLeftButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos) {
+void ModificationModeView::handleLeftButtonClick(QMouseEvent* event,
+                                                 QGraphicsItem* itemUnderCursor,
+                                                 const QPointF& currentCursorPos) {
     if (itemUnderCursor == nullptr) {
         QGraphicsView::mousePressEvent(event);
         if (!(event->modifiers() & Qt::ControlModifier)) scene()->clearSelection();
@@ -116,7 +118,8 @@ void ModificationModeView::handleLeftButtonClick(QMouseEvent* event, QGraphicsIt
     }
 }
 
-void ModificationModeView::handleMiddleButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos) {
+void ModificationModeView::handleMiddleButtonClick(QGraphicsItem* itemUnderCursor,
+                                                   const QPointF& currentCursorPos) {
     if (itemUnderCursor != nullptr) {
         QList<QGraphicsItem*> clonedItems = cloneSelectedItems(scene());
         updateSceneSelection(scene(), clonedItems);
@@ -125,7 +128,8 @@ void ModificationModeView::handleMiddleButtonClick(QGraphicsItem* itemUnderCurso
     }
 }
 
-void ModificationModeView::handleRightButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor) {
+void ModificationModeView::handleRightButtonClick(QMouseEvent* event,
+                                                  QGraphicsItem* itemUnderCursor) {
     if (itemUnderCursor != nullptr) {
         isRotating_ = true;
         rotationPointA_ = mapToScene(event->pos());
@@ -134,16 +138,21 @@ void ModificationModeView::handleRightButtonClick(QMouseEvent* event, QGraphicsI
     }
 }
 
-void ModificationModeView::updateSelectionArea(QMouseEvent* event, const QPointF& mouseCurrentPos) {
+void ModificationModeView::updateSelectionArea(QMouseEvent* event,
+                                               const QPointF& mouseCurrentPos) {
     selectionArea_->show();
-    QRectF updatedRectangle = detail::updateRectangleSize(selectionStartPos_, mouseCurrentPos);
+    QRectF updatedRectangle =
+            detail::updateRectangleSize(selectionStartPos_,
+                                        mouseCurrentPos);
+
     selectionArea_->setRect(updatedRectangle.normalized());
     updateItemsSelection(event, selectionArea_->rect());
 }
 
-void ModificationModeView::updateItemsSelection(QMouseEvent* event, const QRectF &selectionRectangle) {
+void ModificationModeView::updateItemsSelection(QMouseEvent* event,
+                                                const QRectF &selectionRectangle) {
     QList<QGraphicsItem*> itemsInRect = scene()->items(selectionRectangle);
-    foreach (QGraphicsItem *item, scene()->items()) {
+    foreach(QGraphicsItem *item, scene()->items()) {
         if (!(event->modifiers() & Qt::ControlModifier)) {
             item->setSelected(itemsInRect.contains(item));
         } else {
@@ -154,14 +163,14 @@ void ModificationModeView::updateItemsSelection(QMouseEvent* event, const QRectF
 
 void ModificationModeView::moveSelectedItems(const QPointF& mouseCurrentPos) {
     QPointF delta = mouseCurrentPos - lastClickPos_;
-    foreach (QGraphicsItem* item, scene()->selectedItems()) {
+    foreach(QGraphicsItem* item, scene()->selectedItems()) {
         item->moveBy(delta.x(), delta.y());
     }
     lastClickPos_ = mouseCurrentPos;
 }
 
 void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
-    foreach (QGraphicsItem* item, scene()->selectedItems()) {
+    foreach(QGraphicsItem* item, scene()->selectedItems()) {
         rotateItem(event, item);
     }
 }
@@ -169,7 +178,9 @@ void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
 void ModificationModeView::rotateItem(QMouseEvent *event, QGraphicsItem* item) {
     QPointF pointO = getGraphicsItemSceneCenterPos(item);
     QPointF pointB = mapToScene(event->pos());
-    qreal rotationAngle = calculateRotationAngle(pointO, rotationPointA_, pointB);
+    qreal rotationAngle = calculateRotationAngle(pointO,
+                                                 rotationPointA_,
+                                                 pointB);
     item->setTransformOriginPoint(getGraphicsItemOwnCenterPos(item));
     item->setRotation(rotationAngle);
 }
@@ -205,7 +216,9 @@ QPointF getTriangleSceneCenter(const QGraphicsPolygonItem* triangleItem) {
 
 QPointF getTriangleOwnCenter(const QGraphicsPolygonItem* triangleItem) {
     QPolygonF trianglePolygon = triangleItem->polygon();
-    return (trianglePolygon.at(0) + trianglePolygon.at(1) + trianglePolygon.at(2)) / 3.0;
+    return (trianglePolygon.at(0) +
+            trianglePolygon.at(1) +
+            trianglePolygon.at(2)) / 3.0;
 }
 
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
@@ -261,7 +274,7 @@ auto copyGraphicsItem(ItemType originalItem) {
 
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
     QList<QGraphicsItem*> clonedItems;
-            foreach (QGraphicsItem* item, scene->selectedItems()) {
+            foreach(QGraphicsItem* item, scene->selectedItems()) {
             QGraphicsItem* clonedItem = cloneGraphicsItem(item);
             if (clonedItem) {
                 clonedItems.append(clonedItem);
@@ -287,7 +300,9 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     return copiedItem;
 }
 
-qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept {
+qreal calculateRotationAngle(const QPointF& O,
+                             const QPointF& A,
+                             const QPointF& B) noexcept {
     qreal angleAO = qAtan2(A.y() - O.y(), A.x() - O.x());
     qreal angleBO = qAtan2(B.y() - O.y(), B.x() - O.x());
     qreal angle = angleBO - angleAO;
@@ -297,13 +312,15 @@ qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& 
     return qRadiansToDegrees(angle);
 }
 
-inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos) {
+inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene,
+                                         const QPointF& currentCursorPos) {
     return scene->itemAt(currentCursorPos, QTransform{});
 }
 
-void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
+void updateSceneSelection(QGraphicsScene* scene,
+                          const QList<QGraphicsItem*>& items) {
     scene->clearSelection();
-    foreach (QGraphicsItem* item, items) {
+    foreach(QGraphicsItem* item, items) {
         item->setSelected(true);
     }
 }

@@ -21,34 +21,33 @@
 
 
 namespace {
-    using namespace std::string_view_literals;
+    using std::operator ""sv;
 
-    constexpr std::string_view kModificationModeIconPath{":/images/buttons/imgs/modimg.png"sv};
-    constexpr std::string_view kSquareModeIconPath{":/images/buttons/imgs/squareimg.png"sv};
-    constexpr std::string_view kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
-    constexpr std::string_view kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
-    constexpr std::string_view kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
+    constexpr auto kModificationModeIconPath{":/images/buttons/imgs/modimg.png"sv};
+    constexpr auto kSquareModeIconPath{":/images/buttons/imgs/squareimg.png"sv};
+    constexpr auto kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
+    constexpr auto kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
+    constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
 
-    constexpr std::string_view kMenuName{"File"sv};
-    constexpr std::string_view kNewActionName{"New"sv};
-    constexpr std::string_view kLoadActionName{"Load"sv};
-    constexpr std::string_view kSaveActionName{"Save"sv};
-    constexpr std::string_view kSaveAsActionName{"Save as..."sv};
-    constexpr std::string_view kExitActionName{"Leave"sv};
+    constexpr auto kMenuName{"File"sv};
+    constexpr auto kNewActionName{"New"sv};
+    constexpr auto kLoadActionName{"Load"sv};
+    constexpr auto kSaveActionName{"Save"sv};
+    constexpr auto kSaveAsActionName{"Save as..."sv};
+    constexpr auto kExitActionName{"Leave"sv};
 
-    constexpr std::string_view kSaveChangesTitle{"Save Changes"sv};
-    constexpr std::string_view kSaveChangesQuestion{"Do you want to save your changes?"sv};
-    constexpr std::string_view kOpenTitle{"Open File"sv};
-    constexpr std::string_view kPngJpeg{"Images (*.png *.jpg)"sv};
-    constexpr std::string_view kSaveImageTitle{"Save Image"sv};
-    constexpr std::string_view kPngJpegBmpAllFiles{"PNG Image (*.png);;JPEG Image (*.jpg *.jpeg);;BMP Image (*.bmp);;All Files (*)"sv};
-    constexpr std::string_view kSaveChangesAndExitTitle{"Save Changes and Exit"sv};
-    constexpr std::string_view kSaveChangesAndExitQuestion{"Do you want to save your changes before exiting?"sv};
+    constexpr auto kSaveChangesTitle{"Save Changes"sv};
+    constexpr auto kSaveChangesQuestion{"Do you want to save your changes?"sv};
+    constexpr auto kOpenTitle{"Open File"sv};
+    constexpr auto kPngJpeg{"Images (*.png *.jpg)"sv};
+    constexpr auto kSaveImageTitle{"Save Image"sv};
+    constexpr auto kPngJpegBmpAllFiles{"PNG Image (*.png);;JPEG Image (*.jpg *.jpeg);;BMP Image (*.bmp);;All Files (*)"sv};
+    constexpr auto kSaveChangesAndExitTitle{"Save Changes and Exit"sv};
+    constexpr auto kSaveChangesAndExitQuestion{"Do you want to save your changes before exiting?"sv};
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{30, 30};
-    constexpr int kMinimumWidth{1000};
-    constexpr int kMinimumHeight{700};
+
 }  // namespace
 
 MainWindow::MainWindow(QWidget *parent)
@@ -58,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent)
       toolBar_(new QToolBar{this}),
       isModified_(false)
 {
-    setMinimumSize(kMinimumWidth, kMinimumHeight);
     setUpGraphicViews();
     setUpScene();
     setUpScreen();

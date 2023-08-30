@@ -1,10 +1,9 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "../include/squaremodeview.h"
-#include "../include/detail.h"
-
 #include <QMouseEvent>
 #include <QGraphicsItem>
+#include "../include/squaremodeview.h"
+#include "../include/detail.h"
 
 namespace {
     constexpr Qt::GlobalColor kDefaultSquareFillColor{Qt::red};
@@ -24,18 +23,25 @@ SquareModeView::SquareModeView(QGraphicsScene* scene)
 void SquareModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         centerPos_ = mapToScene(event->pos());
-        currentItem_ = scene()->addRect(QRectF{centerPos_, detail::kZeroSizeF},
-                                        QPen{strokeColor_},
-                                        QBrush{fillColor_});
-        if (currentItem_ != nullptr) detail::makeItemSelectableAndMovable(currentItem_);
+        currentItem_ = scene()->addRect(
+                QRectF{centerPos_, detail::kZeroSizeF},
+                QPen{strokeColor_},
+                QBrush{fillColor_});
+
+        if (currentItem_ != nullptr)
+            detail::makeItemSelectableAndMovable(currentItem_);
     }
 }
 
 void SquareModeView::mouseMoveEvent(QMouseEvent* event) {
-    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton) ) {
+    if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
         QPointF currentCursorPos = mapToScene(event->pos());
         qreal halfDistance = QLineF{centerPos_, currentCursorPos}.length() / 2;
-        QRectF updatedRectangle{centerPos_.x() - halfDistance / 2, centerPos_.y() - halfDistance / 2, halfDistance, halfDistance};
+        QRectF updatedRectangle{centerPos_.x() - halfDistance / 2,
+                                centerPos_.y() - halfDistance / 2,
+                                halfDistance,
+                                halfDistance};
+
         currentItem_->setRect(updatedRectangle.normalized());
         emit changeStateOfScene();
     }

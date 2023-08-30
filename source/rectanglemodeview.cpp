@@ -1,9 +1,8 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
+#include <QMouseEvent>
 #include "../include/rectanglemodeview.h"
 #include "../include/detail.h"
-
-#include <QMouseEvent>
 
 namespace {
     constexpr Qt::GlobalColor kDefaultRectFillColor{Qt::yellow};
@@ -23,18 +22,22 @@ RectangleModeView::RectangleModeView(QGraphicsScene* scene)
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         startCursorPos_ = mapToScene(event->pos());
-        currentItem_ = scene()->addRect(QRectF{startCursorPos_, detail::kZeroSizeF},
-                                        QPen{strokeColor_},
-                                        QBrush{fillColor_});
+        currentItem_ = scene()->addRect(
+                QRectF{startCursorPos_, detail::kZeroSizeF},
+                QPen{strokeColor_},
+                QBrush{fillColor_});
 
-        if (currentItem_ != nullptr) detail::makeItemSelectableAndMovable(currentItem_);
+        if (currentItem_ != nullptr)
+            detail::makeItemSelectableAndMovable(currentItem_);
     }
 }
 
 void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
-    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton) ) {
+    if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
         QPointF currentCursorPos = mapToScene(event->pos());
-        QRectF updatedRectangle = detail::updateRectangleSize(startCursorPos_, currentCursorPos);
+        QRectF updatedRectangle = detail::updateRectangleSize(startCursorPos_,
+                                                              currentCursorPos);
+
         currentItem_->setRect(updatedRectangle.normalized());
         emit changeStateOfScene();
     }

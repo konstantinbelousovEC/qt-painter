@@ -1,9 +1,8 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
+#include <QMouseEvent>
 #include "../include/trianglemode.h"
 #include "../include/detail.h"
-
-#include <QMouseEvent>
 
 namespace {
     constexpr Qt::GlobalColor kDefaultTriangleFillColor{Qt::cyan};
@@ -76,7 +75,9 @@ void TriangleModeView::deleteTemporaryLines() {
 
 bool TriangleModeView::addNewTemporaryLine(QMouseEvent* event) {
     lastClickPos_ = mapToScene(event->pos());
-    auto* tmpLinePointer = scene()->addLine(QLineF{lastClickPos_, lastClickPos_});
+    auto* tmpLinePointer =
+            scene()->addLine(QLineF{lastClickPos_, lastClickPos_});
+
     if (tmpLinePointer == nullptr) return false;
 
     tmpLinePointer->setPen(QPen{strokeColor_});
