@@ -7,25 +7,24 @@
 class CircleModeView : public QGraphicsView {
     Q_OBJECT
 
-public:
-    CircleModeView(QGraphicsScene* scene);
+ public:
+    CircleModeView(QGraphicsScene *scene);
 
-protected:
+ protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
-private slots:
+ private slots:
     void changeFillColor(const QColor& color);
     void changeStrokeColor(const QColor& color);
 
-signals:
+ signals:
     void changeStateOfScene();
 
-private:
+ private:
     QGraphicsEllipseItem* currentItem_;
     QPointF ellipseCenterPos_;
     QColor fillColor_;
     QColor strokeColor_;
-
 };

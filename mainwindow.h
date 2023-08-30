@@ -10,18 +10,18 @@
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
+ private:
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;
     QString currentFilePath_;
     bool isModified_;
 
-private:
+ private:
     void setUpGraphicViews();
     void setUpLayout();
     void setUpScene();
@@ -38,18 +38,19 @@ private:
     template<typename GraphicViewType>
     void setUpGraphicView(std::string_view iconPath);
 
-private slots:
+ private slots:
     void changeSceneState();
     void newFile();
     void loadFile();
     void saveFile();
     void saveFileAs();
     void exitApp();
-
 };
 
 template<typename Func>
-void MainWindow::addMenuAction(QMenu* menu, std::string_view actionName, Func func) {
+void MainWindow::addMenuAction(QMenu* menu,
+                               std::string_view actionName,
+                               Func func) {
     auto* newAction = new QAction{actionName.data(), this};
     menu->addAction(newAction);
     connect(newAction, &QAction::triggered, this, func);
@@ -65,5 +66,6 @@ void MainWindow::setUpGraphicView(std::string_view iconPath) {
     auto modificationScene = new GraphicViewType{scene_};
     auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
     addMode(iconPath, modificationSceneIndex);
-    connectViewsSignals(modificationScene, &GraphicViewType::changeStateOfScene);
+    connectViewsSignals(modificationScene,
+                        &GraphicViewType::changeStateOfScene);
 }
