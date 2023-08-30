@@ -71,6 +71,14 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     }
 }
 
+inline bool isSelectionEvent(QMouseEvent* event, bool isMoving, bool isRotating) noexcept {
+    if (event == nullptr) return false;
+    return !isMoving &&
+           !isRotating &&
+           event->buttons() & Qt::LeftButton &&
+           !(event->modifiers() & Qt::ShiftModifier);
+}
+
 void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF mouseCurrentPos = mapToScene(event->pos());
     if (isRotating_) {
@@ -79,7 +87,7 @@ void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
     } else if (isMoving_) {
         if (event->buttons() & Qt::LeftButton) moveSelectedItems(mouseCurrentPos);
         emit changeStateOfScene();
-    } else if (!isMoving_ && !isRotating_ && event->buttons() & Qt::LeftButton && !(event->modifiers() & Qt::ShiftModifier)) {
+    } else if (isSelectionEvent(event, isMoving_, isRotating_)) {
         updateSelectionArea(event, mouseCurrentPos);
         emit changeStateOfScene();
     }

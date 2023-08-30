@@ -15,13 +15,6 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
-    QGraphicsScene* scene_;
-    QStackedWidget* stackedWidget_;
-    QToolBar* toolBar_;
-    QString currentFilePath_;
-    bool isModified_;
-
- private:
     void setUpGraphicViews();
     void setUpLayout();
     void setUpScene();
@@ -45,6 +38,13 @@ class MainWindow : public QMainWindow {
     void saveFile();
     void saveFileAs();
     void exitApp();
+
+ private:
+    QGraphicsScene* scene_;
+    QStackedWidget* stackedWidget_;
+    QToolBar* toolBar_;
+    QString currentFilePath_;
+    bool isModified_;
 };
 
 template<typename Func>
