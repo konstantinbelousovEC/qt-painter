@@ -26,12 +26,13 @@ void RectangleModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addRect(QRectF{startCursorPos_, detail::kZeroSizeF},
                                         QPen{strokeColor_},
                                         QBrush{fillColor_});
-        detail::makeItemSelectableAndMovable(currentItem_);
+
+        if (currentItem_ != nullptr) detail::makeItemSelectableAndMovable(currentItem_);
     }
 }
 
 void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
-    if (event->buttons() & Qt::LeftButton) {
+    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton) ) {
         QPointF currentCursorPos = mapToScene(event->pos());
         QRectF updatedRectangle = detail::updateRectangleSize(startCursorPos_, currentCursorPos);
         currentItem_->setRect(updatedRectangle.normalized());

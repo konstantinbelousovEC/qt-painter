@@ -27,14 +27,13 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addEllipse(QRectF{ellipseCenterPos_, detail::kZeroSizeF},
                                            QPen{kDefaultCircleStrokeColor},
                                            QBrush{kDefaultCircleFillColor});
-        //if (currentItem_ == nullptr) return;
-        detail::makeItemSelectableAndMovable(currentItem_);
+
+        if (currentItem_ != nullptr) detail::makeItemSelectableAndMovable(currentItem_);
     }
 }
 
 void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
-    //if (currentItem_ == nullptr) return;
-    if (event->buttons() & Qt::LeftButton) {
+    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton) ) {
         QPointF currentPos = mapToScene(event->pos());
         qreal radius = QLineF{ellipseCenterPos_, currentPos}.length();
         QRectF describingRectangle{ellipseCenterPos_.x() - radius, ellipseCenterPos_.y() - radius, radius * 2, radius * 2};

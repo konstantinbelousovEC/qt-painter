@@ -27,12 +27,12 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addRect(QRectF{centerPos_, detail::kZeroSizeF},
                                         QPen{strokeColor_},
                                         QBrush{fillColor_});
-        detail::makeItemSelectableAndMovable(currentItem_);
+        if (currentItem_ != nullptr) detail::makeItemSelectableAndMovable(currentItem_);
     }
 }
 
 void SquareModeView::mouseMoveEvent(QMouseEvent* event) {
-    if (event->buttons() & Qt::LeftButton) {
+    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton) ) {
         QPointF currentCursorPos = mapToScene(event->pos());
         qreal halfDistance = QLineF{centerPos_, currentCursorPos}.length() / 2;
         QRectF updatedRectangle{centerPos_.x() - halfDistance / 2, centerPos_.y() - halfDistance / 2, halfDistance, halfDistance};
