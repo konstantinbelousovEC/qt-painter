@@ -21,19 +21,22 @@ class ModificationModeView : public QGraphicsView {
 
  private:
     void setSelectionAreaProperties();
-    void handleLeftButtonClick(QMouseEvent* event,
-                               QGraphicsItem* itemUnderCursor,
-                               const QPointF& currentCursorPos);
-    void handleMiddleButtonClick(QGraphicsItem* itemUnderCursor,
-                                 const QPointF& currentCursorPos);
-    void handleRightButtonClick(QMouseEvent* event,
-                                QGraphicsItem* itemUnderCursor);
-    void updateSelectionArea(QMouseEvent* event,
-                             const QPointF& mouseCurrentPos);
     void updateItemsSelection(QMouseEvent* event, const QRectF& rect);
     void moveSelectedItems(const QPointF& mousePos);
     void rotateSelectedItems(QMouseEvent* event);
     void rotateItem(QMouseEvent *event, QGraphicsItem* item);
+    void handleLeftButtonClick(QMouseEvent* event,
+                               QGraphicsItem* itemUnderCursor,
+                               const QPointF& currentCursorPos);
+
+    void handleMiddleButtonClick(QGraphicsItem* itemUnderCursor,
+                                 const QPointF& currentCursorPos);
+
+    void handleRightButtonClick(QMouseEvent* event,
+                                QGraphicsItem* itemUnderCursor);
+
+    void updateSelectionArea(QMouseEvent* event,
+                             const QPointF& mouseCurrentPos);
 
  private:
     QGraphicsRectItem* selectionArea_;
