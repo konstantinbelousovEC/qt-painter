@@ -1,4 +1,4 @@
-# Выберите язык файла README / Choose a Language of a README file
+# Выберите язык документации / Choose a documentation language
 
 - [English](doc/en/README-ENG.md)
 - [Русский](doc/ru/README-RUS.md)
