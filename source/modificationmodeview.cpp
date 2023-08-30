@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "modificationmodeview.h"
-#include "detail.h"
+#include "../include/modificationmodeview.h"
+#include "../include/detail.h"
 
 #include <QApplication>
 #include <QMouseEvent>

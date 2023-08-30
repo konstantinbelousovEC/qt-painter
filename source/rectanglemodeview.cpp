@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "rectanglemodeview.h"
-#include "detail.h"
+#include "../include/rectanglemodeview.h"
+#include "../include/detail.h"
 
 #include <QMouseEvent>
 

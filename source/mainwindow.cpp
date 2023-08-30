@@ -1,11 +1,11 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "mainwindow.h"
-#include "rectanglemodeview.h"
-#include "modificationmodeview.h"
-#include "circlemodeview.h"
-#include "squaremodeview.h"
-#include "trianglemode.h"
+#include "../include/mainwindow.h"
+#include "../include/rectanglemodeview.h"
+#include "../include/modificationmodeview.h"
+#include "../include/squaremodeview.h"
+#include "../include/trianglemode.h"
+#include "../include/circlemodeview.h"
 
 #include <QCoreApplication>
 #include <QGuiApplication>

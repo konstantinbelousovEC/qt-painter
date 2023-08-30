@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "trianglemode.h"
-#include "detail.h"
+#include "../include/trianglemode.h"
+#include "../include/detail.h"
 
 #include <QMouseEvent>
 

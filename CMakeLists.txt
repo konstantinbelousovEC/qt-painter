@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.12)
 
 project(qt_painter)
 
-file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/*.h")
-file(GLOB SOURCE_FILES "${CMAKE_SOURCE_DIR}/*.cpp")
+file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
+file(GLOB SOURCE_FILES "${CMAKE_SOURCE_DIR}/source/*.cpp")
 
 set(CMAKE_CXX_STANDARD 17)
 

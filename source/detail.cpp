@@ -1,6 +1,6 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "detail.h"
+#include "../include/detail.h"
 
 namespace detail {
 

@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "circlemodeview.h"
-#include "detail.h"
+#include "../include/circlemodeview.h"
+#include "../include/detail.h"
 
 #include <QMouseEvent>
 #include <QGraphicsItem>
