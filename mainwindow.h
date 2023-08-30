@@ -25,6 +25,7 @@ private:
     void setUpGraphicViews();
     void setUpLayout();
     void setUpScene();
+    void setUpScreen();
     void setUpMenuBar();
     void addMode(std::string_view iconPath, int btnIndex);
 
