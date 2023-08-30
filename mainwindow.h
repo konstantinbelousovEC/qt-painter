@@ -33,9 +33,10 @@ private:
     void addMenuAction(QMenu* menu, std::string_view actionName, Func func);
 
     template<typename View, typename Func>
-    void connectViewsSignals(View view, Func func) {
-        connect(view, func, this, &MainWindow::changeSceneState);
-    }
+    void connectViewsSignals(View view, Func func);
+
+    template<typename GraphicViewType>
+    void setUpGraphicView(std::string_view iconPath);
 
 private slots:
     void changeSceneState();
@@ -52,4 +53,17 @@ void MainWindow::addMenuAction(QMenu* menu, std::string_view actionName, Func fu
     auto* newAction = new QAction{actionName.data(), this};
     menu->addAction(newAction);
     connect(newAction, &QAction::triggered, this, func);
+}
+
+template<typename GraphicViewType, typename Signal>
+void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
+    connect(view, signal, this, &MainWindow::changeSceneState);
+}
+
+template<typename GraphicViewType>
+void MainWindow::setUpGraphicView(std::string_view iconPath) {
+    auto modificationScene = new GraphicViewType{scene_};
+    auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
+    addMode(iconPath, modificationSceneIndex);
+    connectViewsSignals(modificationScene, &GraphicViewType::changeStateOfScene);
 }

@@ -79,30 +79,11 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
 }
 
 void MainWindow::setUpGraphicViews() {
-    auto modificationScene = new ModificationModeView{scene_};
-    auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
-    addMode(kModificationModeIconPath, modificationSceneIndex);
-    connectViewsSignals(modificationScene, &ModificationModeView::changeStateOfScene);
-
-    auto squareScene = new SquareModeView{scene_};
-    auto squareSceneIndex = stackedWidget_->addWidget(squareScene);
-    addMode(kSquareModeIconPath, squareSceneIndex);
-    connectViewsSignals(squareScene, &SquareModeView::changeStateOfScene);
-
-    auto rectangleScene = new RectangleModeView{scene_};
-    auto rectangleSceneIndex = stackedWidget_->addWidget(rectangleScene);
-    addMode(kRectangleModeIconPath, rectangleSceneIndex);
-    connectViewsSignals(rectangleScene, &RectangleModeView::changeStateOfScene);
-
-    auto triangleScene = new TriangleModeView{scene_};
-    auto triangleSceneIndex = stackedWidget_->addWidget(triangleScene);
-    addMode(kTriangleModeIconPath, triangleSceneIndex);
-    connectViewsSignals(triangleScene, &TriangleModeView::changeStateOfScene);
-
-    auto circleScene = new CircleModeView{scene_};
-    auto circleSceneIndex = stackedWidget_->addWidget(circleScene);
-    addMode(kCircleModeIconPath, circleSceneIndex);
-    connectViewsSignals(circleScene, &CircleModeView::changeStateOfScene);
+    setUpGraphicView<ModificationModeView>(kModificationModeIconPath);
+    setUpGraphicView<SquareModeView>(kSquareModeIconPath);
+    setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
+    setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
+    setUpGraphicView<CircleModeView>(kCircleModeIconPath);
 }
 
 void MainWindow::setUpLayout() {
