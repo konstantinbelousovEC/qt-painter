@@ -2,3 +2,7 @@
 
 - [English](doc/en/README-ENG.md)
 - [Русский](doc/ru/README-RUS.md)
+
+---
+
+![screenshot](doc/media/app-screenshot.png)
