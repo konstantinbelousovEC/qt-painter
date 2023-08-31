@@ -303,7 +303,8 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
         copiedItem = copyGraphicsItem<GraphicItemType::kTriangle>(polygonItem);
     }
 
-    if (copiedItem != nullptr) detail::makeItemSelectableAndMovable(copiedItem);
+    if (copiedItem != nullptr)
+        detail::makeItemSelectableAndMovable(copiedItem);
 
     return copiedItem;
 }
