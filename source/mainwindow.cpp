@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScreen>
+#include <QLatin1String>
 #include <string_view>
 #include "../include/mainwindow.h"
 #include "../include/rectanglemodeview.h"
@@ -28,6 +29,7 @@ namespace {
     constexpr auto kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
     constexpr auto kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
     constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
+    constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
     constexpr auto kMenuName{"File"sv};
     constexpr auto kNewActionName{"New"sv};
@@ -62,19 +64,42 @@ MainWindow::MainWindow(QWidget *parent)
     setUpScreen();
     setUpLayout();
     setUpMenuBar();
+    setUpToolBarStyle();
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow() = default;
+
+void MainWindow::setUpToolBarStyle() {
+    QFile file(kToolBarStyleSheetPath.data());
+    file.open(QFile::ReadOnly);
+    QString strCSS = QLatin1String(file.readAll());
+    toolBar_->setStyleSheet(strCSS);
+    btnList_.front()->setChecked(true);
+}
 
 void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
+    auto* button = addToolBarButton(iconPath);
+    connect(button, &QPushButton::clicked, this, [&, button, btnIndex]() {
+        stackedWidget_->setCurrentIndex(btnIndex);
+        foreach(auto* btn, btnList_) {
+            btn->setChecked(false);
+        }
+        button->setChecked(true);
+    });
+}
+
+QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
     auto* button = new QPushButton{};
+    btnList_.push_back(button);
     QPixmap pixmap{iconPath.data()};
+
     button->setIcon(QIcon{pixmap});
     button->setIconSize(kDefaultBtnIconSize);
+    button->setCheckable(true);
+    button->setChecked(false);
+
     toolBar_->addWidget(button);
-    connect(button, &QPushButton::clicked, this, [=]() {
-        stackedWidget_->setCurrentIndex(btnIndex);
-    });
+    return button;
 }
 
 void MainWindow::setUpGraphicViews() {

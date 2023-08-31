@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QStackedWidget>
+#include <QPushButton>
 #include <QMenu>
 
 class MainWindow : public QMainWindow {
@@ -20,6 +21,8 @@ class MainWindow : public QMainWindow {
     void setUpScene();
     void setUpScreen();
     void setUpMenuBar();
+    void setUpToolBarStyle();
+    QPushButton* addToolBarButton(std::string_view iconPath);
     void addMode(std::string_view iconPath, int btnIndex);
 
     template<typename Slot>
@@ -40,6 +43,7 @@ class MainWindow : public QMainWindow {
     void exitApp();
 
  private:
+    QVector<QPushButton*> btnList_;
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;

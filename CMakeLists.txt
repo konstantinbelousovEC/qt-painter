@@ -30,3 +30,5 @@ target_link_libraries(qt_painter
   Qt::Gui
   Qt::Widgets
 )
+
+#configure_file(${CMAKE_SOURCE_DIR}/toolbarbtnstylesheet.qss ${CMAKE_BINARY_DIR}/toolbarbtnstylesheet.qss COPYONLY)
