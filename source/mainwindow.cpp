@@ -145,7 +145,8 @@ void MainWindow::newFile() {
 
 void MainWindow::loadFile() {
     if (isModified_) {
-        auto answer = QMessageBox::warning(this, kSaveChangesTitle.data(),
+        auto answer = QMessageBox::warning(this,
+                                           kSaveChangesTitle.data(),
                                            kSaveChangesQuestion.data(),
                                            QMessageBox::Save |
                                            QMessageBox::Discard |
