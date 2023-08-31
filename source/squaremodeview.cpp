@@ -26,7 +26,8 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addRect(
                 QRectF{centerPos_, detail::kZeroSizeF},
                 QPen{strokeColor_},
-                QBrush{fillColor_});
+                QBrush{fillColor_}
+        );
 
         if (currentItem_ != nullptr)
             detail::makeItemSelectableAndMovable(currentItem_);

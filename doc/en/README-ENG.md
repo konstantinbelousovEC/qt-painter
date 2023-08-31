@@ -33,4 +33,6 @@ The process of creating all shapes is drawn dynamically.
 - Add a polygon drawing mode
 - Add a line drawing mode
 - Add a text drawing mode
+- Add the ability to select colors for the created shapes
+- Add the ability to change colors for created shapes
 - Add a serialization/deserialization of a graphic scene using Google Protocol Buffers

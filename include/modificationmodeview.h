@@ -25,10 +25,13 @@ class ModificationModeView : public QGraphicsView {
     void moveSelectedItems(const QPointF& mousePos);
     void rotateSelectedItems(QMouseEvent* event);
     void rotateItem(QMouseEvent *event, QGraphicsItem* item);
-    void handleLeftButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos);
+    void updateSelectionArea(QMouseEvent* event, const QPointF& mouseCurrentPos);
     void handleMiddleButtonClick(QGraphicsItem* itemUnderCursor, const QPointF& currentCursorPos);
     void handleRightButtonClick(QMouseEvent* event, QGraphicsItem* itemUnderCursor);
-    void updateSelectionArea(QMouseEvent* event, const QPointF& mouseCurrentPos);
+    void handleLeftButtonClick(QMouseEvent* event,
+                               QGraphicsItem* itemUnderCursor,
+                               const QPointF& currentCursorPos);
+
 
  private:
     QGraphicsRectItem* selectionArea_;

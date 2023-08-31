@@ -22,8 +22,8 @@ class MainWindow : public QMainWindow {
     void setUpMenuBar();
     void addMode(std::string_view iconPath, int btnIndex);
 
-    template<typename Func>
-    void addMenuAction(QMenu* menu, std::string_view actionName, Func func);
+    template<typename Slot>
+    void addMenuAction(QMenu* menu, std::string_view actionName, Slot slot);
 
     template<typename GraphicViewType, typename Signal>
     void connectViewsSignals(GraphicViewType view, Signal signal);
@@ -47,13 +47,11 @@ class MainWindow : public QMainWindow {
     bool isModified_;
 };
 
-template<typename Func>
-void MainWindow::addMenuAction(QMenu* menu,
-                               std::string_view actionName,
-                               Func func) {
+template<typename Slot>
+void MainWindow::addMenuAction(QMenu* menu, std::string_view actionName, Slot slot) {
     auto* newAction = new QAction{actionName.data(), this};
     menu->addAction(newAction);
-    connect(newAction, &QAction::triggered, this, func);
+    connect(newAction, &QAction::triggered, this, slot);
 }
 
 template<typename GraphicViewType, typename Signal>
@@ -66,6 +64,5 @@ void MainWindow::setUpGraphicView(std::string_view iconPath) {
     auto modificationScene = new GraphicViewType{scene_};
     auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
     addMode(iconPath, modificationSceneIndex);
-    connectViewsSignals(modificationScene,
-                        &GraphicViewType::changeStateOfScene);
+    connectViewsSignals(modificationScene, &GraphicViewType::changeStateOfScene);
 }

@@ -134,11 +134,9 @@ void MainWindow::newFile() {
                                            QMessageBox::Save |
                                            QMessageBox::Discard |
                                            QMessageBox::Cancel);
-        if (answer == QMessageBox::Save) {
-            saveFile();
-        } else if (answer == QMessageBox::Cancel) {
-            return;
-        }
+
+        if (answer == QMessageBox::Save) saveFile();
+        else if (answer == QMessageBox::Cancel) return;
     }
 
     scene_->clear();
@@ -152,17 +150,16 @@ void MainWindow::loadFile() {
                                            QMessageBox::Save |
                                            QMessageBox::Discard |
                                            QMessageBox::Cancel);
-        if (answer == QMessageBox::Save) {
-            saveFile();
-        } else if (answer == QMessageBox::Cancel) {
-            return;
-        }
+
+        if (answer == QMessageBox::Save) saveFile();
+        else if (answer == QMessageBox::Cancel) return;
     }
 
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     kOpenTitle.data(),
                                                     QDir::homePath(),
                                                     kPngJpeg.data());
+
     if (!filePath.isEmpty()) {
         QImage image(filePath);
         if (!image.isNull()) {
@@ -178,8 +175,7 @@ void MainWindow::saveFile() {
         saveFileAs();
     } else {
         scene_->clearSelection();
-        QImage image(scene_->sceneRect().size().toSize(),
-                     QImage::Format_ARGB32);
+        QImage image(scene_->sceneRect().size().toSize(), QImage::Format_ARGB32);
         image.fill(Qt::white);
         QPainter painter(&image);
         scene_->render(&painter);
@@ -193,6 +189,7 @@ void MainWindow::saveFileAs() {
                                                     kSaveImageTitle.data(),
                                                     QDir::homePath(),
                                                     kPngJpegBmpAllFiles.data());
+
     if (!filePath.isEmpty()) {
         QPixmap pixmap(scene_->sceneRect().size().toSize());
         QPainter painter(&pixmap);
@@ -210,11 +207,9 @@ void MainWindow::exitApp() {
                                            QMessageBox::Save |
                                            QMessageBox::Discard |
                                            QMessageBox::Cancel);
-        if (answer == QMessageBox::Save) {
-            saveFile();
-        } else if (answer == QMessageBox::Cancel) {
-            return;
-        }
+
+        if (answer == QMessageBox::Save) saveFile();
+        else if (answer == QMessageBox::Cancel) return;
     }
     QCoreApplication::exit();
 }

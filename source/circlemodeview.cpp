@@ -26,7 +26,8 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addEllipse(
                 QRectF{ellipseCenterPos_, detail::kZeroSizeF},
                 QPen{kDefaultCircleStrokeColor},
-                QBrush{kDefaultCircleFillColor});
+                QBrush{kDefaultCircleFillColor}
+        );
 
         if (currentItem_ != nullptr)
             detail::makeItemSelectableAndMovable(currentItem_);
@@ -41,6 +42,7 @@ void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
                                    ellipseCenterPos_.y() - radius,
                                    radius * 2,
                                    radius * 2};
+
         currentItem_->setRect(describingRectangle.normalized());
         emit changeStateOfScene();
     }
