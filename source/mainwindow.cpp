@@ -141,7 +141,6 @@ void MainWindow::setUpScreen() {
 void MainWindow::setUpMenuBar() {
     QMenu* menu = menuBar()->addMenu(kMenuName.data());
     addMenuAction(menu, kNewActionName, &MainWindow::newFile);
-    addMenuAction(menu, kLoadActionName, &MainWindow::loadFile);
     addMenuAction(menu, kSaveActionName, &MainWindow::saveFile);
     addMenuAction(menu, kSaveAsActionName, &MainWindow::saveFileAs);
     addMenuAction(menu, kExitActionName, &MainWindow::exitApp);
@@ -168,42 +167,13 @@ void MainWindow::newFile() {
     isModified_ = false;
 }
 
-void MainWindow::loadFile() {
-    if (isModified_) {
-        auto answer = QMessageBox::warning(this,
-                                           kSaveChangesTitle.data(),
-                                           kSaveChangesQuestion.data(),
-                                           QMessageBox::Save |
-                                           QMessageBox::Discard |
-                                           QMessageBox::Cancel);
-
-        if (answer == QMessageBox::Save) saveFile();
-        else if (answer == QMessageBox::Cancel) return;
-    }
-
-    QString filePath = QFileDialog::getOpenFileName(this,
-                                                    kOpenTitle.data(),
-                                                    QDir::homePath(),
-                                                    kPngJpeg.data());
-
-    if (!filePath.isEmpty()) {
-        QImage image(filePath);
-        if (!image.isNull()) {
-            scene_->clear();
-            scene_->addPixmap(QPixmap::fromImage(image));
-            isModified_ = false;
-        }
-    }
-}
-
 void MainWindow::saveFile() {
     if (currentFilePath_.isEmpty()) {
         saveFileAs();
     } else {
         scene_->clearSelection();
-        QImage image(scene_->sceneRect().size().toSize(), QImage::Format_ARGB32);
-        image.fill(Qt::white);
-        QPainter painter(&image);
+        QImage image{scene_->sceneRect().size().toSize(), QImage::Format_ARGB32};
+        QPainter painter{&image};
         scene_->render(&painter);
         image.save(currentFilePath_);
         isModified_ = false;
@@ -211,14 +181,14 @@ void MainWindow::saveFile() {
 }
 
 void MainWindow::saveFileAs() {
-    QString filePath = QFileDialog::getSaveFileName(this,
+    const QString& filePath = QFileDialog::getSaveFileName(this,
                                                     kSaveImageTitle.data(),
                                                     QDir::homePath(),
                                                     kPngJpegBmpAllFiles.data());
 
     if (!filePath.isEmpty()) {
-        QPixmap pixmap(scene_->sceneRect().size().toSize());
-        QPainter painter(&pixmap);
+        QPixmap pixmap{scene_->sceneRect().size().toSize()};
+        QPainter painter{&pixmap};
         scene_->render(&painter);
         pixmap.save(filePath);
         isModified_ = false;

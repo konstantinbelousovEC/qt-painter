@@ -37,7 +37,6 @@ class MainWindow : public QMainWindow {
  private slots:
     void changeSceneState();
     void newFile();
-    void loadFile();
     void saveFile();
     void saveFileAs();
     void exitApp();
