@@ -32,7 +32,7 @@ namespace {
     constexpr auto kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
     constexpr auto kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
     constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
-    //constexpr auto kBrushModeIconPath{":/images/buttons/imgs/brushimg.png"sv};
+    constexpr auto kBrushModeIconPath{":/images/buttons/imgs/brushimg.png"sv};
 
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
@@ -119,6 +119,7 @@ void MainWindow::setUpGraphicViews() {
     setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
     setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
     setUpGraphicView<CircleModeView>(kCircleModeIconPath);
+    setUpGraphicView<BrushModeView>(kBrushModeIconPath);
 }
 
 void MainWindow::setUpLayout() {
