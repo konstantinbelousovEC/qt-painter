@@ -9,6 +9,7 @@
 - Rectangle creation mode
 - Triangle creation mode
 - Circle creation mode
+- Brush drawing mode (in developing process, modification operations are not supported now for this mode)
 
 #### Rules defined for creating geometric shapes:
 
@@ -35,6 +36,8 @@
 <div align="center">
   <img src="../media/gifs/circle.gif" alt="Circle">
 </div>
+
+- **Brush**: description of this mode will be added later.
 
 The process of creating all shapes is drawn dynamically.
 
@@ -72,7 +75,7 @@ The process of creating all shapes is drawn dynamically.
 
 ## TODO:
 
-- Add a brush drawing mode
+- Add a brush drawing mode 🛠️
 - Add a polygon drawing mode
 - Add a line drawing mode
 - Add a text drawing mode
