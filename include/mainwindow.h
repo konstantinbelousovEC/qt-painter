@@ -47,6 +47,7 @@ class MainWindow : public QMainWindow {
     QStackedWidget* stackedWidget_;
     QToolBar* toolBar_;
     QString currentFilePath_;
+    QSize windowSize_;
     bool isModified_;
 };
 

@@ -36,6 +36,9 @@ namespace detail {
         return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
     }
 
+    QSize getScreenSize();
+    QSize calcWindowRelativeSize(QSize wSize, double x);
+
     QRectF updateRectangleSize(const QPointF& startCursorPos,
                                const QPointF& currentCursorPos) noexcept;
 

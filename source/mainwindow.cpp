@@ -12,13 +12,16 @@
 #include <QMessageBox>
 #include <QScreen>
 #include <QLatin1String>
+#include <QGraphicsRectItem>  // todo: for dummy center
 #include <string_view>
+#include "../include/detail.h"
 #include "../include/mainwindow.h"
 #include "../include/rectanglemodeview.h"
 #include "../include/modificationmodeview.h"
 #include "../include/squaremodeview.h"
 #include "../include/trianglemode.h"
 #include "../include/circlemodeview.h"
+#include "../include/brushmodeview.h"
 
 
 namespace {
@@ -29,6 +32,8 @@ namespace {
     constexpr auto kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
     constexpr auto kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
     constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
+    //constexpr auto kBrushModeIconPath{":/images/buttons/imgs/brushimg.png"sv};
+
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
     constexpr auto kMenuName{"File"sv};
@@ -52,16 +57,22 @@ namespace {
 
 }  // namespace
 
+QSize defineWindowSize() {
+    auto windowSize = detail::getScreenSize();
+    return detail::calcWindowRelativeSize(windowSize, 0.15);
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
       scene_(new QGraphicsScene{this}),
       stackedWidget_(new QStackedWidget{this}),
       toolBar_(new QToolBar{this}),
+      windowSize_(defineWindowSize()),
       isModified_(false)
 {
     setUpGraphicViews();
-    setUpScene();
     setUpScreen();
+    setUpScene();
     setUpLayout();
     setUpMenuBar();
     setUpToolBarStyle();
@@ -121,16 +132,17 @@ void MainWindow::setUpLayout() {
 }
 
 void MainWindow::setUpScene() {
+    scene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
     scene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
+    QSize sceneSize = detail::calcWindowRelativeSize(windowSize_, 0.1);
+    scene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
 }
 
 void MainWindow::setUpScreen() {
-    QScreen* screen = QGuiApplication::primaryScreen();
-    QSize size = screen->size();
-    int screenWidth = size.width();
-    int screenHeight = size.height();
-    int windowWidth = screenWidth - static_cast<int>(screenWidth * 0.15);
-    int windowHeight = screenHeight - static_cast<int>(screenHeight * 0.15);
+    auto [screenWidth, screenHeight] = detail::getScreenSize();
+    auto [windowWidth, windowHeight] =
+            detail::calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
+
     setMinimumSize(windowWidth, windowHeight);
     setGeometry((screenWidth - windowWidth) / 2,
                 (screenHeight - windowHeight) / 2,
