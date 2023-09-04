@@ -12,7 +12,6 @@
 #include <QMessageBox>
 #include <QScreen>
 #include <QLatin1String>
-#include <QGraphicsRectItem>  // todo: for dummy center
 #include <string_view>
 #include "../include/detail.h"
 #include "../include/mainwindow.h"
@@ -96,6 +95,7 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
             btn->setChecked(false);
         }
         button->setChecked(true);
+        scene_->clearSelection();
     });
 }
 
