@@ -62,5 +62,4 @@ class ModificationModeView : public QGraphicsView {
     QPointF lastClickPos_;
     QPointF rotationPointA_;
     bool isMoving_;
-    bool isRotating_;
 };

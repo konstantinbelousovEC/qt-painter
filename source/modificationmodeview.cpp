@@ -51,8 +51,7 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
       selectionStartPos_(detail::kZeroPointF),
       lastClickPos_(detail::kZeroPointF),
       rotationPointA_(detail::kZeroPointF),
-      isMoving_(false),
-      isRotating_(false)
+      isMoving_(false)
 {
     setSelectionAreaProperties();
     scene()->addItem(selectionArea_);
@@ -72,32 +71,28 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-inline bool isSelectionEvent(const QMouseEvent* event, bool isMoving, bool isRotating) noexcept {
-    if (event == nullptr) return false;
-    return !isMoving &&
-           !isRotating &&
-           event->buttons() & Qt::LeftButton &&
+inline bool isSelectionEvent(const QMouseEvent* event) noexcept {
+    return event->buttons() & Qt::LeftButton &&
            !(event->modifiers() & Qt::ShiftModifier);
 }
 
 void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF mouseCurrentPos = mapToScene(event->pos());
-    if (isRotating_) {
+    if (event->buttons() & Qt::RightButton) {
         if (rotationInfo_.isEmpty()) rotationInfo_.fillInfo(scene()->selectedItems());
         rotateSelectedItems(event);
         emit changeStateOfScene();
     } else if (isMoving_) {
         if (event->buttons() & Qt::LeftButton) moveSelectedItems(mouseCurrentPos);
         emit changeStateOfScene();
-    } else if (isSelectionEvent(event, isMoving_, isRotating_)) {
+    } else if (isSelectionEvent(event)) {
         updateSelectionArea(event, mouseCurrentPos);
     }
 }
 
 void ModificationModeView::mouseReleaseEvent(QMouseEvent* event) {
-    if (isRotating_) rotationInfo_.clear();
+    if (event->button() == Qt::RightButton) rotationInfo_.clear();
     isMoving_ = false;
-    isRotating_ = false;
     selectionArea_->setRect(kZeroSizeFRectangle);
     selectionArea_->hide();
 }
@@ -141,7 +136,6 @@ void ModificationModeView::handleMiddleButtonClick(QGraphicsItem* itemUnderCurso
 void ModificationModeView::handleRightButtonClick(QMouseEvent* event,
                                                   QGraphicsItem* itemUnderCursor) {
     if (itemUnderCursor != nullptr) {
-        isRotating_ = true;
         rotationPointA_ = mapToScene(event->pos());
     } else {
         scene()->clearSelection();
