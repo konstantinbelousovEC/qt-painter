@@ -73,7 +73,7 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
 
 inline bool isSelectionEvent(const QMouseEvent* event) noexcept {
     return event->buttons() & Qt::LeftButton &&
-           !(event->modifiers() & Qt::ShiftModifier);
+           event->modifiers() ^ Qt::ShiftModifier;
 }
 
 void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
@@ -109,7 +109,7 @@ void ModificationModeView::handleLeftButtonClick(QMouseEvent* event,
                                                  const QPointF& currentCursorPos) {
     if (itemUnderCursor == nullptr) {
         QGraphicsView::mousePressEvent(event);
-        if (!(event->modifiers() & Qt::ControlModifier)) scene()->clearSelection();
+        if (event->modifiers() ^ Qt::ControlModifier) scene()->clearSelection();
         selectionStartPos_ = currentCursorPos;
     } else {
         if (event->modifiers() & Qt::ControlModifier) {
@@ -156,7 +156,7 @@ void ModificationModeView::updateItemsSelection(QMouseEvent* event,
                                                 const QRectF &selectionRectangle) {
     QList<QGraphicsItem*> itemsInRect = scene()->items(selectionRectangle);
     foreach(QGraphicsItem *item, scene()->items()) {
-        if (!(event->modifiers() & Qt::ControlModifier)) {
+        if (event->modifiers() ^ Qt::ControlModifier) {
             item->setSelected(itemsInRect.contains(item));
         } else {
             item->setSelected(item->isSelected() || itemsInRect.contains(item));
