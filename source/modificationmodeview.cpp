@@ -24,6 +24,11 @@ namespace {
         kTriangle,
         kPath
     };
+
+    enum class CoordsType {
+        kSceneCoords,
+        kItemCoords
+    };
 }  // namespace
 
 template<typename ItemT, typename ItemU>
@@ -32,9 +37,6 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
 template<GraphicItemType type, typename ItemType>
 auto copyGraphicsItem(ItemType* originalItem);
 
-QPolygonF copyPolygon(const QGraphicsPolygonItem* originalItem);
-QPointF getPolygonSceneCenter(const QGraphicsPolygonItem* triangleItem);
-QPointF getPolygonOwnCenter(const QGraphicsPolygonItem* triangleItem);
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item);
 QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item);
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene);
@@ -54,7 +56,6 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
       isMoving_(false)
 {
     setSelectionAreaProperties();
-    scene()->addItem(selectionArea_);
 }
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {
@@ -198,25 +199,24 @@ void ModificationModeView::setSelectionAreaProperties() {
     selectionArea_->setFlag(QGraphicsItem::ItemIsSelectable, false);
     selectionArea_->setFlag(QGraphicsItem::ItemIsMovable, false);
     selectionArea_->setZValue(kSelectionAreaZValue);
+    scene()->addItem(selectionArea_);
 }
 
 // ------------------------------------------------------------------------------------------------------------
 
-QPointF getPolygonSceneCenter(const QGraphicsPolygonItem* triangleItem) { // todo: make a template for both center calculation functions
-    auto points = triangleItem->polygon().toVector();
+template<CoordsType type>
+QPointF getPolygonCenterRelativeTo(const QGraphicsPolygonItem* polygonItem) {
+    auto points = polygonItem->polygon().toVector();
     QPointF sum{};
-    foreach(const auto& point, points) {
-        sum += triangleItem->mapToScene(point);
-    }
-    return sum / static_cast<qreal>(points.size());
-}
 
-QPointF getPolygonOwnCenter(const QGraphicsPolygonItem* triangleItem) {
-    auto points = triangleItem->polygon().toVector();
-    QPointF sum{};
     foreach(const auto& point, points) {
-        sum += point;
+        if constexpr (type == CoordsType::kSceneCoords) {
+            sum += polygonItem->mapToScene(point);
+        } else if constexpr (type == CoordsType::kItemCoords) {
+            sum += point;
+        }
     }
+
     return sum / static_cast<qreal>(points.size());
 }
 
@@ -226,7 +226,7 @@ QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
     } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
         return ellipseItem->sceneBoundingRect().center();
     } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
-        return getPolygonSceneCenter(triangleItem);
+        return getPolygonCenterRelativeTo<CoordsType::kSceneCoords>(triangleItem);
     } else if (const auto* pathItem = qgraphicsitem_cast<const QGraphicsPathItem*>(item)) {
         return pathItem->sceneBoundingRect().center();
     } else {
@@ -240,7 +240,7 @@ QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item) {
     } else if (const auto* ellipseItem = qgraphicsitem_cast<const QGraphicsEllipseItem*>(item)) {
         return ellipseItem->boundingRect().center();
     } else if (const auto* triangleItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
-        return getPolygonOwnCenter(triangleItem);
+        return getPolygonCenterRelativeTo<CoordsType::kItemCoords>(triangleItem);
     } else if (const auto* pathItem = qgraphicsitem_cast<const QGraphicsPathItem*>(item)) {
         return pathItem->boundingRect().center();
     } else {
