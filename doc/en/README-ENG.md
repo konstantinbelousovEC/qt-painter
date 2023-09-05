@@ -9,7 +9,7 @@
 - Rectangle creation mode
 - Triangle creation mode
 - Circle creation mode
-- Brush drawing mode (in developing process, modification operations are not supported now for this mode)
+- Brush drawing mode
 
 #### Rules defined for creating geometric shapes:
 
@@ -37,7 +37,11 @@
   <img src="../media/gifs/circle.gif" alt="Circle">
 </div>
 
-- **Brush**: description of this mode will be added later.
+- **Brush**: when you click on the left mouse button, a rounded point is drawn with the size defined by default in the settings - 10px. When the mouse moves with the left button held down, a line is drawn, which is drawn according to the coordinates of the mouse movement path. The line thickness is also determined by the default settings - 10px.
+
+<div align="center">
+  <img src="../media/gifs/brush.gif" alt="Brush">
+</div>
 
 The process of creating all shapes is drawn dynamically.
 
@@ -75,7 +79,7 @@ The process of creating all shapes is drawn dynamically.
 
 ## TODO:
 
-- Add a brush drawing mode 🛠️
+- Add a brush drawing mode ✅
 - Add a polygon drawing mode
 - Add a line drawing mode
 - Add a text drawing mode
