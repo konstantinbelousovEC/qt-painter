@@ -259,28 +259,31 @@ void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement)
     destinationElement->setBrush(originalItem->brush());
 }
 
-template<GraphicItemType type, typename ItemType>
+template<typename ItemType, typename AngleT>
+inline void setUpItemsAngles(ItemType* originalItem, ItemType* destinationItem, AngleT angle) {
+    destinationItem->setTransformOriginPoint(getGraphicsItemSceneCenterPos(destinationItem));
+    destinationItem->setRotation(angle);
+    originalItem->setRotation(angle);
+    copyGraphicProperties(originalItem, destinationItem);
+}
+
+template<typename ItemType>
 auto copyGraphicsItem(ItemType* originalItem) {
     auto rotationAngle = originalItem->rotation();
     originalItem->setRotation(kZeroAngle);
     ItemType* temporaryItem{nullptr};
 
-    if constexpr (type == GraphicItemType::kRect) {
-        temporaryItem = new QGraphicsRectItem(originalItem->sceneBoundingRect());
-    } else if constexpr (type == GraphicItemType::kCircle) {
-        temporaryItem = new QGraphicsEllipseItem(originalItem->sceneBoundingRect());
-    } else if constexpr (type == GraphicItemType::kTriangle) {
-        temporaryItem = new QGraphicsPolygonItem(originalItem->mapToScene(originalItem->polygon()));
-    } else if constexpr (type == GraphicItemType::kPath) {
-        temporaryItem = new QGraphicsPathItem(originalItem->mapToScene(originalItem->path()));
+    if constexpr (std::is_same_v<ItemType, QGraphicsRectItem> || std::is_same_v<ItemType, QGraphicsEllipseItem>) {
+        temporaryItem = new ItemType{originalItem->sceneBoundingRect()};
+    } else if constexpr (std::is_same_v<ItemType, QGraphicsPolygonItem>) {
+        temporaryItem = new ItemType{originalItem->mapToScene(originalItem->polygon())};
+    } else if constexpr (std::is_same_v<ItemType, QGraphicsPathItem>) {
+        temporaryItem = new ItemType{originalItem->mapToScene(originalItem->path())};
     }
 
-    if (temporaryItem != nullptr) {
-        temporaryItem->setTransformOriginPoint(getGraphicsItemSceneCenterPos(temporaryItem));
-        temporaryItem->setRotation(rotationAngle);
-        originalItem->setRotation(rotationAngle);
-        copyGraphicProperties(originalItem, temporaryItem);
-    }
+    if (temporaryItem != nullptr)
+        setUpItemsAngles(originalItem, temporaryItem, rotationAngle);
+
     return temporaryItem;
 }
 
@@ -300,13 +303,13 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     QGraphicsItem* copiedItem = nullptr;
 
     if (auto* rectItem = qgraphicsitem_cast<QGraphicsRectItem*>(originalItem)) {
-        copiedItem = copyGraphicsItem<GraphicItemType::kRect>(rectItem);
+        copiedItem = copyGraphicsItem(rectItem);
     } else if (auto* ellipseItem = qgraphicsitem_cast<QGraphicsEllipseItem*>(originalItem)) {
-        copiedItem = copyGraphicsItem<GraphicItemType::kCircle>(ellipseItem);
+        copiedItem = copyGraphicsItem(ellipseItem);
     } else if (auto* polygonItem = qgraphicsitem_cast<QGraphicsPolygonItem*>(originalItem)) {
-        copiedItem = copyGraphicsItem<GraphicItemType::kTriangle>(polygonItem);
+        copiedItem = copyGraphicsItem(polygonItem);
     } else if (auto* pathItem = qgraphicsitem_cast<QGraphicsPathItem*>(originalItem)) {
-        copiedItem = copyGraphicsItem<GraphicItemType::kPath>(pathItem);
+        copiedItem = copyGraphicsItem(pathItem);
     }
 
     if (copiedItem != nullptr)
