@@ -42,7 +42,7 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
       selectionArea_(new QGraphicsRectItem()),
       selectionStartPos_(detail::kZeroPointF),
       lastClickPos_(detail::kZeroPointF),
-      rotationPointA_(detail::kZeroPointF),
+      initialCursorPosA_(detail::kZeroPointF),
       isMoving_(false)
 {
     setSelectionAreaProperties();
@@ -127,7 +127,7 @@ void ModificationModeView::handleMiddleButtonClick(QGraphicsItem* itemUnderCurso
 void ModificationModeView::handleRightButtonClick(QMouseEvent* event,
                                                   QGraphicsItem* itemUnderCursor) {
     if (itemUnderCursor != nullptr) {
-        rotationPointA_ = mapToScene(event->pos());
+        initialCursorPosA_ = mapToScene(event->pos());
     } else {
         scene()->clearSelection();
     }
@@ -172,11 +172,11 @@ void ModificationModeView::rotateSelectedItems(QMouseEvent* event) {
 }
 
 void ModificationModeView::rotateItem(QMouseEvent *event, QGraphicsItem* item, qreal startAngle) {
-    QPointF pointO = getGraphicsItemSceneCenterPos(item);
-    QPointF pointB = mapToScene(event->pos());
-    qreal rotationAngle = calculateRotationAngle(pointO,
-                                                 rotationPointA_,
-                                                 pointB);
+    QPointF geometricCenterO = getGraphicsItemSceneCenterPos(item);
+    QPointF currentCursorPosB = mapToScene(event->pos());
+    qreal rotationAngle = calculateRotationAngle(geometricCenterO,
+                                                 initialCursorPosA_,
+                                                 currentCursorPosB);
 
     item->setTransformOriginPoint(getGraphicsItemOwnCenterPos(item));
     item->setRotation(startAngle + rotationAngle);
@@ -291,13 +291,13 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     return copiedItem;
 }
 
-qreal calculateRotationAngle(const QPointF& geometricCenter_O,
-                             const QPointF& initialCursorPos_A,
-                             const QPointF& currentCursorPos_B) noexcept {
-    qreal angleAO = qAtan2(initialCursorPos_A.y() - geometricCenter_O.y(),
-                           initialCursorPos_A.x() - geometricCenter_O.x());
-    qreal angleBO = qAtan2(currentCursorPos_B.y() - geometricCenter_O.y(),
-                           currentCursorPos_B.x() - geometricCenter_O.x());
+qreal calculateRotationAngle(const QPointF& geometricCenterO,
+                             const QPointF& initialCursorPosA,
+                             const QPointF& currentCursorPosB) noexcept {
+    qreal angleAO = qAtan2(initialCursorPosA.y() - geometricCenterO.y(),
+                           initialCursorPosA.x() - geometricCenterO.x());
+    qreal angleBO = qAtan2(currentCursorPosB.y() - geometricCenterO.y(),
+                           currentCursorPosB.x() - geometricCenterO.x());
 
     qreal angle = angleBO - angleAO;
 

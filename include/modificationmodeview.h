@@ -60,6 +60,6 @@ class ModificationModeView : public QGraphicsView {
     QGraphicsRectItem* selectionArea_;
     QPointF selectionStartPos_;
     QPointF lastClickPos_;
-    QPointF rotationPointA_;
+    QPointF initialCursorPosA_;
     bool isMoving_;
 };
