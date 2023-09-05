@@ -318,11 +318,14 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     return copiedItem;
 }
 
-qreal calculateRotationAngle(const QPointF& O,
-                             const QPointF& A,
-                             const QPointF& B) noexcept {
-    qreal angleAO = qAtan2(A.y() - O.y(), A.x() - O.x());
-    qreal angleBO = qAtan2(B.y() - O.y(), B.x() - O.x());
+qreal calculateRotationAngle(const QPointF& geometricCenter_O,
+                             const QPointF& initialCursorPos_A,
+                             const QPointF& currentCursorPos_B) noexcept {
+    qreal angleAO = qAtan2(initialCursorPos_A.y() - geometricCenter_O.y(),
+                           initialCursorPos_A.x() - geometricCenter_O.x());
+    qreal angleBO = qAtan2(currentCursorPos_B.y() - geometricCenter_O.y(),
+                           currentCursorPos_B.x() - geometricCenter_O.x());
+
     qreal angle = angleBO - angleAO;
 
     if (angle < 0) angle += 2 * M_PI;
