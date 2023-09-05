@@ -7,8 +7,8 @@
 #include "../include/detail.h"
 
 namespace {
-    constexpr int kDefaultBrushWidth{10};
     constexpr Qt::GlobalColor kDefaultBrushFillColor{Qt::red};
+    constexpr int kDefaultBrushWidth{10};
     const QPen kDefaultPen{kDefaultBrushFillColor, kDefaultBrushWidth, Qt::SolidLine, Qt::RoundCap};
 }
 
@@ -33,8 +33,10 @@ void BrushModeView::mousePressEvent(QMouseEvent* event) {
                                                 QPen{Qt::NoPen},
                                                 QBrush{lineColor_});
 
-        if (startEllipseItem_ != nullptr)
+        if (startEllipseItem_ != nullptr) {
             detail::makeItemSelectableAndMovable(startEllipseItem_);
+            emit changeStateOfScene();
+        }
 
         previousCursorPos_ = startCursorPos_;
     }
@@ -53,6 +55,7 @@ void BrushModeView::mouseMoveEvent(QMouseEvent* event) {
             temporaryLines_.push_back(currentTemporaryLine);
             previousCursorPos_ = currentCursorPos;
         }
+        emit changeStateOfScene();
     }
 }
 

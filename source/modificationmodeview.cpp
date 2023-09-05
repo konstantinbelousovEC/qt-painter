@@ -232,7 +232,9 @@ QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item) {
 template<typename ItemT, typename ItemU>
 void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement) {
     destinationElement->setPen(originalItem->pen());
-    destinationElement->setBrush(originalItem->brush());
+    if constexpr (!std::is_same_v<ItemT, QGraphicsLineItem>) {
+        destinationElement->setBrush(originalItem->brush());
+    }
 }
 
 template<typename ItemType, typename AngleT>
@@ -241,6 +243,13 @@ inline void setUpItemsAngles(ItemType* originalItem, ItemType* destinationItem, 
     destinationItem->setRotation(angle);
     originalItem->setRotation(angle);
     copyGraphicProperties(originalItem, destinationItem);
+}
+
+inline QLineF translateLineToSceneCoords(const QGraphicsLineItem* item) {
+    QLineF newLine{item->mapToScene(item->line().p1()),
+                   item->mapToScene(item->line().p2())};
+
+    return newLine;
 }
 
 template<typename ItemType>
@@ -255,6 +264,8 @@ auto copyGraphicsItem(ItemType* originalItem) {
         temporaryItem = new ItemType{originalItem->mapToScene(originalItem->polygon())};
     } else if constexpr (std::is_same_v<ItemType, QGraphicsPathItem>) {
         temporaryItem = new ItemType{originalItem->mapToScene(originalItem->path())};
+    } else if constexpr (std::is_same_v<ItemType, QGraphicsLineItem>) {
+        temporaryItem = new ItemType{translateLineToSceneCoords(originalItem)};
     }
 
     if (temporaryItem != nullptr)
@@ -274,6 +285,8 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
         copiedItem = copyGraphicsItem(polygonItem);
     } else if (auto* pathItem = qgraphicsitem_cast<QGraphicsPathItem*>(originalItem)) {
         copiedItem = copyGraphicsItem(pathItem);
+    } else if (auto* lineItem = qgraphicsitem_cast<QGraphicsLineItem*>(originalItem)) {
+        copiedItem = copyGraphicsItem(lineItem);
     }
 
     if (copiedItem != nullptr)

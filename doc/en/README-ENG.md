@@ -10,6 +10,7 @@
 - Triangle creation mode
 - Circle creation mode
 - Brush drawing mode
+- Line drawing mode
 
 #### Rules defined for creating geometric shapes:
 
@@ -41,6 +42,12 @@
 
 <div align="center">
   <img src="../media/gifs/brush.gif" alt="Brush">
+</div>
+
+- **Line**: when you click on the left mouse button, the initial coordinate of the line is fixed. When the mouse moves with the left button held down, a line of two points is drawn: 1 - the initial coordinates of the mouse click, 2 - the current coordinates of the cursor. The line assumes its final state after releasing the left mouse button.
+
+<div align="center">
+  <img src="../media/gifs/line.gif" alt="Line">
 </div>
 
 The process of creating all shapes is drawn dynamically.
@@ -81,8 +88,8 @@ The process of creating all shapes is drawn dynamically.
 
 - Add a brush drawing mode ✅
 - Add a polygon drawing mode
-- Add a line drawing mode
-- Add a text drawing mode
+- Add a line drawing mode ✅
+- Add a text writing mode
 - Add the ability to select colors for the created shapes
 - Add the ability to change colors for created shapes
 - Add a serialization/deserialization of a graphic scene using Google Protocol Buffers

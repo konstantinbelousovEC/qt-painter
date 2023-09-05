@@ -6,6 +6,7 @@
         <file>imgs/squareimg.png</file>
         <file>imgs/modimg.png</file>
         <file>imgs/brushimg.png</file>
+        <file>imgs/lineimg.png</file>
     </qresource>
     <qresource>
         <file>styles/toolbarbtnstylesheet.qss</file>
