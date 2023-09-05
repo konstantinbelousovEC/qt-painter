@@ -18,13 +18,6 @@ namespace {
     constexpr qreal kSelectionAreaZValue{1.0};
     constexpr qreal kZeroAngle{0};
 
-    enum class GraphicItemType {
-        kRect,
-        kCircle,
-        kTriangle,
-        kPath
-    };
-
     enum class CoordsType {
         kSceneCoords,
         kItemCoords
@@ -33,9 +26,6 @@ namespace {
 
 template<typename ItemT, typename ItemU>
 void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement);
-
-template<GraphicItemType type, typename ItemType>
-auto copyGraphicsItem(ItemType* originalItem);
 
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item);
 QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item);
@@ -220,13 +210,8 @@ QPointF getPolygonCenterRelativeTo(const QGraphicsPolygonItem* polygonItem) {
     return sum / static_cast<qreal>(points.size());
 }
 
-using RectItem_p = const QGraphicsRectItem*;
-using EllipseItem_p = const QGraphicsEllipseItem*;
-using PolygonItem_p = const QGraphicsPolygonItem*;
-using PathItem_p = const QGraphicsPathItem*;
-
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
-    if (const auto* polygonItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
+    if (const auto* polygonItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
         return getPolygonCenterRelativeTo<CoordsType::kSceneCoords>(polygonItem);
     } else {
         return item->sceneBoundingRect().center();
@@ -234,7 +219,7 @@ QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
 }
 
 QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item) {
-    if (const auto* polygonItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
+    if (const auto* polygonItem = qgraphicsitem_cast<const QGraphicsPolygonItem*>(item)) {
         return getPolygonCenterRelativeTo<CoordsType::kItemCoords>(polygonItem);
     } else {
         return item->boundingRect().center();
@@ -331,6 +316,8 @@ void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& it
         item->setSelected(true);
     }
 }
+
+// ------------------------------------------------------------------------------------------------------------
 
 void ModificationModeView::RotationInfo::clear() {
     items_.clear();
