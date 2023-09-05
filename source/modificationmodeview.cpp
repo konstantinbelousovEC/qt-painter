@@ -226,30 +226,18 @@ using PolygonItem_p = const QGraphicsPolygonItem*;
 using PathItem_p = const QGraphicsPathItem*;
 
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item) {
-    if (const auto* rectItem = qgraphicsitem_cast<RectItem_p>(item)) {
-        return rectItem->sceneBoundingRect().center();
-    } else if (const auto* ellipseItem = qgraphicsitem_cast<EllipseItem_p>(item)) {
-        return ellipseItem->sceneBoundingRect().center();
-    } else if (const auto* triangleItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
-        return getPolygonCenterRelativeTo<CoordsType::kSceneCoords>(triangleItem);
-    } else if (const auto* pathItem = qgraphicsitem_cast<PathItem_p>(item)) {
-        return pathItem->sceneBoundingRect().center();
+    if (const auto* polygonItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
+        return getPolygonCenterRelativeTo<CoordsType::kSceneCoords>(polygonItem);
     } else {
-        throw std::runtime_error("Can not define figure's center: unknown figure type");
+        return item->sceneBoundingRect().center();
     }
 }
 
 QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item) {
-    if (const auto* rectItem = qgraphicsitem_cast<RectItem_p>(item)) {
-        return rectItem->boundingRect().center();
-    } else if (const auto* ellipseItem = qgraphicsitem_cast<EllipseItem_p>(item)) {
-        return ellipseItem->boundingRect().center();
-    } else if (const auto* triangleItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
-        return getPolygonCenterRelativeTo<CoordsType::kItemCoords>(triangleItem);
-    } else if (const auto* pathItem = qgraphicsitem_cast<PathItem_p>(item)) {
-        return pathItem->boundingRect().center();
+    if (const auto* polygonItem = qgraphicsitem_cast<PolygonItem_p>(item)) {
+        return getPolygonCenterRelativeTo<CoordsType::kItemCoords>(polygonItem);
     } else {
-        throw std::runtime_error("Can not define figure's center: unknown figure type");
+        return item->boundingRect().center();
     }
 }
 
