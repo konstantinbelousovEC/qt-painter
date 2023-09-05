@@ -24,16 +24,13 @@ namespace {
     };
 }  // namespace
 
-template<typename ItemT, typename ItemU>
-void copyGraphicProperties(const ItemT* originalItem, ItemU* destinationElement);
-
+void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items);
 QPointF getGraphicsItemSceneCenterPos(const QGraphicsItem* item);
 QPointF getGraphicsItemOwnCenterPos(const QGraphicsItem* item);
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene);
-QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem);
-qreal calculateRotationAngle(const QPointF& O, const QPointF& A, const QPointF& B) noexcept;
-inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos);
-void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items);
+qreal calculateRotationAngle(const QPointF& geometricCenterO,
+                             const QPointF& initialCursorPosA,
+                             const QPointF& currentCursorPosB) noexcept;
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -50,8 +47,7 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
-    QGraphicsItem* itemUnderCursor =
-            getItemUnderCursor(scene(), currentCursorPos);
+    QGraphicsItem* itemUnderCursor = scene()->itemAt(currentCursorPos, QTransform{});
 
     if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier) {
         handleMiddleButtonClick(itemUnderCursor, currentCursorPos);
@@ -62,7 +58,7 @@ void ModificationModeView::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-inline bool isSelectionEvent(const QMouseEvent* event) noexcept {
+inline bool isSelectionEvent(const QMouseEvent* event) {
     return event->buttons() & Qt::LeftButton &&
            event->modifiers() ^ Qt::ShiftModifier;
 }
@@ -194,6 +190,13 @@ void ModificationModeView::setSelectionAreaProperties() {
 
 // ------------------------------------------------------------------------------------------------------------
 
+void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
+    scene->clearSelection();
+            foreach(QGraphicsItem* item, items) {
+            item->setSelected(true);
+        }
+}
+
 template<CoordsType type>
 QPointF getPolygonCenterRelativeTo(const QGraphicsPolygonItem* polygonItem) {
     auto points = polygonItem->polygon().toVector();
@@ -260,18 +263,6 @@ auto copyGraphicsItem(ItemType* originalItem) {
     return temporaryItem;
 }
 
-QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
-    QList<QGraphicsItem*> clonedItems;
-    foreach(QGraphicsItem* item, scene->selectedItems()) {
-        QGraphicsItem* clonedItem = cloneGraphicsItem(item);
-        if (clonedItem) {
-            clonedItems.append(clonedItem);
-            scene->addItem(clonedItem);
-        }
-    }
-    return clonedItems;
-}
-
 QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     QGraphicsItem* copiedItem = nullptr;
 
@@ -291,6 +282,18 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
     return copiedItem;
 }
 
+QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
+    QList<QGraphicsItem*> clonedItems;
+            foreach(QGraphicsItem* item, scene->selectedItems()) {
+            QGraphicsItem* clonedItem = cloneGraphicsItem(item);
+            if (clonedItem) {
+                clonedItems.append(clonedItem);
+                scene->addItem(clonedItem);
+            }
+        }
+    return clonedItems;
+}
+
 qreal calculateRotationAngle(const QPointF& geometricCenterO,
                              const QPointF& initialCursorPosA,
                              const QPointF& currentCursorPosB) noexcept {
@@ -304,17 +307,6 @@ qreal calculateRotationAngle(const QPointF& geometricCenterO,
     if (angle < 0) angle += 2 * M_PI;
 
     return qRadiansToDegrees(angle);
-}
-
-inline QGraphicsItem* getItemUnderCursor(const QGraphicsScene* scene, const QPointF& currentCursorPos) {
-    return scene->itemAt(currentCursorPos, QTransform{});
-}
-
-void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
-    scene->clearSelection();
-    foreach(QGraphicsItem* item, items) {
-        item->setSelected(true);
-    }
 }
 
 // ------------------------------------------------------------------------------------------------------------
