@@ -9,8 +9,9 @@
 - Rectangle creation mode
 - Triangle creation mode
 - Circle creation mode
+- Straight line creation mode
+- Polygon creation mode
 - Brush drawing mode
-- Line drawing mode
 
 #### Rules defined for creating geometric shapes:
 
@@ -38,16 +39,22 @@
   <img src="../media/gifs/circle.gif" alt="Circle">
 </div>
 
+- **Straight line**: when you click on the left mouse button, the initial coordinate of the line is fixed. When the mouse moves with the left button held down, a line of two points is drawn: 1 - the initial coordinates of the mouse click, 2 - the current coordinates of the cursor. The line assumes its final state after releasing the left mouse button.
+
+<div align="center">
+  <img src="../media/gifs/line.gif" alt="Line">
+</div>
+
+- **Polygon**: the polygon is created according to the coordinates determined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
+
+<div align="center">
+  <img src="../media/gifs/polygon.gif" alt="Polygon">
+</div>
+
 - **Brush**: when you click on the left mouse button, a rounded point is drawn with the size defined by default in the settings - 10px. When the mouse moves with the left button held down, a line is drawn, which is drawn according to the coordinates of the mouse movement path. The line thickness is also determined by the default settings - 10px.
 
 <div align="center">
   <img src="../media/gifs/brush.gif" alt="Brush">
-</div>
-
-- **Line**: when you click on the left mouse button, the initial coordinate of the line is fixed. When the mouse moves with the left button held down, a line of two points is drawn: 1 - the initial coordinates of the mouse click, 2 - the current coordinates of the cursor. The line assumes its final state after releasing the left mouse button.
-
-<div align="center">
-  <img src="../media/gifs/line.gif" alt="Line">
 </div>
 
 The process of creating all shapes is drawn dynamically.
@@ -86,10 +93,12 @@ The process of creating all shapes is drawn dynamically.
 
 ## TODO:
 
-- Add a brush drawing mode ✅
-- Add a polygon drawing mode
-- Add a line drawing mode ✅
-- Add a text writing mode
+- Add brush drawing mode ✅
+- Add polygon creation mode ✅
+- Add straight line creation mode ✅
+- Add polyline creation mode
+- Add text writing mode
+- Add export to svg-format
 - Add the ability to select colors for the created shapes
 - Add the ability to change colors for created shapes
 - Add a serialization/deserialization of a graphic scene using Google Protocol Buffers

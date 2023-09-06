@@ -22,6 +22,7 @@
 #include "../include/circlemodeview.h"
 #include "../include/brushmodeview.h"
 #include "../include/linemodeview.h"
+#include "../include/polygonmodeview.h"
 
 
 namespace {
@@ -34,6 +35,7 @@ namespace {
     constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
     constexpr auto kBrushModeIconPath{":/images/buttons/imgs/brushimg.png"sv};
     constexpr auto kLineModeIconPath{":/images/buttons/imgs/lineimg.png"sv};
+    constexpr auto kPolygonModeIconPath{":/images/buttons/imgs/polygonimg.png"sv};
 
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
@@ -123,6 +125,7 @@ void MainWindow::setUpGraphicViews() {
     setUpGraphicView<CircleModeView>(kCircleModeIconPath);
     setUpGraphicView<BrushModeView>(kBrushModeIconPath);
     setUpGraphicView<LineModeView>(kLineModeIconPath);
+    setUpGraphicView<PolygonModeView>(kPolygonModeIconPath);
 }
 
 void MainWindow::setUpLayout() {

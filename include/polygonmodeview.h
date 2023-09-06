@@ -5,11 +5,11 @@
 #include <QGraphicsView>
 #include "polygoninterface.h"
 
-class TriangleModeView : public Polygon {
+class PolygonModeView : public Polygon {
     Q_OBJECT
 
  public:
-    explicit TriangleModeView(QGraphicsScene* scene);
+    explicit PolygonModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
