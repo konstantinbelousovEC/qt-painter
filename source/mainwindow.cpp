@@ -122,10 +122,10 @@ void MainWindow::setUpGraphicViews() {
     setUpGraphicView<SquareModeView>(kSquareModeIconPath);
     setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
     setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
-    setUpGraphicView<CircleModeView>(kCircleModeIconPath);
-    setUpGraphicView<BrushModeView>(kBrushModeIconPath);
-    setUpGraphicView<LineModeView>(kLineModeIconPath);
     setUpGraphicView<PolygonModeView>(kPolygonModeIconPath);
+    setUpGraphicView<CircleModeView>(kCircleModeIconPath);
+    setUpGraphicView<LineModeView>(kLineModeIconPath);
+    setUpGraphicView<BrushModeView>(kBrushModeIconPath);
 }
 
 void MainWindow::setUpLayout() {
