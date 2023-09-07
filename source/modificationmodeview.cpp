@@ -297,13 +297,13 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
 
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
     QList<QGraphicsItem*> clonedItems;
-            foreach(QGraphicsItem* item, scene->selectedItems()) {
-            QGraphicsItem* clonedItem = cloneGraphicsItem(item);
-            if (clonedItem) {
-                clonedItems.append(clonedItem);
-                scene->addItem(clonedItem);
-            }
+    foreach(QGraphicsItem* item, scene->selectedItems()) {
+        QGraphicsItem* clonedItem = cloneGraphicsItem(item);
+        if (clonedItem) {
+            clonedItems.append(clonedItem);
+            scene->addItem(clonedItem);
         }
+    }
     return clonedItems;
 }
 
