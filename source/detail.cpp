@@ -13,8 +13,8 @@ namespace detail {
 
     QSize calcWindowRelativeSize(QSize wSize, double x) {
         auto [screenWidth, screenHeight] = wSize;
-        int windowWidth = screenWidth - static_cast<int>(screenWidth * 0.15);
-        int windowHeight = screenHeight - static_cast<int>(screenHeight * 0.15);
+        int windowWidth = screenWidth - static_cast<int>(screenWidth * x);
+        int windowHeight = screenHeight - static_cast<int>(screenHeight * x);
         return {windowWidth, windowHeight};
     }
 

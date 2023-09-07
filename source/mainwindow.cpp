@@ -10,7 +10,6 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QScreen>
 #include <QLatin1String>
 #include <string_view>
 #include "../include/detail.h"
@@ -41,15 +40,12 @@ namespace {
 
     constexpr auto kMenuName{"File"sv};
     constexpr auto kNewActionName{"New"sv};
-    constexpr auto kLoadActionName{"Load"sv};
     constexpr auto kSaveActionName{"Save"sv};
     constexpr auto kSaveAsActionName{"Save as..."sv};
     constexpr auto kExitActionName{"Leave"sv};
 
     constexpr auto kSaveChangesTitle{"Save Changes"sv};
     constexpr auto kSaveChangesQuestion{"Do you want to save your changes?"sv};
-    constexpr auto kOpenTitle{"Open File"sv};
-    constexpr auto kPngJpeg{"Images (*.png *.jpg)"sv};
     constexpr auto kSaveImageTitle{"Save Image"sv};
     constexpr auto kPngJpegBmpAllFiles{"PNG Image (*.png);;JPEG Image (*.jpg *.jpeg);;BMP Image (*.bmp);;All Files (*)"sv};
     constexpr auto kSaveChangesAndExitTitle{"Save Changes and Exit"sv};
