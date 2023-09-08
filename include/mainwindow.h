@@ -42,10 +42,10 @@ class MainWindow : public QMainWindow {
     void exitApp();
 
  private:
-    QVector<QPushButton*> btnList_;
+    QVector<QPushButton*> modeButtonsList_;
     QGraphicsScene* scene_;
     QStackedWidget* stackedWidget_;
-    QToolBar* toolBar_;
+    QToolBar* modeButtonsToolBar_;
     QString currentFilePath_;
     QSize windowSize_;
     bool isModified_;

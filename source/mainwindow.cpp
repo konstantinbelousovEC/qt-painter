@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
       scene_(new QGraphicsScene{this}),
       stackedWidget_(new QStackedWidget{this}),
-      toolBar_(new QToolBar{this}),
+      modeButtonsToolBar_(new QToolBar{this}),
       windowSize_(defineWindowSize()),
       isModified_(false)
 {
@@ -83,15 +83,15 @@ void MainWindow::setUpToolBarStyle() {
     QFile file(kToolBarStyleSheetPath.data());
     file.open(QFile::ReadOnly);
     QString strCSS = QLatin1String(file.readAll());
-    toolBar_->setStyleSheet(strCSS);
-    btnList_.front()->setChecked(true);
+    modeButtonsToolBar_->setStyleSheet(strCSS);
+    modeButtonsList_.front()->setChecked(true);
 }
 
 void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
     auto* button = addToolBarButton(iconPath);
     connect(button, &QPushButton::clicked, this, [&, button, btnIndex]() {
         stackedWidget_->setCurrentIndex(btnIndex);
-        foreach(auto* btn, btnList_) {
+        foreach(auto* btn, modeButtonsList_) {
             btn->setChecked(false);
         }
         button->setChecked(true);
@@ -101,7 +101,7 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
 
 QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
     auto* button = new QPushButton{};
-    btnList_.push_back(button);
+    modeButtonsList_.push_back(button);
     QPixmap pixmap{iconPath.data()};
 
     button->setIcon(QIcon{pixmap});
@@ -109,7 +109,7 @@ QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
     button->setCheckable(true);
     button->setChecked(false);
 
-    toolBar_->addWidget(button);
+    modeButtonsToolBar_->addWidget(button);
     return button;
 }
 
@@ -126,7 +126,7 @@ void MainWindow::setUpGraphicViews() {
 
 void MainWindow::setUpLayout() {
     auto* layout = new QVBoxLayout{};
-    layout->addWidget(toolBar_);
+    layout->addWidget(modeButtonsToolBar_);
     layout->addWidget(stackedWidget_);
 
     auto* centralWidget = new QWidget{};
