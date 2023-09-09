@@ -1,6 +1,8 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
+#include <QMouseEvent>
 #include "../include/polygoninterface.h"
+#include "../include/detail.h"
 
 Polygon::Polygon(QGraphicsScene *scene, QColor fillColor, QColor strokeColor)
         : QGraphicsView(scene),

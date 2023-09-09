@@ -3,8 +3,6 @@
 #pragma once
 
 #include <QGraphicsView>
-#include <QMouseEvent>
-#include "detail.h"
 
 class Polygon : public QGraphicsView {
  public:

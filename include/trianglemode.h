@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <QGraphicsView>
 #include "polygoninterface.h"
 
 class TriangleModeView : public Polygon {

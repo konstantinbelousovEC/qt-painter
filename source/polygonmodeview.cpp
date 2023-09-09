@@ -1,6 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include <QMouseEvent>
+#include <QGraphicsLineItem>
 #include "../include/polygonmodeview.h"
 
 namespace {

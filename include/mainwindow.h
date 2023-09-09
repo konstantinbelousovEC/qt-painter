@@ -3,10 +3,13 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QGraphicsScene>
 #include <QStackedWidget>
-#include <QPushButton>
 #include <QMenu>
+
+QT_BEGIN_NAMESPACE
+class QGraphicsScene;
+class QPushButton;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
