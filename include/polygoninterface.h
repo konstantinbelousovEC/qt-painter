@@ -13,8 +13,8 @@ class Polygon : public QGraphicsView {
     void createPolygon();
     void deleteTemporaryLines();
 
-    QVector<QPointF> points_;
-    QVector<QGraphicsLineItem*> lineItems_;
+    QList<QPointF> points_;
+    QList<QGraphicsLineItem*> lineItems_;
     QPointF lastClickPos_;
     QColor fillColor_;
     QColor strokeColor_;

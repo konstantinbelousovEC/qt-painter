@@ -63,7 +63,7 @@ QSize defineWindowSize() {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
-      scene_(new QGraphicsScene{this}),
+      graphicsScene_(new QGraphicsScene{this}),
       stackedWidget_(new QStackedWidget{this}),
       modeButtonsToolBar_(new QToolBar{this}),
       windowSize_(defineWindowSize()),
@@ -91,11 +91,11 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
     auto* button = addToolBarButton(iconPath);
     connect(button, &QPushButton::clicked, this, [&, button, btnIndex]() {
         stackedWidget_->setCurrentIndex(btnIndex);
-        foreach(auto* btn, modeButtonsList_) {
+        for (auto* btn : modeButtonsList_) {
             btn->setChecked(false);
         }
         button->setChecked(true);
-        scene_->clearSelection();
+        graphicsScene_->clearSelection();
     });
 }
 
@@ -135,10 +135,10 @@ void MainWindow::setUpLayout() {
 }
 
 void MainWindow::setUpScene() {
-    scene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
-    scene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
+    graphicsScene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
+    graphicsScene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
     QSize sceneSize = detail::calcWindowRelativeSize(windowSize_, 0.1);
-    scene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
+    graphicsScene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
 }
 
 void MainWindow::setUpScreen() {
@@ -178,7 +178,7 @@ void MainWindow::newFile() {
         else if (answer == QMessageBox::Cancel) return;
     }
 
-    scene_->clear();
+    graphicsScene_->clear();
     isModified_ = false;
 }
 
@@ -186,10 +186,10 @@ void MainWindow::saveFile() {
     if (currentFilePath_.isEmpty()) {
         saveFileAs();
     } else {
-        scene_->clearSelection();
-        QImage image{scene_->sceneRect().size().toSize(), QImage::Format_ARGB32};
+        graphicsScene_->clearSelection();
+        QImage image{graphicsScene_->sceneRect().size().toSize(), QImage::Format_ARGB32};
         QPainter painter{&image};
-        scene_->render(&painter);
+        graphicsScene_->render(&painter);
         image.save(currentFilePath_);
         isModified_ = false;
     }
@@ -202,9 +202,9 @@ void MainWindow::saveFileAs() {
                                                     kPngJpegBmpAllFiles.data());
 
     if (!filePath.isEmpty()) {
-        QPixmap pixmap{scene_->sceneRect().size().toSize()};
+        QPixmap pixmap{graphicsScene_->sceneRect().size().toSize()};
         QPainter painter{&pixmap};
-        scene_->render(&painter);
+        graphicsScene_->render(&painter);
         pixmap.save(filePath);
         isModified_ = false;
     }

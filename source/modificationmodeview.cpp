@@ -142,7 +142,7 @@ void ModificationModeView::updateSelectionArea(QMouseEvent* event,
 void ModificationModeView::updateItemsSelection(QMouseEvent* event,
                                                 const QRectF &selectionRectangle) {
     QList<QGraphicsItem*> itemsInRect = scene()->items(selectionRectangle);
-    foreach(QGraphicsItem *item, scene()->items()) {
+    for (auto* item : scene()->items()) {
         if (event->modifiers() ^ Qt::ControlModifier) {
             item->setSelected(itemsInRect.contains(item));
         } else {
@@ -153,7 +153,7 @@ void ModificationModeView::updateItemsSelection(QMouseEvent* event,
 
 void ModificationModeView::moveSelectedItems(const QPointF& mouseCurrentPos) {
     QPointF delta = mouseCurrentPos - lastClickPos_;
-    foreach(QGraphicsItem* item, scene()->selectedItems()) {
+    for (auto* item : scene()->selectedItems()) {
         item->moveBy(delta.x(), delta.y());
     }
     lastClickPos_ = mouseCurrentPos;
@@ -192,9 +192,9 @@ void ModificationModeView::setSelectionAreaProperties() {
 
 void updateSceneSelection(QGraphicsScene* scene, const QList<QGraphicsItem*>& items) {
     scene->clearSelection();
-            foreach(QGraphicsItem* item, items) {
-            item->setSelected(true);
-        }
+    for (auto* item : items) {
+        item->setSelected(true);
+    }
 }
 
 template<CoordsType type>
@@ -202,7 +202,7 @@ QPointF getPolygonCenterRelativeTo(const QGraphicsPolygonItem* polygonItem) {
     auto points = polygonItem->polygon().toVector();
     QPointF sum{};
 
-    foreach(const auto& point, points) {
+    for (const auto& point : points) {
         if constexpr (type == CoordsType::kSceneCoords) {
             sum += polygonItem->mapToScene(point);
         } else if constexpr (type == CoordsType::kItemCoords) {
@@ -297,7 +297,7 @@ QGraphicsItem* cloneGraphicsItem(QGraphicsItem* originalItem) {
 
 QList<QGraphicsItem*> cloneSelectedItems(QGraphicsScene* scene) {
     QList<QGraphicsItem*> clonedItems;
-    foreach(QGraphicsItem* item, scene->selectedItems()) {
+    for (auto* item : scene->selectedItems()) {
         QGraphicsItem* clonedItem = cloneGraphicsItem(item);
         if (clonedItem) {
             clonedItems.append(clonedItem);
@@ -340,7 +340,7 @@ bool ModificationModeView::RotationInfo::isEmpty() const noexcept {
 bool ModificationModeView::RotationInfo::fillInfo(const QList<QGraphicsItem *> &items) {
     items_ = items;
     angles_.reserve(items_.size());
-    foreach(const auto& item, items_) {
+    for (const auto* item : items_) {
         angles_.push_back(item->rotation());
     }
     return items_.size() == angles_.size();

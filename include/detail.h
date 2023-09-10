@@ -23,7 +23,7 @@ namespace detail {
 
     template<typename GraphicScene>
     void deleteSelectedItems(GraphicScene* scene) {
-        foreach(QGraphicsItem *item, scene->selectedItems()) {
+        for (auto* item : scene->selectedItems()) {
             scene->removeItem(item);
             delete item;
         }

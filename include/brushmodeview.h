@@ -23,7 +23,7 @@ class BrushModeView : public QGraphicsView {
     void changeStateOfScene();
 
  private:
-    QVector<QGraphicsLineItem*> temporaryLines_;
+    QList<QGraphicsLineItem*> temporaryLines_;
     QGraphicsEllipseItem* startEllipseItem_;
     QPointF startCursorPos_;
     QPointF previousCursorPos_;

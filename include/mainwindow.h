@@ -45,8 +45,8 @@ class MainWindow : public QMainWindow {
     void exitApp();
 
  private:
-    QVector<QPushButton*> modeButtonsList_;
-    QGraphicsScene* scene_;
+    QList<QPushButton*> modeButtonsList_;
+    QGraphicsScene* graphicsScene_;
     QStackedWidget* stackedWidget_;
     QToolBar* modeButtonsToolBar_;
     QString currentFilePath_;
@@ -68,8 +68,8 @@ void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
 
 template<typename GraphicViewType>
 void MainWindow::setUpGraphicView(std::string_view iconPath) {
-    auto modificationScene = new GraphicViewType{scene_};
-    auto modificationSceneIndex = stackedWidget_->addWidget(modificationScene);
-    addMode(iconPath, modificationSceneIndex);
-    connectViewsSignals(modificationScene, &GraphicViewType::changeStateOfScene);
+    auto view = new GraphicViewType{graphicsScene_};
+    auto viewIndex = stackedWidget_->addWidget(view);
+    addMode(iconPath, viewIndex);
+    connectViewsSignals(view, &GraphicViewType::changeStateOfScene);
 }

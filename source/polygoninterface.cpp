@@ -15,7 +15,7 @@ Polygon::Polygon(QGraphicsScene *scene, QColor fillColor, QColor strokeColor)
 }
 
 void Polygon::deleteTemporaryLines() {
-    foreach(auto* lineItem, lineItems_) {
+    for (auto* lineItem : lineItems_) {
         scene()->removeItem(lineItem);
         delete lineItem;
     }
@@ -35,7 +35,7 @@ void Polygon::addNewTemporaryLine(QMouseEvent *event) {
 
 void Polygon::createPolygon() {
     QPolygonF polygon;
-    foreach(const auto& point, points_) {
+    for (const auto& point : points_) {
         polygon << point;
     }
     auto* polygonItem = scene()->addPolygon(polygon,

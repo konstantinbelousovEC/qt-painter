@@ -65,7 +65,7 @@ void BrushModeView::mouseReleaseEvent(QMouseEvent* event) {
             QPainterPath path;
             path.moveTo(startCursorPos_);
 
-            foreach(auto* line, temporaryLines_) {
+            for (auto* line : temporaryLines_) {
                 path.moveTo(line->line().p1());
                 path.lineTo(line->line().p2());
                 detail::deleteItem(scene(), line);
