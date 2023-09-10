@@ -11,6 +11,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QLatin1String>
+#include <QLabel>
+#include <QSpinBox>
+#include <QButtonGroup>
 #include <string_view>
 #include "../include/detail.h"
 #include "../include/mainwindow.h"
@@ -39,7 +42,7 @@ namespace {
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
-    constexpr QSize kDefaultBtnIconSize{30, 30};
+    constexpr QSize kDefaultBtnIconSize{24, 24};
 
 }  // namespace
 
@@ -56,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
       windowSize_(defineWindowSize()),
       isModified_(false)
 {
-    setUpGraphicViews();
+    addGraphicsViews();
     setUpScreen();
     setUpScene();
     setUpLayout();
@@ -99,7 +102,7 @@ QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
     return button;
 }
 
-void MainWindow::setUpGraphicViews() {
+void MainWindow::addGraphicsViews() {
     setUpGraphicView<ModificationModeView>(kModificationModeIconPath);
     setUpGraphicView<SquareModeView>(kSquareModeIconPath);
     setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
@@ -111,12 +114,12 @@ void MainWindow::setUpGraphicViews() {
 }
 
 void MainWindow::setUpLayout() {
-    auto* layout = new QVBoxLayout{};
-    layout->addWidget(modeButtonsToolBar_);
-    layout->addWidget(stackedWidget_);
+    auto* verticalLayout = new QVBoxLayout{};
+    verticalLayout->addWidget(modeButtonsToolBar_);
+    verticalLayout->addWidget(stackedWidget_);
 
     auto* centralWidget = new QWidget{};
-    centralWidget->setLayout(layout);
+    centralWidget->setLayout(verticalLayout);
     setCentralWidget(centralWidget);
 }
 

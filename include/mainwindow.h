@@ -8,6 +8,7 @@
 
 QT_BEGIN_NAMESPACE
 class QGraphicsScene;
+class QGraphicsView;
 class QPushButton;
 QT_END_NAMESPACE
 
@@ -19,7 +20,7 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
-    void setUpGraphicViews();
+    void addGraphicsViews();
     void setUpLayout();
     void setUpScene();
     void setUpScreen();
@@ -41,7 +42,6 @@ class MainWindow : public QMainWindow {
     QGraphicsScene* graphicsScene_;
     QStackedWidget* stackedWidget_;
     QToolBar* modeButtonsToolBar_;
-    QString currentFilePath_;
     QSize windowSize_;
     bool isModified_;
 };
