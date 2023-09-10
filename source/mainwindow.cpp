@@ -38,19 +38,6 @@ namespace {
 
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
-    constexpr auto kMenuName{"File"sv};
-    constexpr auto kNewActionName{"New"sv};
-    constexpr auto kSaveActionName{"Save"sv};
-    constexpr auto kSaveAsActionName{"Save as..."sv};
-    constexpr auto kExitActionName{"Leave"sv};
-
-    constexpr auto kSaveChangesTitle{"Save Changes"sv};
-    constexpr auto kSaveChangesQuestion{"Do you want to save your changes?"sv};
-    constexpr auto kSaveImageTitle{"Save Image"sv};
-    constexpr auto kPngJpegBmpAllFiles{"PNG Image (*.png);;JPEG Image (*.jpg *.jpeg);;BMP Image (*.bmp);;All Files (*)"sv};
-    constexpr auto kSaveChangesAndExitTitle{"Save Changes and Exit"sv};
-    constexpr auto kSaveChangesAndExitQuestion{"Do you want to save your changes before exiting?"sv};
-
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{30, 30};
 
@@ -73,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
     setUpScreen();
     setUpScene();
     setUpLayout();
-    setUpMenuBar();
     setUpToolBarStyle();
 }
 
@@ -153,74 +139,6 @@ void MainWindow::setUpScreen() {
                 windowHeight);
 }
 
-void MainWindow::setUpMenuBar() {
-    QMenu* menu = menuBar()->addMenu(kMenuName.data());
-    addMenuAction(menu, kNewActionName, &MainWindow::newFile);
-    addMenuAction(menu, kSaveActionName, &MainWindow::saveFile);
-    addMenuAction(menu, kSaveAsActionName, &MainWindow::saveFileAs);
-    addMenuAction(menu, kExitActionName, &MainWindow::exitApp);
-}
-
 void MainWindow::changeSceneState() {
     isModified_ = true;
-}
-
-void MainWindow::newFile() {
-    if (isModified_) {
-        auto answer = QMessageBox::warning(this,
-                                           kSaveChangesTitle.data(),
-                                           kSaveChangesQuestion.data(),
-                                           QMessageBox::Save |
-                                           QMessageBox::Discard |
-                                           QMessageBox::Cancel);
-
-        if (answer == QMessageBox::Save) saveFile();
-        else if (answer == QMessageBox::Cancel) return;
-    }
-
-    graphicsScene_->clear();
-    isModified_ = false;
-}
-
-void MainWindow::saveFile() {
-    if (currentFilePath_.isEmpty()) {
-        saveFileAs();
-    } else {
-        graphicsScene_->clearSelection();
-        QImage image{graphicsScene_->sceneRect().size().toSize(), QImage::Format_ARGB32};
-        QPainter painter{&image};
-        graphicsScene_->render(&painter);
-        image.save(currentFilePath_);
-        isModified_ = false;
-    }
-}
-
-void MainWindow::saveFileAs() {
-    const QString& filePath = QFileDialog::getSaveFileName(this,
-                                                    kSaveImageTitle.data(),
-                                                    QDir::homePath(),
-                                                    kPngJpegBmpAllFiles.data());
-
-    if (!filePath.isEmpty()) {
-        QPixmap pixmap{graphicsScene_->sceneRect().size().toSize()};
-        QPainter painter{&pixmap};
-        graphicsScene_->render(&painter);
-        pixmap.save(filePath);
-        isModified_ = false;
-    }
-}
-
-void MainWindow::exitApp() {
-    if (isModified_) {
-        auto answer = QMessageBox::warning(this,
-                                           kSaveChangesAndExitTitle.data(),
-                                           kSaveChangesAndExitQuestion.data(),
-                                           QMessageBox::Save |
-                                           QMessageBox::Discard |
-                                           QMessageBox::Cancel);
-
-        if (answer == QMessageBox::Save) saveFile();
-        else if (answer == QMessageBox::Cancel) return;
-    }
-    QCoreApplication::exit();
 }

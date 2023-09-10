@@ -23,13 +23,9 @@ class MainWindow : public QMainWindow {
     void setUpLayout();
     void setUpScene();
     void setUpScreen();
-    void setUpMenuBar();
     void setUpToolBarStyle();
     QPushButton* addToolBarButton(std::string_view iconPath);
     void addMode(std::string_view iconPath, int btnIndex);
-
-    template<typename Slot>
-    void addMenuAction(QMenu* menu, std::string_view actionName, Slot slot);
 
     template<typename GraphicViewType, typename Signal>
     void connectViewsSignals(GraphicViewType view, Signal signal);
@@ -39,10 +35,6 @@ class MainWindow : public QMainWindow {
 
  private slots:
     void changeSceneState();
-    void newFile();
-    void saveFile();
-    void saveFileAs();
-    void exitApp();
 
  private:
     QList<QPushButton*> modeButtonsList_;
@@ -53,13 +45,6 @@ class MainWindow : public QMainWindow {
     QSize windowSize_;
     bool isModified_;
 };
-
-template<typename Slot>
-void MainWindow::addMenuAction(QMenu* menu, std::string_view actionName, Slot slot) {
-    auto* newAction = new QAction{actionName.data(), this};
-    menu->addAction(newAction);
-    connect(newAction, &QAction::triggered, this, slot);
-}
 
 template<typename GraphicViewType, typename Signal>
 void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
