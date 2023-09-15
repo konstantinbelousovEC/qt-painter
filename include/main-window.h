@@ -4,9 +4,6 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
-#include <QToolButton>
-#include <QSpinBox>
-#include <QMenu>
 
 QT_BEGIN_NAMESPACE
 class QGraphicsScene;
@@ -26,7 +23,7 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
-    void setUpModePropertiesButtonsAndActions(); // todo: refactor
+    void setUpModePropertiesButtonsAndActions();
     void setUpToolBarActionsConnections();
     void changeActionsVisibility(int btnIndex);
     void addGraphicsViews();
@@ -37,10 +34,10 @@ class MainWindow : public QMainWindow {
     QPushButton* addToolBarButton(std::string_view iconPath);
     void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
 
-    template<typename GraphicViewType, typename Signal>
-    void connectViewsSignals(GraphicViewType view, Signal signal);
+    template<typename GraphicsViewType, typename Signal>
+    void connectViewsSignals(GraphicsViewType view, Signal signal);
 
-    template<typename GraphicViewType>
+    template<typename GraphicsViewType>
     void setUpGraphicView(std::string_view iconPath);
 
     template<int PropertiesAmount, typename ModeView>
@@ -76,18 +73,18 @@ class MainWindow : public QMainWindow {
     bool isModified_;
 };
 
-template<typename GraphicViewType, typename Signal>
-void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
+template<typename GraphicsViewType, typename Signal>
+void MainWindow::connectViewsSignals(GraphicsViewType view, Signal signal) {
     connect(view, signal, this, &MainWindow::changeSceneState);
 }
 
-template<typename GraphicViewType>
+template<typename GraphicsViewType>
 void MainWindow::setUpGraphicView(std::string_view iconPath) {
-    auto* view = new GraphicViewType{graphicsScene_};
+    auto* view = new GraphicsViewType{graphicsScene_};
     auto viewIndex = stackedWidget_->addWidget(view);
     addModeButtonsAndConnections(iconPath, viewIndex);
-    connectViewsSignals(view, &GraphicViewType::changeStateOfScene);
-    if constexpr (!std::is_same_v<GraphicViewType, ModificationModeView>) drawingViewsList_.push_back(view);
+    connectViewsSignals(view, &GraphicsViewType::changeStateOfScene);
+    if constexpr (!std::is_same_v<GraphicsViewType, ModificationModeView>) drawingViewsList_.push_back(view);
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color);
