@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include <QGraphicsView>
+#include "custom-graphics-view.h"
 
-class Polygon : public QGraphicsView {
+class Polygon : public CustomGraphicsView {
  public:
-    explicit Polygon(QGraphicsScene* scene, QColor fillColor, QColor strokeColor);
+    Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth);
 
  protected:
     void addNewTemporaryLine(QMouseEvent* event);
@@ -16,6 +16,4 @@ class Polygon : public QGraphicsView {
     QList<QPointF> points_;
     QList<QGraphicsLineItem*> lineItems_;
     QPointF lastClickPos_;
-    QColor fillColor_;
-    QColor strokeColor_;
 };

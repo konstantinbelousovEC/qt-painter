@@ -14,10 +14,6 @@ class PolygonModeView : public Polygon {
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
 
- private slots:
-    void changeFillColor(const QColor& color);
-    void changeStrokeColor(const QColor& color);
-
  signals:
     void changeStateOfScene();
 };

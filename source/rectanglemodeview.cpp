@@ -10,11 +10,9 @@ namespace {
 }
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
-    : QGraphicsView(scene),
+    : CustomGraphicsView(scene, kDefaultRectFillColor, kDefaultRectStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      startCursorPos_(detail::kZeroPointF),
-      fillColor_(kDefaultRectFillColor),
-      strokeColor_(kDefaultRectStrokeColor)
+      startCursorPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -24,8 +22,8 @@ void RectangleModeView::mousePressEvent(QMouseEvent* event) {
         startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addRect(
                 QRectF{startCursorPos_, detail::kZeroSizeF},
-                QPen{strokeColor_},
-                QBrush{fillColor_}
+                QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                QBrush{fillColor_.value()}
         );
 
         if (currentItem_ != nullptr)
@@ -51,12 +49,4 @@ void RectangleModeView::mouseReleaseEvent(QMouseEvent* event) {
         }
         currentItem_ = nullptr;
     }
-}
-
-void RectangleModeView::changeFillColor(const QColor& color) {
-    fillColor_ = color;
-}
-
-void RectangleModeView::changeStrokeColor(const QColor& color) {
-    strokeColor_ = color;
 }

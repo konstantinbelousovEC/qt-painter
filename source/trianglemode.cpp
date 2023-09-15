@@ -10,7 +10,7 @@ namespace {
 }
 
 TriangleModeView::TriangleModeView(QGraphicsScene* scene)
-    : Polygon(scene, kDefaultTriangleFillColor, kDefaultTriangleStrokeColor) {}
+    : Polygon(scene, kDefaultTriangleFillColor, kDefaultTriangleStrokeColor, 1) {} // todo: make a new file with common constants
 
 void TriangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
@@ -30,12 +30,4 @@ void TriangleModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF currentClickPos = mapToScene(event->pos());
     if (lineItems_.empty()) return;
     lineItems_.back()->setLine(QLineF{lastClickPos_, currentClickPos});
-}
-
-void TriangleModeView::changeFillColor(const QColor& color) {
-    fillColor_ = color;
-}
-
-void TriangleModeView::changeStrokeColor(const QColor& color) {
-    strokeColor_ = color;
 }

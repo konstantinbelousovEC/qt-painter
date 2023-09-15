@@ -4,11 +4,9 @@
 #include "../include/polygoninterface.h"
 #include "../include/detail.h"
 
-Polygon::Polygon(QGraphicsScene *scene, QColor fillColor, QColor strokeColor)
-        : QGraphicsView(scene),
-          lastClickPos_(detail::kZeroPointF),
-          fillColor_(fillColor),
-          strokeColor_(strokeColor)
+Polygon::Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth)
+        : CustomGraphicsView(scene, fillColor, strokeColor, strokeWidth),
+          lastClickPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
     setMouseTracking(true);
@@ -28,7 +26,7 @@ void Polygon::addNewTemporaryLine(QMouseEvent *event) {
             scene()->addLine(QLineF{lastClickPos_, lastClickPos_});
 
     if (tmpLinePointer == nullptr) return;
-    tmpLinePointer->setPen(QPen{strokeColor_});
+    tmpLinePointer->setPen(QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
     points_.push_back(lastClickPos_);
     lineItems_.push_back(tmpLinePointer);
 }
@@ -39,8 +37,8 @@ void Polygon::createPolygon() {
         polygon << point;
     }
     auto* polygonItem = scene()->addPolygon(polygon,
-                                            QPen{strokeColor_},
-                                            QBrush{fillColor_});
+                                            QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                                            QBrush{fillColor_.value()});
 
     if (polygonItem == nullptr) return;
     detail::makeItemSelectableAndMovable(polygonItem);

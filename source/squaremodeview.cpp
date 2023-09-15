@@ -11,11 +11,9 @@ namespace {
 }
 
 SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : QGraphicsView(scene),
+    : CustomGraphicsView(scene, kDefaultSquareFillColor, kDefaultSquareStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      centerPos_(detail::kZeroPointF),
-      fillColor_(kDefaultSquareFillColor),
-      strokeColor_(kDefaultSquareStrokeColor)
+      centerPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -25,8 +23,8 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
         centerPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addRect(
                 QRectF{centerPos_, detail::kZeroSizeF},
-                QPen{strokeColor_},
-                QBrush{fillColor_}
+                QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                QBrush{fillColor_.value()}
         );
 
         if (currentItem_ != nullptr)
@@ -55,12 +53,4 @@ void SquareModeView::mouseReleaseEvent(QMouseEvent* event) {
         }
         currentItem_ = nullptr;
     }
-}
-
-void SquareModeView::changeFillColor(const QColor& color) {
-    fillColor_ = color;
-}
-
-void SquareModeView::changeStrokeColor(const QColor& color) {
-    strokeColor_ = color;
 }

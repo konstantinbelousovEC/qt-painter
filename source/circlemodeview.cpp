@@ -11,11 +11,9 @@ namespace {
 }
 
 CircleModeView::CircleModeView(QGraphicsScene* scene)
-    : QGraphicsView(scene),
+    : CustomGraphicsView(scene, kDefaultCircleFillColor, kDefaultCircleStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      ellipseCenterPos_(detail::kZeroPointF),
-      fillColor_(kDefaultCircleFillColor),
-      strokeColor_(kDefaultCircleStrokeColor)
+      ellipseCenterPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -25,8 +23,8 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
         ellipseCenterPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addEllipse(
                 QRectF{ellipseCenterPos_, detail::kZeroSizeF},
-                QPen{strokeColor_},
-                QBrush{fillColor_}
+                QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                QBrush{fillColor_.value()}
         );
 
         if (currentItem_ != nullptr)
@@ -55,12 +53,4 @@ void CircleModeView::mouseReleaseEvent(QMouseEvent* event) {
         }
         currentItem_ = nullptr;
     }
-}
-
-void CircleModeView::changeFillColor(const QColor& color) {
-    fillColor_ = color;
-}
-
-void CircleModeView::changeStrokeColor(const QColor& color) {
-    strokeColor_ = color;
 }

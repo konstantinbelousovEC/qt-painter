@@ -9,11 +9,10 @@
 #include <QStringView>
 #include <QMenuBar>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QLatin1String>
-#include <QLabel>
+#include <QToolButton>
 #include <QSpinBox>
-#include <QButtonGroup>
+#include <QColorDialog>
 #include <string_view>
 #include "../include/detail.h"
 #include "../include/mainwindow.h"
@@ -54,6 +53,9 @@ QSize defineWindowSize() {
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
       graphicsScene_(new QGraphicsScene{this}),
+      fillColorButton_(new QToolButton{}),
+      strokeColorButton_(new QToolButton{}),
+      strokeWidthSpinBox_(new QSpinBox{}),
       stackedWidget_(new QStackedWidget{this}),
       modeButtonsToolBar_(new QToolBar{this}),
       windowSize_(defineWindowSize()),
@@ -64,9 +66,31 @@ MainWindow::MainWindow(QWidget *parent)
     setUpScene();
     setUpLayout();
     setUpToolBarStyle();
+    modeButtonsToolBar_->addSeparator();
+    test();
+    setUpToolBarActionsConnections();
 }
 
 MainWindow::~MainWindow() = default;
+
+void MainWindow::test() {
+    QPixmap pixmap{QSize{24,24}};
+    pixmap.fill(Qt::red);
+
+    fillColorButton_->setIcon(pixmap);
+    fillColorAction_ = modeButtonsToolBar_->addWidget(fillColorButton_);
+    fillColorAction_->setVisible(false);
+
+    strokeColorButton_->setIcon(pixmap);
+    strokeColorAction_ = modeButtonsToolBar_->addWidget(strokeColorButton_);
+    strokeColorAction_->setVisible(false);
+
+    strokeWidthAction_ = modeButtonsToolBar_->addWidget(strokeWidthSpinBox_);
+    strokeWidthSpinBox_->setMinimum(1);
+    strokeWidthSpinBox_->setMaximum(30);
+    strokeWidthSpinBox_->setValue(1);
+    strokeWidthAction_->setVisible(false);
+}
 
 void MainWindow::setUpToolBarStyle() {
     QFile file(kToolBarStyleSheetPath.data());
@@ -85,7 +109,30 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
         }
         button->setChecked(true);
         graphicsScene_->clearSelection();
+
+        if (btnIndex == 0) {
+            fillColorAction_->setVisible(false);
+            strokeColorAction_->setVisible(false);
+            strokeWidthAction_->setVisible(false);
+        } else {
+            // todo: actions visibility processor
+            changeActionsVisibility(btnIndex);
+        }
     });
+}
+
+void MainWindow::setUpToolBarActionsConnections() {
+    connect(fillColorButton_, &QToolButton::clicked, this, &MainWindow::setFillColor);
+    connect(strokeColorButton_, &QToolButton::clicked, this, &MainWindow::setStrokeColor);
+    connect(strokeWidthSpinBox_, &QSpinBox::valueChanged, this, &MainWindow::setStrokeWidth);
+}
+
+void MainWindow::changeActionsVisibility(int btnIndex) {
+    if (btnIndex == 6 || btnIndex == 7) {
+        setUpModePropertiesToolButtons<2>(viewsList_[btnIndex - 1]);
+    } else {
+        setUpModePropertiesToolButtons<3>(viewsList_[btnIndex - 1]);
+    }
 }
 
 QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
@@ -103,14 +150,14 @@ QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
 }
 
 void MainWindow::addGraphicsViews() {
-    setUpGraphicView<ModificationModeView>(kModificationModeIconPath);
-    setUpGraphicView<SquareModeView>(kSquareModeIconPath);
-    setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
-    setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
-    setUpGraphicView<PolygonModeView>(kPolygonModeIconPath);
-    setUpGraphicView<CircleModeView>(kCircleModeIconPath);
-    setUpGraphicView<LineModeView>(kLineModeIconPath);
-    setUpGraphicView<BrushModeView>(kBrushModeIconPath);
+    modificationModeView_ = setUpGraphicView<ModificationModeView>(kModificationModeIconPath);
+    squareModeView_ = setUpGraphicView<SquareModeView>(kSquareModeIconPath);
+    rectangleModeView_ = setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
+    triangleModeView_ = setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
+    polygonModeView_ = setUpGraphicView<PolygonModeView>(kPolygonModeIconPath);
+    circleModeView_ = setUpGraphicView<CircleModeView>(kCircleModeIconPath);
+    lineModeView_ = setUpGraphicView<LineModeView>(kLineModeIconPath);
+    brushModeView_ = setUpGraphicView<BrushModeView>(kBrushModeIconPath);
 }
 
 void MainWindow::setUpLayout() {
@@ -144,4 +191,32 @@ void MainWindow::setUpScreen() {
 
 void MainWindow::changeSceneState() {
     isModified_ = true;
+}
+
+void MainWindow::setFillColor() {
+    QColor color = QColorDialog::getColor();
+    if (color.isValid()) {
+        int viewIndex = stackedWidget_->currentIndex();
+        viewsList_[viewIndex - 1]->changeFillColor(color);
+        QPixmap pixmap{24, 24};
+        pixmap.fill(color);
+        fillColorButton_->setIcon(pixmap);
+    }
+}
+
+void MainWindow::setStrokeColor() {
+    QColor color = QColorDialog::getColor();
+    if (color.isValid()) {
+        int viewIndex = stackedWidget_->currentIndex();
+        viewsList_[viewIndex - 1]->changeStrokeColor(color);
+        QPixmap pixmap{24, 24};
+        pixmap.fill(color);
+        strokeColorButton_->setIcon(pixmap);
+    }
+}
+
+void MainWindow::setStrokeWidth(int width) {
+    assert(width >= 0);
+    int viewIndex = stackedWidget_->currentIndex();
+    viewsList_[viewIndex - 1]->changeStrokeWidth(width);
 }

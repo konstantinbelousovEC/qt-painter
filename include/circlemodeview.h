@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <QGraphicsView>
+#include "custom-graphics-view.h"
 
-class CircleModeView : public QGraphicsView {
+class CircleModeView : public CustomGraphicsView {
     Q_OBJECT
 
  public:
@@ -15,16 +15,10 @@ class CircleModeView : public QGraphicsView {
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
- private slots:
-    void changeFillColor(const QColor& color);
-    void changeStrokeColor(const QColor& color);
-
  signals:
     void changeStateOfScene();
 
  private:
     QGraphicsEllipseItem* currentItem_;
     QPointF ellipseCenterPos_;
-    QColor fillColor_;
-    QColor strokeColor_;
 };

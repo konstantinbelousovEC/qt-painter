@@ -10,7 +10,7 @@ namespace {
 }
 
 PolygonModeView::PolygonModeView(QGraphicsScene* scene)
-    : Polygon(scene, kDefaultPolygonFillColor, kDefaultPolygonStrokeColor) {}
+    : Polygon(scene, kDefaultPolygonFillColor, kDefaultPolygonStrokeColor, 1) {} // todo: make a new file with common constants
 
 void PolygonModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
@@ -19,7 +19,7 @@ void PolygonModeView::mousePressEvent(QMouseEvent* event) {
                     scene()->addLine(QLineF{lastClickPos_, lastClickPos_});
 
             if (tmpLinePointer == nullptr) return;
-            tmpLinePointer->setPen(QPen{strokeColor_});
+            tmpLinePointer->setPen(QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
             points_.push_back(lastClickPos_);
             lineItems_.push_back(tmpLinePointer);
     } else if (event->button() == Qt::RightButton) {
@@ -35,12 +35,4 @@ void PolygonModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF currentClickPos = mapToScene(event->pos());
     if (lineItems_.empty()) return;
     lineItems_.back()->setLine(QLineF{lastClickPos_, currentClickPos});
-}
-
-void PolygonModeView::changeFillColor(const QColor& color) {
-    fillColor_ = color;
-}
-
-void PolygonModeView::changeStrokeColor(const QColor& color) {
-    strokeColor_ = color;
 }

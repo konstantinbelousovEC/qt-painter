@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <QGraphicsView>
+#include "custom-graphics-view.h"
 
-class LineModeView : public QGraphicsView {
+class LineModeView : public CustomGraphicsView {
  Q_OBJECT
 
  public:
@@ -15,16 +15,10 @@ class LineModeView : public QGraphicsView {
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
- private slots:
-    void changeLineColor(const QColor& color);
-    void changeLineWidth(int width);
-
  signals:
     void changeStateOfScene();
 
  private:
     QGraphicsLineItem* currentItem_;
     QPointF startCursorPos_;
-    QColor lineColor_;
-    int lineWidth_;
 };

@@ -8,15 +8,12 @@
 namespace {
     constexpr Qt::GlobalColor kDefaultLineFillColor{Qt::blue};
     constexpr int kDefaultLineWidth{5};
-    const QPen kDefaultPen{kDefaultLineFillColor, kDefaultLineWidth, Qt::SolidLine, Qt::RoundCap}; // todo: check
 }
 
 LineModeView::LineModeView(QGraphicsScene *scene)
-    : QGraphicsView(scene),
+    : CustomGraphicsView(scene, std::nullopt, kDefaultLineFillColor, kDefaultLineWidth),
       currentItem_(nullptr),
-      startCursorPos_(detail::kZeroPointF),
-      lineColor_(kDefaultLineFillColor),
-      lineWidth_(kDefaultLineWidth)
+      startCursorPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -26,7 +23,11 @@ void LineModeView::mousePressEvent(QMouseEvent *event) {
         startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addLine(QLineF{startCursorPos_,
                                                startCursorPos_},
-                                        kDefaultPen);
+                                        QPen{strokeColor_.value(),
+                                             static_cast<qreal>(strokeWidth_),
+                                             Qt::SolidLine,
+                                             Qt::SquareCap,
+                                             Qt::MiterJoin});
 
         if (currentItem_ != nullptr)
             detail::makeItemSelectableAndMovable(currentItem_);
@@ -48,12 +49,4 @@ void LineModeView::mouseReleaseEvent(QMouseEvent *event) {
         }
         currentItem_ = nullptr;
     }
-}
-
-void LineModeView::changeLineColor(const QColor &color) {
-    lineColor_ = color;
-}
-
-void LineModeView::changeLineWidth(int width) {
-    lineWidth_ = width;
 }

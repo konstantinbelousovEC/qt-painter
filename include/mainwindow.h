@@ -4,12 +4,25 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
+#include <QToolButton>
+#include <QSpinBox>
 #include <QMenu>
 
 QT_BEGIN_NAMESPACE
 class QGraphicsScene;
 class QGraphicsView;
 class QPushButton;
+class QSpinBox;
+class QToolButton;
+class ModificationModeView;
+class SquareModeView;
+class RectangleModeView;
+class TriangleModeView;
+class PolygonModeView;
+class CircleModeView;
+class LineModeView;
+class BrushModeView;
+class CustomGraphicsView;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
@@ -20,6 +33,10 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
+    void test(); // todo: refactor
+    void setUpToolBarActionsConnections();
+    void changeActionsVisibility(int btnIndex);
+
     void addGraphicsViews();
     void setUpLayout();
     void setUpScene();
@@ -32,18 +49,44 @@ class MainWindow : public QMainWindow {
     void connectViewsSignals(GraphicViewType view, Signal signal);
 
     template<typename GraphicViewType>
-    void setUpGraphicView(std::string_view iconPath);
+    GraphicViewType* setUpGraphicView(std::string_view iconPath);
+
+    template<int PropertiesAmount, typename ModeView>
+    void setUpModePropertiesToolButtons(ModeView view);
 
  private slots:
     void changeSceneState();
+    void setFillColor();
+    void setStrokeColor();
+    void setStrokeWidth(int width);
 
  private:
     QList<QPushButton*> modeButtonsList_;
+    QList<CustomGraphicsView*> viewsList_;
     QGraphicsScene* graphicsScene_;
+
+    ModificationModeView*   modificationModeView_;
+    SquareModeView*         squareModeView_;
+    RectangleModeView*      rectangleModeView_;
+    TriangleModeView*       triangleModeView_;
+    PolygonModeView*        polygonModeView_;
+    CircleModeView*         circleModeView_;
+    LineModeView*           lineModeView_;
+    BrushModeView*          brushModeView_;
+
+    QToolButton* fillColorButton_;
+    QToolButton* strokeColorButton_;
+    QSpinBox* strokeWidthSpinBox_;
+
+    QAction* fillColorAction_;
+    QAction* strokeColorAction_;
+    QAction* strokeWidthAction_;
+
     QStackedWidget* stackedWidget_;
     QToolBar* modeButtonsToolBar_;
     QSize windowSize_;
     bool isModified_;
+
 };
 
 template<typename GraphicViewType, typename Signal>
@@ -52,9 +95,30 @@ void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
 }
 
 template<typename GraphicViewType>
-void MainWindow::setUpGraphicView(std::string_view iconPath) {
-    auto view = new GraphicViewType{graphicsScene_};
+GraphicViewType* MainWindow::setUpGraphicView(std::string_view iconPath) {
+    auto* view = new GraphicViewType{graphicsScene_};
     auto viewIndex = stackedWidget_->addWidget(view);
     addMode(iconPath, viewIndex);
     connectViewsSignals(view, &GraphicViewType::changeStateOfScene);
+    if constexpr (!std::is_same_v<GraphicViewType, ModificationModeView>) viewsList_.push_back(view);
+    return view;
+}
+
+template<int PropertiesAmount, typename ModeView>
+void MainWindow::setUpModePropertiesToolButtons(ModeView view) {
+    QPixmap pixmap{24, 24};
+    if constexpr (PropertiesAmount == 3) {
+        pixmap.fill(view->getFillColor());
+        fillColorButton_->setIcon(pixmap);
+        fillColorAction_->setVisible(true);
+    } else if constexpr (PropertiesAmount == 2) {
+        fillColorAction_->setVisible(false);
+    }
+
+    pixmap.fill(view->getStrokeColor());
+    strokeColorButton_->setIcon(pixmap);
+    strokeColorAction_->setVisible(true);
+
+    strokeWidthSpinBox_->setValue(view->getStrokeWidth());
+    strokeWidthAction_->setVisible(true);
 }

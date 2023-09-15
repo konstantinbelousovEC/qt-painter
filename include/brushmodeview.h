@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <QGraphicsView>
+#include "custom-graphics-view.h"
 
-class BrushModeView : public QGraphicsView {
+class BrushModeView : public CustomGraphicsView {
     Q_OBJECT
 
  public:
@@ -15,10 +15,6 @@ class BrushModeView : public QGraphicsView {
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
- private slots:
-    void changeLineColor(const QColor& color);
-    void changeLineWidth(int width);
-
  signals:
     void changeStateOfScene();
 
@@ -27,6 +23,4 @@ class BrushModeView : public QGraphicsView {
     QGraphicsEllipseItem* startEllipseItem_;
     QPointF startCursorPos_;
     QPointF previousCursorPos_;
-    QColor lineColor_;
-    int lineWidth_;
 };

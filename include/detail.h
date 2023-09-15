@@ -8,6 +8,7 @@ namespace detail {
 
     constexpr QSizeF kZeroSizeF{0, 0};
     constexpr QPointF kZeroPointF{0, 0};
+    constexpr int kDefaultStrokeWidth{1};
 
     template<typename ItemType>
     void makeItemSelectableAndMovable(ItemType* item) {
