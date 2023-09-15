@@ -15,13 +15,6 @@ class QPushButton;
 class QSpinBox;
 class QToolButton;
 class ModificationModeView;
-class SquareModeView;
-class RectangleModeView;
-class TriangleModeView;
-class PolygonModeView;
-class CircleModeView;
-class LineModeView;
-class BrushModeView;
 class DrawingGraphicsView;
 QT_END_NAMESPACE
 
@@ -33,23 +26,22 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
-    void test(); // todo: refactor
+    void setUpModePropertiesButtonsAndActions(); // todo: refactor
     void setUpToolBarActionsConnections();
     void changeActionsVisibility(int btnIndex);
-
     void addGraphicsViews();
     void setUpLayout();
     void setUpScene();
     void setUpScreen();
     void setUpToolBarStyle();
     QPushButton* addToolBarButton(std::string_view iconPath);
-    void addMode(std::string_view iconPath, int btnIndex);
+    void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
 
     template<typename GraphicViewType, typename Signal>
     void connectViewsSignals(GraphicViewType view, Signal signal);
 
     template<typename GraphicViewType>
-    GraphicViewType* setUpGraphicView(std::string_view iconPath);
+    void setUpGraphicView(std::string_view iconPath);
 
     template<int PropertiesAmount, typename ModeView>
     void setUpModePropertiesToolButtons(ModeView view);
@@ -58,35 +50,30 @@ class MainWindow : public QMainWindow {
     void changeSceneState();
     void setFillColor();
     void setStrokeColor();
+    void hideAllPropertiesActions();
     void setStrokeWidth(int width);
+    void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
+    void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
 
  private:
-    QList<QPushButton*> modeButtonsList_;
     QList<DrawingGraphicsView*> drawingViewsList_;
-    QGraphicsScene* graphicsScene_;
+    QList<QPushButton*> modeButtonsList_;
+    QList<QAction*> modePropertiesActions_;
 
-    ModificationModeView*   modificationModeView_;
-    SquareModeView*         squareModeView_;
-    RectangleModeView*      rectangleModeView_;
-    TriangleModeView*       triangleModeView_;
-    PolygonModeView*        polygonModeView_;
-    CircleModeView*         circleModeView_;
-    LineModeView*           lineModeView_;
-    BrushModeView*          brushModeView_;
+    QGraphicsScene* graphicsScene_;
+    QStackedWidget* stackedWidget_;
+    QToolBar* modeButtonsToolBar_;
 
     QToolButton* fillColorButton_;
     QToolButton* strokeColorButton_;
     QSpinBox* strokeWidthSpinBox_;
 
-    QAction* fillColorAction_;
-    QAction* strokeColorAction_;
-    QAction* strokeWidthAction_;
+    QAction* fillColorAction_{};
+    QAction* strokeColorAction_{};
+    QAction* strokeWidthAction_{};
 
-    QStackedWidget* stackedWidget_;
-    QToolBar* modeButtonsToolBar_;
     QSize windowSize_;
     bool isModified_;
-
 };
 
 template<typename GraphicViewType, typename Signal>
@@ -95,30 +82,25 @@ void MainWindow::connectViewsSignals(GraphicViewType view, Signal signal) {
 }
 
 template<typename GraphicViewType>
-GraphicViewType* MainWindow::setUpGraphicView(std::string_view iconPath) {
+void MainWindow::setUpGraphicView(std::string_view iconPath) {
     auto* view = new GraphicViewType{graphicsScene_};
     auto viewIndex = stackedWidget_->addWidget(view);
-    addMode(iconPath, viewIndex);
+    addModeButtonsAndConnections(iconPath, viewIndex);
     connectViewsSignals(view, &GraphicViewType::changeStateOfScene);
     if constexpr (!std::is_same_v<GraphicViewType, ModificationModeView>) drawingViewsList_.push_back(view);
-    return view;
 }
+
+void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color);
+void showPropertiesButtons(QSpinBox* spinBox, QAction* action, int width);
 
 template<int PropertiesAmount, typename ModeView>
 void MainWindow::setUpModePropertiesToolButtons(ModeView view) {
-    QPixmap pixmap{24, 24};
     if constexpr (PropertiesAmount == 3) {
-        pixmap.fill(view->getFillColor());
-        fillColorButton_->setIcon(pixmap);
-        fillColorAction_->setVisible(true);
+        showPropertiesButtons(fillColorButton_, fillColorAction_, view->getFillColor());
     } else if constexpr (PropertiesAmount == 2) {
         fillColorAction_->setVisible(false);
     }
 
-    pixmap.fill(view->getStrokeColor());
-    strokeColorButton_->setIcon(pixmap);
-    strokeColorAction_->setVisible(true);
-
-    strokeWidthSpinBox_->setValue(view->getStrokeWidth());
-    strokeWidthAction_->setVisible(true);
+    showPropertiesButtons(strokeColorButton_, strokeColorAction_, view->getStrokeColor());
+    showPropertiesButtons(strokeWidthSpinBox_, strokeWidthAction_, view->getStrokeWidth());
 }
