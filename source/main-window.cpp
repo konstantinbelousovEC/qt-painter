@@ -74,88 +74,30 @@ MainWindow::MainWindow(QWidget *parent)
     setUpConnectionsForStatusBar();
 }
 
+QSize defineWindowSize() {
+    auto windowSize = detail::getScreenSize();
+    return detail::calcWindowRelativeSize(windowSize, 0.15);
+}
+
 MainWindow::~MainWindow() = default;
 
+void MainWindow::setUpScreen() {
+    auto [screenWidth, screenHeight] = detail::getScreenSize();
+    auto [windowWidth, windowHeight] =
+            detail::calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
 
-
-void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
-    QPixmap pixmap{QSize{kDefaultBtnIconSize}};
-    button->setIcon(pixmap);
-    action = toolBar_->addWidget(button);
-    action->setVisible(false);
-    modePropertiesActions_.push_back(action);
+    setMinimumSize(windowWidth, windowHeight);
+    setGeometry((screenWidth - windowWidth) / 2,
+                (screenHeight - windowHeight) / 2,
+                windowWidth,
+                windowHeight);
 }
 
-void MainWindow::setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action) {
-    action = toolBar_->addWidget(spinBox);
-    spinBox->setMinimum(0);
-    spinBox->setMaximum(30);
-    spinBox->setValue(1);
-    action->setVisible(false);
-    modePropertiesActions_.push_back(action);
-}
-
-void MainWindow::setUpDrawingPropertiesButtons() {
-    setUpToolBarColorButtons(fillColorButton_, fillColorAction_);
-    setUpToolBarColorButtons(strokeColorButton_, strokeColorAction_);
-    setUpToolBarSpinBox(strokeWidthSpinBox_, strokeWidthAction_);
-}
-
-template<typename Widget>
-void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath);
-
-void MainWindow::setUpApplicationStyles() {
-    addStyleSheetsToWidget(toolBar_, kToolBarStyleSheetPath);
-    modeButtonsList_.front()->setChecked(true);
-}
-
-void MainWindow::hideAllPropertiesActions() {
-    for (auto* action : modePropertiesActions_) {
-        action->setVisible(false);
-    }
-}
-
-void MainWindow::addModeButtonsAndConnections(std::string_view iconPath, int btnIndex) {
-    auto* button = addToolBarButton(iconPath);
-    connect(button, &QPushButton::clicked, this, [&, button, btnIndex]() {
-        stackedWidget_->setCurrentIndex(btnIndex);
-        for (auto* btn : modeButtonsList_) {
-            btn->setChecked(false);
-        }
-        button->setChecked(true);
-        graphicsScene_->clearSelection();
-
-        if (btnIndex == 0) hideAllPropertiesActions();
-        else changeActionsVisibility(btnIndex);
-    });
-}
-
-void MainWindow::setUpToolBarActionsConnections() {
-    connect(fillColorButton_, &QToolButton::clicked, this, &MainWindow::setFillColor);
-    connect(strokeColorButton_, &QToolButton::clicked, this, &MainWindow::setStrokeColor);
-    connect(strokeWidthSpinBox_, &QSpinBox::valueChanged, this, &MainWindow::setStrokeWidth);
-}
-
-void MainWindow::changeActionsVisibility(int btnIndex) {
-    if (btnIndex == 6 || btnIndex == 7) {
-        setUpModePropertiesToolButtons<2>(drawingViewsList_[btnIndex - 1]);
-    } else {
-        setUpModePropertiesToolButtons<3>(drawingViewsList_[btnIndex - 1]);
-    }
-}
-
-QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
-    auto* button = new QPushButton{};
-    modeButtonsList_.push_back(button);
-    QPixmap pixmap{iconPath.data()};
-
-    button->setIcon(QIcon{pixmap});
-    button->setIconSize(kDefaultBtnIconSize);
-    button->setCheckable(true);
-    button->setChecked(false);
-
-    toolBar_->addWidget(button);
-    return button;
+void MainWindow::setUpScene() {
+    graphicsScene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
+    graphicsScene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
+    QSize sceneSize = detail::calcWindowRelativeSize(windowSize_, 0.1);
+    graphicsScene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
 }
 
 void MainWindow::addGraphicsViews() {
@@ -176,38 +118,115 @@ void MainWindow::setUpWidgetsPlacement() {
     setCentralWidget(stackedWidget_);
 }
 
-void MainWindow::setUpScene() {
-    graphicsScene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
-    graphicsScene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
-    QSize sceneSize = detail::calcWindowRelativeSize(windowSize_, 0.1);
-    graphicsScene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
+template<typename Widget>
+void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath);
+
+void MainWindow::setUpApplicationStyles() {
+    addStyleSheetsToWidget(toolBar_, kToolBarStyleSheetPath);
+    modeButtonsList_.front()->setChecked(true);
 }
 
-void MainWindow::setUpScreen() {
-    auto [screenWidth, screenHeight] = detail::getScreenSize();
-    auto [windowWidth, windowHeight] =
-            detail::calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
+template<typename Widget>
+void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath) {
+    QFile file(qssPath.data());
+    file.open(QFile::ReadOnly);
+    QString strCSS = QLatin1String(file.readAll());
+    widget->setStyleSheet(strCSS);
+}
 
-    setMinimumSize(windowWidth, windowHeight);
-    setGeometry((screenWidth - windowWidth) / 2,
-                (screenHeight - windowHeight) / 2,
-                windowWidth,
-                windowHeight);
+void MainWindow::setUpDrawingPropertiesButtons() {
+    setUpToolBarColorButtons(fillColorButton_, fillColorAction_);
+    setUpToolBarColorButtons(strokeColorButton_, strokeColorAction_);
+    setUpToolBarSpinBox(strokeWidthSpinBox_, strokeWidthAction_);
+}
+
+void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
+    QPixmap pixmap{QSize{kDefaultBtnIconSize}};
+    button->setIcon(pixmap);
+    action = toolBar_->addWidget(button);
+    action->setVisible(false);
+    modePropertiesActions_.push_back(action);
+}
+
+void MainWindow::setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action) {
+    action = toolBar_->addWidget(spinBox);
+    spinBox->setMinimum(0);
+    spinBox->setMaximum(30);
+    spinBox->setValue(1);
+    action->setVisible(false);
+    modePropertiesActions_.push_back(action);
+}
+
+void MainWindow::setUpToolBarActionsConnections() {
+    connect(fillColorButton_, &QToolButton::clicked, this, &MainWindow::setFillColor);
+    connect(strokeColorButton_, &QToolButton::clicked, this, &MainWindow::setStrokeColor);
+    connect(strokeWidthSpinBox_, &QSpinBox::valueChanged, this, &MainWindow::setStrokeWidth);
+}
+
+void MainWindow::setUpConnectionsForStatusBar() {
+    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    for (auto* view : drawingViewsList_) {
+        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    }
+}
+
+QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
+    auto* button = new QPushButton{};
+    modeButtonsList_.push_back(button);
+    QPixmap pixmap{iconPath.data()};
+
+    button->setIcon(QIcon{pixmap});
+    button->setIconSize(kDefaultBtnIconSize);
+    button->setCheckable(true);
+    button->setChecked(false);
+
+    toolBar_->addWidget(button);
+    return button;
+}
+
+void MainWindow::addModeButtonsAndConnections(std::string_view iconPath, int btnIndex) {
+    auto* button = addToolBarButton(iconPath);
+    connect(button, &QPushButton::clicked, this, [&, button, btnIndex]() {
+        stackedWidget_->setCurrentIndex(btnIndex);
+        for (auto* btn : modeButtonsList_) {
+            btn->setChecked(false);
+        }
+        button->setChecked(true);
+        graphicsScene_->clearSelection();
+
+        if (btnIndex == 0) hideAllPropertiesActions();
+        else changeActionsVisibility(btnIndex);
+    });
+}
+
+void MainWindow::changeActionsVisibility(int btnIndex) {
+    if (btnIndex == 6 || btnIndex == 7) {
+        setUpModePropertiesToolButtons<2>(drawingViewsList_[btnIndex - 1]);
+    } else {
+        setUpModePropertiesToolButtons<3>(drawingViewsList_[btnIndex - 1]);
+    }
+}
+
+void MainWindow::hideAllPropertiesActions() {
+    for (auto* action : modePropertiesActions_) {
+        action->setVisible(false);
+    }
+}
+
+// Slots:
+
+void MainWindow::updateCursorPosition(QPointF position) {
+    statusBar()->showMessage(QString("x: %1 | y: %2").arg(position.x()).arg(position.y()));
+}
+
+void MainWindow::setStrokeWidth(int width) {
+    assert(width >= 0);
+    int viewIndex = stackedWidget_->currentIndex();
+    drawingViewsList_[viewIndex - 1]->setStrokeWidth(width);
 }
 
 void MainWindow::changeSceneState() {
     isModified_ = true;
-}
-
-void MainWindow::setFillColor() {
-    QColor color = QColorDialog::getColor();
-    if (color.isValid()) {
-        int viewIndex = stackedWidget_->currentIndex();
-        drawingViewsList_[viewIndex - 1]->setFillColor(color);
-        QPixmap pixmap{kDefaultBtnIconSize};
-        pixmap.fill(color);
-        fillColorButton_->setIcon(pixmap);
-    }
 }
 
 void MainWindow::setStrokeColor() {
@@ -221,34 +240,15 @@ void MainWindow::setStrokeColor() {
     }
 }
 
-void MainWindow::setStrokeWidth(int width) {
-    assert(width >= 0);
-    int viewIndex = stackedWidget_->currentIndex();
-    drawingViewsList_[viewIndex - 1]->setStrokeWidth(width);
-}
-
-void MainWindow::updateCursorPosition(QPointF position) {
-    statusBar()->showMessage(QString("x: %1 | y: %2").arg(position.x()).arg(position.y()));
-}
-
-void MainWindow::setUpConnectionsForStatusBar() {
-    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
-    for (auto* view : drawingViewsList_) {
-        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+void MainWindow::setFillColor() {
+    QColor color = QColorDialog::getColor();
+    if (color.isValid()) {
+        int viewIndex = stackedWidget_->currentIndex();
+        drawingViewsList_[viewIndex - 1]->setFillColor(color);
+        QPixmap pixmap{kDefaultBtnIconSize};
+        pixmap.fill(color);
+        fillColorButton_->setIcon(pixmap);
     }
-}
-
-QSize defineWindowSize() {
-    auto windowSize = detail::getScreenSize();
-    return detail::calcWindowRelativeSize(windowSize, 0.15);
-}
-
-template<typename Widget>
-void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath) {
-    QFile file(qssPath.data());
-    file.open(QFile::ReadOnly);
-    QString strCSS = QLatin1String(file.readAll());
-    widget->setStyleSheet(strCSS);
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color) {

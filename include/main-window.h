@@ -48,11 +48,11 @@ class MainWindow : public QMainWindow {
     void setUpModePropertiesToolButtons(ModeView view);
 
  private slots:
-    void changeSceneState();
-    void setFillColor();
-    void setStrokeColor();
     void updateCursorPosition(QPointF position);
     void setStrokeWidth(int width);
+    void changeSceneState();
+    void setStrokeColor();
+    void setFillColor();
 
  private:
     QList<DrawingGraphicsView*> drawingViewsList_;
