@@ -22,7 +22,7 @@ void RectangleModeView::mousePressEvent(QMouseEvent* event) {
         startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addRect(
                 QRectF{startCursorPos_, detail::kZeroSizeF},
-                QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_.value()}
         );
 

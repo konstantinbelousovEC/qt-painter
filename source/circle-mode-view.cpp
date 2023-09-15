@@ -23,7 +23,7 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
         ellipseCenterPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addEllipse(
                 QRectF{ellipseCenterPos_, detail::kZeroSizeF},
-                QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
+                QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_.value()}
         );
 

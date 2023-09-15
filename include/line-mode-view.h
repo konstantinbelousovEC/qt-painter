@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "custom-graphics-view.h"
+#include "drawing-graphics-view.h"
 
 class LineModeView : public DrawingGraphicsView {
  Q_OBJECT

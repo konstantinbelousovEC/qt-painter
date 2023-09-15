@@ -12,7 +12,7 @@ namespace {
 }
 
 BrushModeView::BrushModeView(QGraphicsScene* scene)
-        : DrawingGraphicsView(scene, std::nullopt, kDefaultBrushFillColor, kDefaultBrushWidth),
+        : DrawingGraphicsView(scene, Qt::transparent, kDefaultBrushFillColor, kDefaultBrushWidth),
           startEllipseItem_(nullptr),
           startCursorPos_(detail::kZeroPointF),
           previousCursorPos_(detail::kZeroPointF)
@@ -28,7 +28,7 @@ void BrushModeView::mousePressEvent(QMouseEvent* event) {
                                                 strokeWidth_,
                                                 strokeWidth_,
                                                 QPen{Qt::NoPen},
-                                                QBrush{strokeColor_.value()});
+                                                QBrush{strokeColor_});
 
         if (startEllipseItem_ != nullptr) {
             detail::makeItemSelectableAndMovable(startEllipseItem_);
@@ -46,7 +46,7 @@ void BrushModeView::mouseMoveEvent(QMouseEvent* event) {
                                                       previousCursorPos_.y(),
                                                       currentCursorPos.x(),
                                                       currentCursorPos.y(),
-                                                      QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
+                                                      QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
 
         if (currentTemporaryLine != nullptr) {
             temporaryLines_.push_back(currentTemporaryLine);
@@ -69,7 +69,7 @@ void BrushModeView::mouseReleaseEvent(QMouseEvent* event) {
             }
             temporaryLines_.clear();
 
-            auto* scenePath = scene()->addPath(path, QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
+            auto* scenePath = scene()->addPath(path, QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
             if (scenePath != nullptr) detail::makeItemSelectableAndMovable(scenePath);
 
             detail::deleteItem(scene(), startEllipseItem_);

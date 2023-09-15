@@ -1,10 +1,10 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include "../include/custom-graphics-view.h"
+#include "../include/drawing-graphics-view.h"
 
 DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene,
-                                       std::optional<QColor> fillColor,
-                                       std::optional<QColor> strokeColor,
+                                       QColor fillColor,
+                                       QColor strokeColor,
                                        int strokeWidth)
     : QGraphicsView(scene),
       fillColor_(fillColor),
@@ -14,17 +14,17 @@ DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene,
 DrawingGraphicsView::~DrawingGraphicsView() = default;
 
 QColor DrawingGraphicsView::getFillColor() const noexcept {
-    if (fillColor_.has_value()) return fillColor_.value();
+    if (fillColor_.isValid()) return fillColor_.value();
     else return QColor{qRgba(0,0,0,0)};
 }
 
 QColor DrawingGraphicsView::getStrokeColor() const noexcept {
-    if (strokeColor_.has_value()) return strokeColor_.value();
+    if (strokeColor_.isValid()) return strokeColor_;
     else return QColor{qRgba(0,0,0,0)};
 }
 
 int DrawingGraphicsView::getStrokeWidth() const noexcept {
-    return strokeWidth_;
+    return static_cast<int>(strokeWidth_);
 }
 
 void DrawingGraphicsView::setFillColor(const QColor& color) {

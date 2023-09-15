@@ -19,7 +19,7 @@ void PolygonModeView::mousePressEvent(QMouseEvent* event) {
                     scene()->addLine(QLineF{lastClickPos_, lastClickPos_});
 
             if (tmpLinePointer == nullptr) return;
-            tmpLinePointer->setPen(QPen{strokeColor_.value(), static_cast<qreal>(strokeWidth_), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
+            tmpLinePointer->setPen(QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
             points_.push_back(lastClickPos_);
             lineItems_.push_back(tmpLinePointer);
     } else if (event->button() == Qt::RightButton) {

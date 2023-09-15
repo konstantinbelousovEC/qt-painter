@@ -11,7 +11,7 @@ namespace {
 }
 
 LineModeView::LineModeView(QGraphicsScene *scene)
-    : DrawingGraphicsView(scene, std::nullopt, kDefaultLineFillColor, kDefaultLineWidth),
+    : DrawingGraphicsView(scene, Qt::transparent, kDefaultLineFillColor, kDefaultLineWidth),
       currentItem_(nullptr),
       startCursorPos_(detail::kZeroPointF)
 {
@@ -23,8 +23,8 @@ void LineModeView::mousePressEvent(QMouseEvent *event) {
         startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addLine(QLineF{startCursorPos_,
                                                startCursorPos_},
-                                        QPen{strokeColor_.value(),
-                                             static_cast<qreal>(strokeWidth_),
+                                        QPen{strokeColor_,
+                                             strokeWidth_,
                                              Qt::SolidLine,
                                              Qt::SquareCap,
                                              Qt::MiterJoin});

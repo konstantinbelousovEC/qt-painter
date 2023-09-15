@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "custom-graphics-view.h"
+#include "drawing-graphics-view.h"
 
 class Polygon : public DrawingGraphicsView {
  public:

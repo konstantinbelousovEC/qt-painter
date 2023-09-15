@@ -10,8 +10,8 @@ class DrawingGraphicsView : public QGraphicsView {
 
  public:
     DrawingGraphicsView(QGraphicsScene* scene,
-                       std::optional<QColor> fillColor,
-                       std::optional<QColor> strokeColor,
+                       QColor fillColor,
+                       QColor strokeColor,
                        int strokeWidth);
 
     ~DrawingGraphicsView() override;
@@ -25,7 +25,7 @@ class DrawingGraphicsView : public QGraphicsView {
     virtual void setStrokeWidth(int width);
 
  protected:
-    std::optional<QColor> fillColor_;
-    std::optional<QColor> strokeColor_;
-    int strokeWidth_;
+    QColor fillColor_;
+    QColor strokeColor_;
+    qreal strokeWidth_;
 };
