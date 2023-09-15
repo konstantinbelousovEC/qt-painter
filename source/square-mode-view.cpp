@@ -5,15 +5,10 @@
 #include "../include/square-mode-view.h"
 #include "../include/detail.h"
 
-namespace {
-    constexpr Qt::GlobalColor kDefaultSquareFillColor{Qt::red};
-    constexpr Qt::GlobalColor kDefaultSquareStrokeColor{Qt::black};
-}
-
 SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, kDefaultSquareFillColor, kDefaultSquareStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      centerPos_(detail::kZeroPointF)
+      centerPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -22,7 +17,7 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         centerPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addRect(
-                QRectF{centerPos_, detail::kZeroSizeF},
+                QRectF{centerPos_, constants::kZeroSizeF},
                 QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_}
         );

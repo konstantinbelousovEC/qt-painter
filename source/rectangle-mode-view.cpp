@@ -3,16 +3,12 @@
 #include <QMouseEvent>
 #include "../include/rectangle-mode-view.h"
 #include "../include/detail.h"
-
-namespace {
-    constexpr Qt::GlobalColor kDefaultRectFillColor{Qt::yellow};
-    constexpr Qt::GlobalColor kDefaultRectStrokeColor{Qt::black};
-}
+#include "../include/constants.h"
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, kDefaultRectFillColor, kDefaultRectStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      startCursorPos_(detail::kZeroPointF)
+      startCursorPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -21,7 +17,7 @@ void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addRect(
-                QRectF{startCursorPos_, detail::kZeroSizeF},
+                QRectF{startCursorPos_, constants::kZeroSizeF},
                 QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_}
         );

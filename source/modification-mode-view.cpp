@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include "../include/modification-mode-view.h"
 #include "../include/detail.h"
+#include "../include/constants.h"
 
 namespace {
     const QColor kSelectionAreaBrush{0, 0, 200, 15};
@@ -37,9 +38,9 @@ qreal calculateRotationAngle(const QPointF& geometricCenterO,
 ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
     : QGraphicsView(graphic_scene),
       selectionArea_(new QGraphicsRectItem()),
-      selectionStartPos_(detail::kZeroPointF),
-      lastClickPos_(detail::kZeroPointF),
-      initialCursorPosA_(detail::kZeroPointF),
+      selectionStartPos_(constants::kZeroPointF),
+      lastClickPos_(constants::kZeroPointF),
+      initialCursorPosA_(constants::kZeroPointF),
       isMoving_(false)
 {
     setSelectionAreaProperties();

@@ -3,14 +3,10 @@
 #include <QMouseEvent>
 #include <QGraphicsLineItem>
 #include "../include/triangle-mode.h"
-
-namespace {
-    constexpr Qt::GlobalColor kDefaultTriangleFillColor{Qt::cyan};
-    constexpr Qt::GlobalColor kDefaultTriangleStrokeColor{Qt::black};
-}
+#include "../include/constants.h"
 
 TriangleModeView::TriangleModeView(QGraphicsScene* scene)
-    : Polygon(scene, kDefaultTriangleFillColor, kDefaultTriangleStrokeColor, 1) {} // todo: make a new file with common constants
+    : Polygon(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth) {}
 
 void TriangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

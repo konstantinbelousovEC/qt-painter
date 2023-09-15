@@ -2,20 +2,15 @@
 
 #include <QMouseEvent>
 #include <QPainterPath>
-#include <QGraphicsEllipseItem>
 #include "../include/brush-mode-view.h"
 #include "../include/detail.h"
-
-namespace {
-    constexpr Qt::GlobalColor kDefaultBrushFillColor{Qt::red};
-    constexpr int kDefaultBrushWidth{10};
-}
+#include "../include/constants.h"
 
 BrushModeView::BrushModeView(QGraphicsScene* scene)
-        : DrawingGraphicsView(scene, Qt::transparent, kDefaultBrushFillColor, kDefaultBrushWidth),
+        : DrawingGraphicsView(scene, Qt::transparent, constants::kDefaultColor, constants::kDefaultBrushWidth),
           startEllipseItem_(nullptr),
-          startCursorPos_(detail::kZeroPointF),
-          previousCursorPos_(detail::kZeroPointF)
+          startCursorPos_(constants::kZeroPointF),
+          previousCursorPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }

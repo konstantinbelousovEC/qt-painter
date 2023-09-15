@@ -4,16 +4,12 @@
 #include <QMouseEvent>
 #include "../include/line-mode-view.h"
 #include "../include/detail.h"
-
-namespace {
-    constexpr Qt::GlobalColor kDefaultLineFillColor{Qt::blue};
-    constexpr int kDefaultLineWidth{5};
-}
+#include "../include/constants.h"
 
 LineModeView::LineModeView(QGraphicsScene *scene)
-    : DrawingGraphicsView(scene, Qt::transparent, kDefaultLineFillColor, kDefaultLineWidth),
+    : DrawingGraphicsView(scene, Qt::transparent, constants::kDefaultColor, constants::kDefaultBrushWidth),
       currentItem_(nullptr),
-      startCursorPos_(detail::kZeroPointF)
+      startCursorPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }

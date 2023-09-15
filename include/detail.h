@@ -3,12 +3,9 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include "constants.h"
 
 namespace detail {
-
-    constexpr QSizeF kZeroSizeF{0, 0};
-    constexpr QPointF kZeroPointF{0, 0};
-    constexpr int kDefaultStrokeWidth{1};
 
     template<typename ItemType>
     void makeItemSelectableAndMovable(ItemType* item) {
@@ -34,7 +31,7 @@ namespace detail {
     bool shouldDeleteZeroSizeItem(const GraphicsItem* currentItem,
                                   const QPointF& startPos) {
         auto rect = currentItem->rect();
-        return rect.topLeft() == startPos && rect.size() == kZeroSizeF;
+        return rect.topLeft() == startPos && rect.size() == constants::kZeroSizeF;
     }
 
     QSize getScreenSize();

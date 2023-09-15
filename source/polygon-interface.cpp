@@ -3,10 +3,11 @@
 #include <QMouseEvent>
 #include "../include/polygon-interface.h"
 #include "../include/detail.h"
+#include "../include/constants.h"
 
 Polygon::Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth)
         : DrawingGraphicsView(scene, fillColor, strokeColor, strokeWidth),
-          lastClickPos_(detail::kZeroPointF)
+          lastClickPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
     setMouseTracking(true);

@@ -4,16 +4,12 @@
 #include <QGraphicsItem>
 #include "../include/circle-mode-view.h"
 #include "../include/detail.h"
-
-namespace {
-    constexpr Qt::GlobalColor kDefaultCircleFillColor{Qt::green};
-    constexpr Qt::GlobalColor kDefaultCircleStrokeColor{Qt::black};
-}
+#include "../include/constants.h"
 
 CircleModeView::CircleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, kDefaultCircleFillColor, kDefaultCircleStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
       currentItem_(nullptr),
-      ellipseCenterPos_(detail::kZeroPointF)
+      ellipseCenterPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);
 }
@@ -22,7 +18,7 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         ellipseCenterPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addEllipse(
-                QRectF{ellipseCenterPos_, detail::kZeroSizeF},
+                QRectF{ellipseCenterPos_, constants::kZeroSizeF},
                 QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_}
         );
