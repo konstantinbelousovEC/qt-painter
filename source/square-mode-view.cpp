@@ -28,8 +28,9 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
 }
 
 void SquareModeView::mouseMoveEvent(QMouseEvent* event) {
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
-        QPointF currentCursorPos = mapToScene(event->pos());
         qreal halfDistance = QLineF{centerPos_, currentCursorPos}.length() / 2;
         QRectF updatedRectangle{centerPos_.x() - halfDistance / 2,
                                 centerPos_.y() - halfDistance / 2,

@@ -28,6 +28,7 @@ class MainWindow : public QMainWindow {
     void changeActionsVisibility(int btnIndex);
     void setUpModePropertiesButtonsAndActions();
     void setUpToolBarActionsConnections();
+    void setUpConnectionsForStatusBar();
     void addGraphicsViews();
     void setUpLayout();
     void setUpScene();
@@ -48,6 +49,7 @@ class MainWindow : public QMainWindow {
     void setFillColor();
     void setStrokeColor();
     void hideAllPropertiesActions();
+    void updateCursorPosition(QPointF position);
     void setStrokeWidth(int width);
     void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
     void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
@@ -59,7 +61,10 @@ class MainWindow : public QMainWindow {
 
     QGraphicsScene* graphicsScene_;
     QStackedWidget* stackedWidget_;
-    QToolBar* modeButtonsToolBar_;
+    QToolBar* toolBar_;
+    QStatusBar* statusBar_;
+
+    ModificationModeView* modificationModeView_;
 
     QToolButton* fillColorButton_;
     QToolButton* strokeColorButton_;
@@ -85,6 +90,7 @@ void MainWindow::setUpGraphicView(std::string_view iconPath) {
     addModeButtonsAndConnections(iconPath, viewIndex);
     connectViewsSignals(view, &GraphicsViewType::changeStateOfScene);
     if constexpr (!std::is_same_v<GraphicsViewType, ModificationModeView>) drawingViewsList_.push_back(view);
+    else modificationModeView_ = view;
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color);

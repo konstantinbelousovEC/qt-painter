@@ -35,8 +35,9 @@ void LineModeView::mousePressEvent(QMouseEvent *event) {
 }
 
 void LineModeView::mouseMoveEvent(QMouseEvent *event) {
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton)) {
-        QPointF currentCursorPos = mapToScene(event->pos());
         currentItem_->setLine(QLineF{startCursorPos_, currentCursorPos});
         emit changeStateOfScene();
     }

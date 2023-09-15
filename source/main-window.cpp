@@ -12,6 +12,7 @@
 #include <QLatin1String>
 #include <QToolButton>
 #include <QSpinBox>
+#include <QStatusBar>
 #include <QColorDialog>
 #include <string_view>
 #include "../include/detail.h"
@@ -45,7 +46,7 @@ namespace {
 
 }  // namespace
 
-QSize defineWindowSize() {
+inline QSize defineWindowSize() {
     auto windowSize = detail::getScreenSize();
     return detail::calcWindowRelativeSize(windowSize, 0.15);
 }
@@ -54,7 +55,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
       graphicsScene_(new QGraphicsScene{this}),
       stackedWidget_(new QStackedWidget{this}),
-      modeButtonsToolBar_(new QToolBar{this}),
+      toolBar_(new QToolBar{this}),
+      statusBar_(new QStatusBar{this}),
+      modificationModeView_(nullptr),
       fillColorButton_(new QToolButton{}),
       strokeColorButton_(new QToolButton{}),
       strokeWidthSpinBox_(new QSpinBox{}),
@@ -64,15 +67,22 @@ MainWindow::MainWindow(QWidget *parent)
       windowSize_(defineWindowSize()),
       isModified_(false)
 {
-    modeButtonsToolBar_->addSeparator();
     setUpScreen();
     setUpScene();
     addGraphicsViews();
     setUpLayout();
     setUpToolBarStyle();
-    modeButtonsToolBar_->addSeparator();
     setUpModePropertiesButtonsAndActions();
     setUpToolBarActionsConnections();
+    setStatusBar(statusBar_);
+    setUpConnectionsForStatusBar();
+}
+
+void MainWindow::setUpConnectionsForStatusBar() {
+    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    for (auto* view : drawingViewsList_) {
+        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    }
 }
 
 MainWindow::~MainWindow() = default;
@@ -80,13 +90,13 @@ MainWindow::~MainWindow() = default;
 void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
     QPixmap pixmap{QSize{kDefaultBtnIconSize}};
     button->setIcon(pixmap);
-    action = modeButtonsToolBar_->addWidget(button);
+    action = toolBar_->addWidget(button);
     action->setVisible(false);
     modePropertiesActions_.push_back(action);
 }
 
 void MainWindow::setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action) {
-    action = modeButtonsToolBar_->addWidget(spinBox);
+    action = toolBar_->addWidget(spinBox);
     spinBox->setMinimum(0);
     spinBox->setMaximum(30);
     spinBox->setValue(1);
@@ -104,9 +114,8 @@ void MainWindow::setUpToolBarStyle() {
     QFile file(kToolBarStyleSheetPath.data());
     file.open(QFile::ReadOnly);
     QString strCSS = QLatin1String(file.readAll());
-    modeButtonsToolBar_->setStyleSheet(strCSS);
+    toolBar_->setStyleSheet(strCSS);
     modeButtonsList_.front()->setChecked(true);
-    modeButtonsToolBar_->setMinimumHeight(45);
 }
 
 void MainWindow::hideAllPropertiesActions() {
@@ -154,7 +163,7 @@ QPushButton* MainWindow::addToolBarButton(std::string_view iconPath) {
     button->setCheckable(true);
     button->setChecked(false);
 
-    modeButtonsToolBar_->addWidget(button);
+    toolBar_->addWidget(button);
     return button;
 }
 
@@ -167,16 +176,12 @@ void MainWindow::addGraphicsViews() {
     setUpGraphicView<CircleModeView>(kCircleModeIconPath);
     setUpGraphicView<LineModeView>(kLineModeIconPath);
     setUpGraphicView<BrushModeView>(kBrushModeIconPath);
+    toolBar_->addSeparator();
 }
 
 void MainWindow::setUpLayout() {
-    auto* verticalLayout = new QVBoxLayout{};
-    verticalLayout->addWidget(modeButtonsToolBar_);
-    verticalLayout->addWidget(stackedWidget_);
-
-    auto* centralWidget = new QWidget{};
-    centralWidget->setLayout(verticalLayout);
-    setCentralWidget(centralWidget);
+    addToolBar(toolBar_);
+    setCentralWidget(stackedWidget_);
 }
 
 void MainWindow::setUpScene() {
@@ -228,6 +233,10 @@ void MainWindow::setStrokeWidth(int width) {
     assert(width >= 0);
     int viewIndex = stackedWidget_->currentIndex();
     drawingViewsList_[viewIndex - 1]->setStrokeWidth(width);
+}
+
+void MainWindow::updateCursorPosition(QPointF position) {
+    statusBar()->showMessage(QString("x: %1 | y: %2").arg(position.x()).arg(position.y()));
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color) {

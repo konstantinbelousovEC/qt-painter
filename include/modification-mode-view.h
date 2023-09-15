@@ -17,6 +17,7 @@ class ModificationModeView : public QGraphicsView {
     void keyPressEvent(QKeyEvent* event) override;
 
  signals:
+    void cursorPositionChanged(QPointF position);
     void changeStateOfScene();
 
  private:

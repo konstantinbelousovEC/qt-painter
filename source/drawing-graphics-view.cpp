@@ -1,5 +1,6 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
+#include <QMouseEvent>
 #include "../include/drawing-graphics-view.h"
 #include "../include/constants.h"
 
@@ -11,7 +12,11 @@ DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene, int strokeWidth)
     : QGraphicsView(scene),
       fillColor_(kDefaultColor),
       strokeColor_(kDefaultColor),
-      strokeWidth_(strokeWidth) {}
+      strokeWidth_(strokeWidth)
+{
+    setRenderHint(QPainter::Antialiasing);
+    setMouseTracking(true);
+}
 
 DrawingGraphicsView::~DrawingGraphicsView() = default;
 

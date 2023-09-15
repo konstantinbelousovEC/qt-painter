@@ -39,8 +39,9 @@ void BrushModeView::mousePressEvent(QMouseEvent* event) {
 }
 
 void BrushModeView::mouseMoveEvent(QMouseEvent* event) {
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (startEllipseItem_ != nullptr && event->buttons() & Qt::LeftButton) {
-        QPointF currentCursorPos = mapToScene(event->pos());
         auto* currentTemporaryLine = scene()->addLine(previousCursorPos_.x(),
                                                       previousCursorPos_.y(),
                                                       currentCursorPos.x(),

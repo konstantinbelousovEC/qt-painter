@@ -29,9 +29,10 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
 }
 
 void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton)) {
-        QPointF currentPos = mapToScene(event->pos());
-        qreal radius = QLineF{ellipseCenterPos_, currentPos}.length();
+        qreal radius = QLineF{ellipseCenterPos_, currentCursorPos}.length();
         QRectF describingRectangle{ellipseCenterPos_.x() - radius,
                                    ellipseCenterPos_.y() - radius,
                                    radius * 2,

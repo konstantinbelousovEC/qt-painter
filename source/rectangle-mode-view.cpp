@@ -28,8 +28,9 @@ void RectangleModeView::mousePressEvent(QMouseEvent* event) {
 }
 
 void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
-        QPointF currentCursorPos = mapToScene(event->pos());
         QRectF updatedRectangle = detail::updateRectangleSize(startCursorPos_,
                                                               currentCursorPos);
 

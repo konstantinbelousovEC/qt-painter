@@ -24,4 +24,7 @@ class DrawingGraphicsView : public QGraphicsView {
     QColor fillColor_;
     QColor strokeColor_;
     qreal strokeWidth_;
+
+ signals:
+    void cursorPositionChanged(QPointF position);
 };

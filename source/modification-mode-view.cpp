@@ -44,6 +44,7 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
       isMoving_(false)
 {
     setSelectionAreaProperties();
+    setMouseTracking(true);
 }
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {
@@ -66,6 +67,7 @@ inline bool isSelectionEvent(const QMouseEvent* event) {
 
 void ModificationModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF mouseCurrentPos = mapToScene(event->pos());
+    emit cursorPositionChanged(mouseCurrentPos);
     if (event->buttons() & Qt::RightButton) {
         if (rotationInfo_.isEmpty()) rotationInfo_.fillInfo(scene()->selectedItems());
         rotateSelectedItems(event);

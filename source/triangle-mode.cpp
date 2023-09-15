@@ -22,7 +22,8 @@ void TriangleModeView::mousePressEvent(QMouseEvent* event) {
 }
 
 void TriangleModeView::mouseMoveEvent(QMouseEvent* event) {
-    QPointF currentClickPos = mapToScene(event->pos());
+    QPointF currentCursorPos = mapToScene(event->pos());
+    emit cursorPositionChanged(currentCursorPos);
     if (lineItems_.empty()) return;
-    lineItems_.back()->setLine(QLineF{lastClickPos_, currentClickPos});
+    lineItems_.back()->setLine(QLineF{lastClickPos_, currentCursorPos});
 }

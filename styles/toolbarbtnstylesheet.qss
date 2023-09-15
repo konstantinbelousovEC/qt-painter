@@ -1,6 +1,14 @@
 QToolBar {
     background: qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, stop: 0 #eeeeee, stop: 1 #bcbcbc);
     border: none;
+    padding: 5px;
+    spacing: 10px;
+}
+
+QToolButton {
+    width: 24px;
+    height: 24px;
+    padding: 0px;
 }
 
 QSpinBox {
