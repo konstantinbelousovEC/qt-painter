@@ -25,15 +25,18 @@ class MainWindow : public QMainWindow {
  private:
     QPushButton* addToolBarButton(std::string_view iconPath);
     void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
+    void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
+    void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
     void changeActionsVisibility(int btnIndex);
-    void setUpModePropertiesButtonsAndActions();
+    void setUpDrawingPropertiesButtons();
     void setUpToolBarActionsConnections();
     void setUpConnectionsForStatusBar();
+    void hideAllPropertiesActions();
+    void setUpApplicationStyles();
+    void setUpWidgetsPlacement();
     void addGraphicsViews();
-    void setUpLayout();
-    void setUpScene();
     void setUpScreen();
-    void setUpToolBarStyle();
+    void setUpScene();
 
     template<typename GraphicsViewType, typename Signal>
     void connectViewsSignals(GraphicsViewType view, Signal signal);
@@ -48,11 +51,8 @@ class MainWindow : public QMainWindow {
     void changeSceneState();
     void setFillColor();
     void setStrokeColor();
-    void hideAllPropertiesActions();
     void updateCursorPosition(QPointF position);
     void setStrokeWidth(int width);
-    void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
-    void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
 
  private:
     QList<DrawingGraphicsView*> drawingViewsList_;

@@ -46,10 +46,7 @@ namespace {
 
 }  // namespace
 
-inline QSize defineWindowSize() {
-    auto windowSize = detail::getScreenSize();
-    return detail::calcWindowRelativeSize(windowSize, 0.15);
-}
+QSize defineWindowSize(); // todo: change the way of screen settings
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
@@ -70,22 +67,16 @@ MainWindow::MainWindow(QWidget *parent)
     setUpScreen();
     setUpScene();
     addGraphicsViews();
-    setUpLayout();
-    setUpToolBarStyle();
-    setUpModePropertiesButtonsAndActions();
+    setUpWidgetsPlacement();
+    setUpApplicationStyles();
+    setUpDrawingPropertiesButtons();
     setUpToolBarActionsConnections();
-    setStatusBar(statusBar_);
     setUpConnectionsForStatusBar();
 }
 
-void MainWindow::setUpConnectionsForStatusBar() {
-    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
-    for (auto* view : drawingViewsList_) {
-        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
-    }
-}
-
 MainWindow::~MainWindow() = default;
+
+
 
 void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
     QPixmap pixmap{QSize{kDefaultBtnIconSize}};
@@ -104,17 +95,17 @@ void MainWindow::setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action) {
     modePropertiesActions_.push_back(action);
 }
 
-void MainWindow::setUpModePropertiesButtonsAndActions() {
+void MainWindow::setUpDrawingPropertiesButtons() {
     setUpToolBarColorButtons(fillColorButton_, fillColorAction_);
     setUpToolBarColorButtons(strokeColorButton_, strokeColorAction_);
     setUpToolBarSpinBox(strokeWidthSpinBox_, strokeWidthAction_);
 }
 
-void MainWindow::setUpToolBarStyle() {
-    QFile file(kToolBarStyleSheetPath.data());
-    file.open(QFile::ReadOnly);
-    QString strCSS = QLatin1String(file.readAll());
-    toolBar_->setStyleSheet(strCSS);
+template<typename Widget>
+void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath);
+
+void MainWindow::setUpApplicationStyles() {
+    addStyleSheetsToWidget(toolBar_, kToolBarStyleSheetPath);
     modeButtonsList_.front()->setChecked(true);
 }
 
@@ -179,8 +170,9 @@ void MainWindow::addGraphicsViews() {
     toolBar_->addSeparator();
 }
 
-void MainWindow::setUpLayout() {
+void MainWindow::setUpWidgetsPlacement() {
     addToolBar(toolBar_);
+    setStatusBar(statusBar_);
     setCentralWidget(stackedWidget_);
 }
 
@@ -237,6 +229,26 @@ void MainWindow::setStrokeWidth(int width) {
 
 void MainWindow::updateCursorPosition(QPointF position) {
     statusBar()->showMessage(QString("x: %1 | y: %2").arg(position.x()).arg(position.y()));
+}
+
+void MainWindow::setUpConnectionsForStatusBar() {
+    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    for (auto* view : drawingViewsList_) {
+        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    }
+}
+
+QSize defineWindowSize() {
+    auto windowSize = detail::getScreenSize();
+    return detail::calcWindowRelativeSize(windowSize, 0.15);
+}
+
+template<typename Widget>
+void addStyleSheetsToWidget(Widget* widget, std::string_view qssPath) {
+    QFile file(qssPath.data());
+    file.open(QFile::ReadOnly);
+    QString strCSS = QLatin1String(file.readAll());
+    widget->setStyleSheet(strCSS);
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color) {
