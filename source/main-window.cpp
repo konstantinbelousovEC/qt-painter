@@ -73,23 +73,28 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() = default;
 
+inline void setUpToolBarColorButtons(QToolBar* toolBar, QToolButton* button, QAction*& action) {
+    QPixmap pixmap{QSize{24,24}};
+    button->setIcon(pixmap);
+    action = toolBar->addWidget(button);
+    action->setVisible(false);
+}
+
+inline void setUpToolBarSpinBox(QToolBar* toolBar, QSpinBox* spinBox, QAction*& action) {
+    action = toolBar->addWidget(spinBox);
+    spinBox->setMinimum(0);
+    spinBox->setMaximum(30);
+    spinBox->setValue(1);
+    action->setVisible(false);
+}
+
 void MainWindow::test() {
     QPixmap pixmap{QSize{24,24}};
     pixmap.fill(Qt::red);
 
-    fillColorButton_->setIcon(pixmap);
-    fillColorAction_ = modeButtonsToolBar_->addWidget(fillColorButton_);
-    fillColorAction_->setVisible(false);
-
-    strokeColorButton_->setIcon(pixmap);
-    strokeColorAction_ = modeButtonsToolBar_->addWidget(strokeColorButton_);
-    strokeColorAction_->setVisible(false);
-
-    strokeWidthAction_ = modeButtonsToolBar_->addWidget(strokeWidthSpinBox_);
-    strokeWidthSpinBox_->setMinimum(1);
-    strokeWidthSpinBox_->setMaximum(30);
-    strokeWidthSpinBox_->setValue(1);
-    strokeWidthAction_->setVisible(false);
+    setUpToolBarColorButtons(modeButtonsToolBar_, fillColorButton_, fillColorAction_);
+    setUpToolBarColorButtons(modeButtonsToolBar_, strokeColorButton_, strokeColorAction_);
+    setUpToolBarSpinBox(modeButtonsToolBar_, strokeWidthSpinBox_, strokeWidthAction_);
 }
 
 void MainWindow::setUpToolBarStyle() {
@@ -99,6 +104,18 @@ void MainWindow::setUpToolBarStyle() {
     modeButtonsToolBar_->setStyleSheet(strCSS);
     modeButtonsList_.front()->setChecked(true);
 }
+
+template <typename T>
+void hideAllPropertiesActions(T* action) {
+    action->setVisible(false);
+}
+
+template <typename T, typename... Args>
+void hideAllPropertiesActions(T* action, Args... args) {
+    action->setVisible(false);
+    hideAllPropertiesActions(args...);
+}
+
 
 void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
     auto* button = addToolBarButton(iconPath);
@@ -110,14 +127,8 @@ void MainWindow::addMode(std::string_view iconPath, int btnIndex) {
         button->setChecked(true);
         graphicsScene_->clearSelection();
 
-        if (btnIndex == 0) {
-            fillColorAction_->setVisible(false);
-            strokeColorAction_->setVisible(false);
-            strokeWidthAction_->setVisible(false);
-        } else {
-            // todo: actions visibility processor
-            changeActionsVisibility(btnIndex);
-        }
+        if (btnIndex == 0) hideAllPropertiesActions(fillColorAction_, strokeColorAction_, strokeWidthAction_);
+        else changeActionsVisibility(btnIndex);
     });
 }
 
@@ -129,9 +140,9 @@ void MainWindow::setUpToolBarActionsConnections() {
 
 void MainWindow::changeActionsVisibility(int btnIndex) {
     if (btnIndex == 6 || btnIndex == 7) {
-        setUpModePropertiesToolButtons<2>(viewsList_[btnIndex - 1]);
+        setUpModePropertiesToolButtons<2>(drawingViewsList_[btnIndex - 1]);
     } else {
-        setUpModePropertiesToolButtons<3>(viewsList_[btnIndex - 1]);
+        setUpModePropertiesToolButtons<3>(drawingViewsList_[btnIndex - 1]);
     }
 }
 
@@ -197,7 +208,7 @@ void MainWindow::setFillColor() {
     QColor color = QColorDialog::getColor();
     if (color.isValid()) {
         int viewIndex = stackedWidget_->currentIndex();
-        viewsList_[viewIndex - 1]->setFillColor(color);
+        drawingViewsList_[viewIndex - 1]->setFillColor(color);
         QPixmap pixmap{24, 24};
         pixmap.fill(color);
         fillColorButton_->setIcon(pixmap);
@@ -208,7 +219,7 @@ void MainWindow::setStrokeColor() {
     QColor color = QColorDialog::getColor();
     if (color.isValid()) {
         int viewIndex = stackedWidget_->currentIndex();
-        viewsList_[viewIndex - 1]->setStrokeColor(color);
+        drawingViewsList_[viewIndex - 1]->setStrokeColor(color);
         QPixmap pixmap{24, 24};
         pixmap.fill(color);
         strokeColorButton_->setIcon(pixmap);
@@ -218,5 +229,5 @@ void MainWindow::setStrokeColor() {
 void MainWindow::setStrokeWidth(int width) {
     assert(width >= 0);
     int viewIndex = stackedWidget_->currentIndex();
-    viewsList_[viewIndex - 1]->setStrokeWidth(width);
+    drawingViewsList_[viewIndex - 1]->setStrokeWidth(width);
 }

@@ -14,13 +14,11 @@ DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene,
 DrawingGraphicsView::~DrawingGraphicsView() = default;
 
 QColor DrawingGraphicsView::getFillColor() const noexcept {
-    if (fillColor_.isValid()) return fillColor_.value();
-    else return QColor{qRgba(0,0,0,0)};
+    return fillColor_;
 }
 
 QColor DrawingGraphicsView::getStrokeColor() const noexcept {
-    if (strokeColor_.isValid()) return strokeColor_;
-    else return QColor{qRgba(0,0,0,0)};
+    return strokeColor_;
 }
 
 int DrawingGraphicsView::getStrokeWidth() const noexcept {

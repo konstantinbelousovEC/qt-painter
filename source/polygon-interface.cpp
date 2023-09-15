@@ -38,7 +38,7 @@ void Polygon::createPolygon() {
     }
     auto* polygonItem = scene()->addPolygon(polygon,
                                             QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
-                                            QBrush{fillColor_.value()});
+                                            QBrush{fillColor_});
 
     if (polygonItem == nullptr) return;
     detail::makeItemSelectableAndMovable(polygonItem);

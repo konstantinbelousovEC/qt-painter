@@ -46,7 +46,7 @@ void BrushModeView::mouseMoveEvent(QMouseEvent* event) {
                                                       previousCursorPos_.y(),
                                                       currentCursorPos.x(),
                                                       currentCursorPos.y(),
-                                                      QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
+                                                      QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::RoundCap});
 
         if (currentTemporaryLine != nullptr) {
             temporaryLines_.push_back(currentTemporaryLine);
@@ -69,7 +69,7 @@ void BrushModeView::mouseReleaseEvent(QMouseEvent* event) {
             }
             temporaryLines_.clear();
 
-            auto* scenePath = scene()->addPath(path, QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin});
+            auto* scenePath = scene()->addPath(path, QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::RoundCap});
             if (scenePath != nullptr) detail::makeItemSelectableAndMovable(scenePath);
 
             detail::deleteItem(scene(), startEllipseItem_);

@@ -62,7 +62,7 @@ class MainWindow : public QMainWindow {
 
  private:
     QList<QPushButton*> modeButtonsList_;
-    QList<DrawingGraphicsView*> viewsList_;
+    QList<DrawingGraphicsView*> drawingViewsList_;
     QGraphicsScene* graphicsScene_;
 
     ModificationModeView*   modificationModeView_;
@@ -100,7 +100,7 @@ GraphicViewType* MainWindow::setUpGraphicView(std::string_view iconPath) {
     auto viewIndex = stackedWidget_->addWidget(view);
     addMode(iconPath, viewIndex);
     connectViewsSignals(view, &GraphicViewType::changeStateOfScene);
-    if constexpr (!std::is_same_v<GraphicViewType, ModificationModeView>) viewsList_.push_back(view);
+    if constexpr (!std::is_same_v<GraphicViewType, ModificationModeView>) drawingViewsList_.push_back(view);
     return view;
 }
 

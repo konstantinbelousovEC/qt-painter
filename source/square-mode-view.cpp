@@ -24,7 +24,7 @@ void SquareModeView::mousePressEvent(QMouseEvent* event) {
         currentItem_ = scene()->addRect(
                 QRectF{centerPos_, detail::kZeroSizeF},
                 QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
-                QBrush{fillColor_.value()}
+                QBrush{fillColor_}
         );
 
         if (currentItem_ != nullptr)
