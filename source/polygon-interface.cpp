@@ -1,11 +1,11 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include <QMouseEvent>
-#include "../include/polygoninterface.h"
+#include "../include/polygon-interface.h"
 #include "../include/detail.h"
 
 Polygon::Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth)
-        : CustomGraphicsView(scene, fillColor, strokeColor, strokeWidth),
+        : DrawingGraphicsView(scene, fillColor, strokeColor, strokeWidth),
           lastClickPos_(detail::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);

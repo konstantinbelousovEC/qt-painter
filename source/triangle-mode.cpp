@@ -2,7 +2,7 @@
 
 #include <QMouseEvent>
 #include <QGraphicsLineItem>
-#include "../include/trianglemode.h"
+#include "../include/triangle-mode.h"
 
 namespace {
     constexpr Qt::GlobalColor kDefaultTriangleFillColor{Qt::cyan};

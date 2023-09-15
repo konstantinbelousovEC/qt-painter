@@ -2,7 +2,7 @@
 
 #include <QMouseEvent>
 #include <QGraphicsItem>
-#include "../include/circlemodeview.h"
+#include "../include/circle-mode-view.h"
 #include "../include/detail.h"
 
 namespace {
@@ -11,7 +11,7 @@ namespace {
 }
 
 CircleModeView::CircleModeView(QGraphicsScene* scene)
-    : CustomGraphicsView(scene, kDefaultCircleFillColor, kDefaultCircleStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, kDefaultCircleFillColor, kDefaultCircleStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
       ellipseCenterPos_(detail::kZeroPointF)
 {

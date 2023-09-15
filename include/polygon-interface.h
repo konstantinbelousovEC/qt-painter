@@ -4,7 +4,7 @@
 
 #include "custom-graphics-view.h"
 
-class Polygon : public CustomGraphicsView {
+class Polygon : public DrawingGraphicsView {
  public:
     Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth);
 

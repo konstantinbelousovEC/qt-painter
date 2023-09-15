@@ -4,11 +4,11 @@
 
 #include "custom-graphics-view.h"
 
-class LineModeView : public CustomGraphicsView {
- Q_OBJECT
+class RectangleModeView : public DrawingGraphicsView {
+    Q_OBJECT
 
  public:
-    explicit LineModeView(QGraphicsScene* scene);
+    explicit RectangleModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -19,6 +19,6 @@ class LineModeView : public CustomGraphicsView {
     void changeStateOfScene();
 
  private:
-    QGraphicsLineItem* currentItem_;
+    QGraphicsRectItem* currentItem_;
     QPointF startCursorPos_;
 };

@@ -4,11 +4,11 @@
 
 #include "custom-graphics-view.h"
 
-class SquareModeView : public CustomGraphicsView {
+class BrushModeView : public DrawingGraphicsView {
     Q_OBJECT
 
  public:
-    explicit SquareModeView(QGraphicsScene* scene);
+    explicit BrushModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -19,6 +19,8 @@ class SquareModeView : public CustomGraphicsView {
     void changeStateOfScene();
 
  private:
-    QGraphicsRectItem* currentItem_;
-    QPointF centerPos_;
+    QList<QGraphicsLineItem*> temporaryLines_;
+    QGraphicsEllipseItem* startEllipseItem_;
+    QPointF startCursorPos_;
+    QPointF previousCursorPos_;
 };

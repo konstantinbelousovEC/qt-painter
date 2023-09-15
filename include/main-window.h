@@ -22,7 +22,7 @@ class PolygonModeView;
 class CircleModeView;
 class LineModeView;
 class BrushModeView;
-class CustomGraphicsView;
+class DrawingGraphicsView;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
@@ -62,7 +62,7 @@ class MainWindow : public QMainWindow {
 
  private:
     QList<QPushButton*> modeButtonsList_;
-    QList<CustomGraphicsView*> viewsList_;
+    QList<DrawingGraphicsView*> viewsList_;
     QGraphicsScene* graphicsScene_;
 
     ModificationModeView*   modificationModeView_;

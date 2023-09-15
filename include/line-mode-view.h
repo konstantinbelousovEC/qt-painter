@@ -4,11 +4,11 @@
 
 #include "custom-graphics-view.h"
 
-class BrushModeView : public CustomGraphicsView {
-    Q_OBJECT
+class LineModeView : public DrawingGraphicsView {
+ Q_OBJECT
 
  public:
-    explicit BrushModeView(QGraphicsScene* scene);
+    explicit LineModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -19,8 +19,6 @@ class BrushModeView : public CustomGraphicsView {
     void changeStateOfScene();
 
  private:
-    QList<QGraphicsLineItem*> temporaryLines_;
-    QGraphicsEllipseItem* startEllipseItem_;
+    QGraphicsLineItem* currentItem_;
     QPointF startCursorPos_;
-    QPointF previousCursorPos_;
 };

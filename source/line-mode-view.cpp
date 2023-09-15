@@ -2,7 +2,7 @@
 
 #include <QGraphicsLineItem>
 #include <QMouseEvent>
-#include "../include/linemodeview.h"
+#include "../include/line-mode-view.h"
 #include "../include/detail.h"
 
 namespace {
@@ -11,7 +11,7 @@ namespace {
 }
 
 LineModeView::LineModeView(QGraphicsScene *scene)
-    : CustomGraphicsView(scene, std::nullopt, kDefaultLineFillColor, kDefaultLineWidth),
+    : DrawingGraphicsView(scene, std::nullopt, kDefaultLineFillColor, kDefaultLineWidth),
       currentItem_(nullptr),
       startCursorPos_(detail::kZeroPointF)
 {

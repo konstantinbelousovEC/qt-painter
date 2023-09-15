@@ -8,7 +8,7 @@
 #include <QPointF>
 #include <qmath.h>
 #include <stdexcept>
-#include "../include/modificationmodeview.h"
+#include "../include/modification-mode-view.h"
 #include "../include/detail.h"
 
 namespace {

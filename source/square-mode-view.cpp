@@ -2,7 +2,7 @@
 
 #include <QMouseEvent>
 #include <QGraphicsItem>
-#include "../include/squaremodeview.h"
+#include "../include/square-mode-view.h"
 #include "../include/detail.h"
 
 namespace {
@@ -11,7 +11,7 @@ namespace {
 }
 
 SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : CustomGraphicsView(scene, kDefaultSquareFillColor, kDefaultSquareStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, kDefaultSquareFillColor, kDefaultSquareStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
       centerPos_(detail::kZeroPointF)
 {

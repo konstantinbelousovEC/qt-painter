@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include <QApplication>
-#include "./include/mainwindow.h"
+#include "./include/main-window.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);

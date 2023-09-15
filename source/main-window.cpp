@@ -15,15 +15,15 @@
 #include <QColorDialog>
 #include <string_view>
 #include "../include/detail.h"
-#include "../include/mainwindow.h"
-#include "../include/rectanglemodeview.h"
-#include "../include/modificationmodeview.h"
-#include "../include/squaremodeview.h"
-#include "../include/trianglemode.h"
-#include "../include/circlemodeview.h"
-#include "../include/brushmodeview.h"
-#include "../include/linemodeview.h"
-#include "../include/polygonmodeview.h"
+#include "../include/main-window.h"
+#include "../include/rectangle-mode-view.h"
+#include "../include/modification-mode-view.h"
+#include "../include/square-mode-view.h"
+#include "../include/triangle-mode.h"
+#include "../include/circle-mode-view.h"
+#include "../include/brush-mode-view.h"
+#include "../include/line-mode-view.h"
+#include "../include/polygon-mode-view.h"
 
 
 namespace {
@@ -197,7 +197,7 @@ void MainWindow::setFillColor() {
     QColor color = QColorDialog::getColor();
     if (color.isValid()) {
         int viewIndex = stackedWidget_->currentIndex();
-        viewsList_[viewIndex - 1]->changeFillColor(color);
+        viewsList_[viewIndex - 1]->setFillColor(color);
         QPixmap pixmap{24, 24};
         pixmap.fill(color);
         fillColorButton_->setIcon(pixmap);
@@ -208,7 +208,7 @@ void MainWindow::setStrokeColor() {
     QColor color = QColorDialog::getColor();
     if (color.isValid()) {
         int viewIndex = stackedWidget_->currentIndex();
-        viewsList_[viewIndex - 1]->changeStrokeColor(color);
+        viewsList_[viewIndex - 1]->setStrokeColor(color);
         QPixmap pixmap{24, 24};
         pixmap.fill(color);
         strokeColorButton_->setIcon(pixmap);
@@ -218,5 +218,5 @@ void MainWindow::setStrokeColor() {
 void MainWindow::setStrokeWidth(int width) {
     assert(width >= 0);
     int viewIndex = stackedWidget_->currentIndex();
-    viewsList_[viewIndex - 1]->changeStrokeWidth(width);
+    viewsList_[viewIndex - 1]->setStrokeWidth(width);
 }

@@ -1,7 +1,7 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include <QMouseEvent>
-#include "../include/rectanglemodeview.h"
+#include "../include/rectangle-mode-view.h"
 #include "../include/detail.h"
 
 namespace {
@@ -10,7 +10,7 @@ namespace {
 }
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
-    : CustomGraphicsView(scene, kDefaultRectFillColor, kDefaultRectStrokeColor, detail::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene, kDefaultRectFillColor, kDefaultRectStrokeColor, detail::kDefaultStrokeWidth),
       currentItem_(nullptr),
       startCursorPos_(detail::kZeroPointF)
 {

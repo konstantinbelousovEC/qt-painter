@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 #include <QPainterPath>
 #include <QGraphicsEllipseItem>
-#include "../include/brushmodeview.h"
+#include "../include/brush-mode-view.h"
 #include "../include/detail.h"
 
 namespace {
@@ -12,7 +12,7 @@ namespace {
 }
 
 BrushModeView::BrushModeView(QGraphicsScene* scene)
-        : CustomGraphicsView(scene, std::nullopt, kDefaultBrushFillColor, kDefaultBrushWidth),
+        : DrawingGraphicsView(scene, std::nullopt, kDefaultBrushFillColor, kDefaultBrushWidth),
           startEllipseItem_(nullptr),
           startCursorPos_(detail::kZeroPointF),
           previousCursorPos_(detail::kZeroPointF)

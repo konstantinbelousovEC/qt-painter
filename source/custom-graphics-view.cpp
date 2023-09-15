@@ -2,7 +2,7 @@
 
 #include "../include/custom-graphics-view.h"
 
-CustomGraphicsView::CustomGraphicsView(QGraphicsScene* scene,
+DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene,
                                        std::optional<QColor> fillColor,
                                        std::optional<QColor> strokeColor,
                                        int strokeWidth)
@@ -11,31 +11,31 @@ CustomGraphicsView::CustomGraphicsView(QGraphicsScene* scene,
       strokeColor_(strokeColor),
       strokeWidth_(strokeWidth) {}
 
-CustomGraphicsView::~CustomGraphicsView() = default;
+DrawingGraphicsView::~DrawingGraphicsView() = default;
 
-QColor CustomGraphicsView::getFillColor() const noexcept {
+QColor DrawingGraphicsView::getFillColor() const noexcept {
     if (fillColor_.has_value()) return fillColor_.value();
     else return QColor{qRgba(0,0,0,0)};
 }
 
-QColor CustomGraphicsView::getStrokeColor() const noexcept {
+QColor DrawingGraphicsView::getStrokeColor() const noexcept {
     if (strokeColor_.has_value()) return strokeColor_.value();
     else return QColor{qRgba(0,0,0,0)};
 }
 
-int CustomGraphicsView::getStrokeWidth() const noexcept {
+int DrawingGraphicsView::getStrokeWidth() const noexcept {
     return strokeWidth_;
 }
 
-void CustomGraphicsView::changeFillColor(const QColor& color) {
+void DrawingGraphicsView::setFillColor(const QColor& color) {
     fillColor_ = color;
 }
 
-void CustomGraphicsView::changeStrokeColor(const QColor& color) {
+void DrawingGraphicsView::setStrokeColor(const QColor& color) {
     strokeColor_ = color;
 }
 
-void CustomGraphicsView::changeStrokeWidth(int width) {
+void DrawingGraphicsView::setStrokeWidth(int width) {
     assert(width >= 0); // this condition must be guaranteed by QSpinBox constraints of minimum value;
     strokeWidth_ = width;
 }

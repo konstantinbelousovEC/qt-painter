@@ -2,7 +2,7 @@
 
 #include <QMouseEvent>
 #include <QGraphicsLineItem>
-#include "../include/polygonmodeview.h"
+#include "../include/polygon-mode-view.h"
 
 namespace {
     constexpr Qt::GlobalColor kDefaultPolygonFillColor{Qt::magenta};

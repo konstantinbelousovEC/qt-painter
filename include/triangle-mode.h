@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "polygoninterface.h"
+#include "polygon-interface.h"
 
-class PolygonModeView : public Polygon {
+class TriangleModeView : public Polygon {
     Q_OBJECT
 
  public:
-    explicit PolygonModeView(QGraphicsScene* scene);
+    explicit TriangleModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

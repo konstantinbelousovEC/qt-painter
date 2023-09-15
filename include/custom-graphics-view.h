@@ -5,24 +5,24 @@
 #include <QGraphicsView>
 #include <optional>
 
-class CustomGraphicsView : public QGraphicsView {
+class DrawingGraphicsView : public QGraphicsView {
     Q_OBJECT
 
  public:
-    CustomGraphicsView(QGraphicsScene* scene,
+    DrawingGraphicsView(QGraphicsScene* scene,
                        std::optional<QColor> fillColor,
                        std::optional<QColor> strokeColor,
                        int strokeWidth);
 
-    ~CustomGraphicsView() override;
+    ~DrawingGraphicsView() override;
 
     [[nodiscard]] virtual QColor getFillColor() const noexcept;
     [[nodiscard]] virtual QColor getStrokeColor() const noexcept;
     [[nodiscard]] virtual int getStrokeWidth() const noexcept;
 
-    virtual void changeFillColor(const QColor& color);
-    virtual void changeStrokeColor(const QColor& color);
-    virtual void changeStrokeWidth(int width);
+    virtual void setFillColor(const QColor& color);
+    virtual void setStrokeColor(const QColor& color);
+    virtual void setStrokeWidth(int width);
 
  protected:
     std::optional<QColor> fillColor_;

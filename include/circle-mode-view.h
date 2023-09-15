@@ -4,11 +4,11 @@
 
 #include "custom-graphics-view.h"
 
-class RectangleModeView : public CustomGraphicsView {
+class CircleModeView : public DrawingGraphicsView {
     Q_OBJECT
 
  public:
-    explicit RectangleModeView(QGraphicsScene* scene);
+    explicit CircleModeView(QGraphicsScene* scene);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -19,6 +19,6 @@ class RectangleModeView : public CustomGraphicsView {
     void changeStateOfScene();
 
  private:
-    QGraphicsRectItem* currentItem_;
-    QPointF startCursorPos_;
+    QGraphicsEllipseItem* currentItem_;
+    QPointF ellipseCenterPos_;
 };
