@@ -1,3 +1,13 @@
+QToolBar {
+    background: qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, stop: 0 #eeeeee, stop: 1 #bcbcbc);
+    border: none;
+}
+
+QSpinBox {
+    background-color: white;
+    color: black;
+}
+
 QPushButton {
     background-color: white;
     padding: 2px;

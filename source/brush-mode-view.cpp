@@ -6,8 +6,12 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
+namespace {
+    constexpr qreal kDefaultBrushWidth{10.0};
+}
+
 BrushModeView::BrushModeView(QGraphicsScene* scene)
-        : DrawingGraphicsView(scene, Qt::transparent, constants::kDefaultColor, constants::kDefaultBrushWidth),
+        : DrawingGraphicsView(scene, kDefaultBrushWidth),
           startEllipseItem_(nullptr),
           startCursorPos_(constants::kZeroPointF),
           previousCursorPos_(constants::kZeroPointF)

@@ -5,8 +5,8 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
-Polygon::Polygon(QGraphicsScene* scene, const QColor& fillColor, const QColor& strokeColor, int strokeWidth)
-        : DrawingGraphicsView(scene, fillColor, strokeColor, strokeWidth),
+Polygon::Polygon(QGraphicsScene* scene)
+        : DrawingGraphicsView(scene),
           lastClickPos_(constants::kZeroPointF)
 {
     setRenderHint(QPainter::Antialiasing);

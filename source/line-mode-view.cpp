@@ -6,8 +6,12 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
+namespace {
+    constexpr qreal kDefaultLineWidth{5.0};
+}
+
 LineModeView::LineModeView(QGraphicsScene *scene)
-    : DrawingGraphicsView(scene, Qt::transparent, constants::kDefaultColor, constants::kDefaultBrushWidth),
+    : DrawingGraphicsView(scene, kDefaultLineWidth),
       currentItem_(nullptr),
       startCursorPos_(constants::kZeroPointF)
 {

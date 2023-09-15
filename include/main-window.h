@@ -23,16 +23,16 @@ class MainWindow : public QMainWindow {
     ~MainWindow() override;
 
  private:
+    QPushButton* addToolBarButton(std::string_view iconPath);
+    void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
+    void changeActionsVisibility(int btnIndex);
     void setUpModePropertiesButtonsAndActions();
     void setUpToolBarActionsConnections();
-    void changeActionsVisibility(int btnIndex);
     void addGraphicsViews();
     void setUpLayout();
     void setUpScene();
     void setUpScreen();
     void setUpToolBarStyle();
-    QPushButton* addToolBarButton(std::string_view iconPath);
-    void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
 
     template<typename GraphicsViewType, typename Signal>
     void connectViewsSignals(GraphicsViewType view, Signal signal);

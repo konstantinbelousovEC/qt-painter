@@ -3,10 +3,9 @@
 #include <QMouseEvent>
 #include <QGraphicsLineItem>
 #include "../include/triangle-mode.h"
-#include "../include/constants.h"
 
 TriangleModeView::TriangleModeView(QGraphicsScene* scene)
-    : Polygon(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth) {}
+    : Polygon(scene) {}
 
 void TriangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

@@ -6,7 +6,7 @@
 #include "../include/constants.h"
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene),
       currentItem_(nullptr),
       startCursorPos_(constants::kZeroPointF)
 {

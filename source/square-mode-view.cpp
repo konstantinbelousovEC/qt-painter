@@ -6,7 +6,7 @@
 #include "../include/detail.h"
 
 SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene),
       currentItem_(nullptr),
       centerPos_(constants::kZeroPointF)
 {

@@ -1,14 +1,16 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include "../include/drawing-graphics-view.h"
+#include "../include/constants.h"
 
-DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene,
-                                       QColor fillColor,
-                                       QColor strokeColor,
-                                       int strokeWidth)
+namespace {
+    constexpr Qt::GlobalColor kDefaultColor{Qt::black};
+}
+
+DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene, int strokeWidth)
     : QGraphicsView(scene),
-      fillColor_(fillColor),
-      strokeColor_(strokeColor),
+      fillColor_(kDefaultColor),
+      strokeColor_(kDefaultColor),
       strokeWidth_(strokeWidth) {}
 
 DrawingGraphicsView::~DrawingGraphicsView() = default;

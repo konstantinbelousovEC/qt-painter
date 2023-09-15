@@ -7,7 +7,7 @@
 #include "../include/constants.h"
 
 CircleModeView::CircleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth),
+    : DrawingGraphicsView(scene),
       currentItem_(nullptr),
       ellipseCenterPos_(constants::kZeroPointF)
 {

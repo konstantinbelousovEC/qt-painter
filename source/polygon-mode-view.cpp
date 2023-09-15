@@ -3,10 +3,9 @@
 #include <QMouseEvent>
 #include <QGraphicsLineItem>
 #include "../include/polygon-mode-view.h"
-#include "../include/constants.h"
 
 PolygonModeView::PolygonModeView(QGraphicsScene* scene)
-    : Polygon(scene, constants::kDefaultColor, constants::kDefaultColor, constants::kDefaultStrokeWidth) {}
+    : Polygon(scene) {}
 
 void PolygonModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
