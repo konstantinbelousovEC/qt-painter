@@ -6,7 +6,7 @@
 
 class Polygon : public DrawingGraphicsView {
  public:
-    Polygon(QGraphicsScene* scene);
+    explicit Polygon(QGraphicsScene* scene);
 
  protected:
     void addNewTemporaryLine(QMouseEvent* event);

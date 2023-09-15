@@ -57,7 +57,7 @@ class ModificationModeView : public QGraphicsView {
     };
 
  private:
-    RotationInfo rotationInfo_;
+    RotationInfo rotationInfo_;  // todo: to think about making this field a pointer -> RotationInfo* or std::unique_ptr for moving it to realization cpp-file
     QGraphicsRectItem* selectionArea_;
     QPointF selectionStartPos_;
     QPointF lastClickPos_;
