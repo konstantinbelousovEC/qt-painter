@@ -42,6 +42,8 @@ namespace {
 
     constexpr auto kToolBarStyleSheetPath{":/styles/toolbarbtnstylesheet.qss"sv};
 
+    constexpr auto kChooseColorSuggestion{"Choose color"sv};
+
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{24, 24};
     constexpr QSize kDefaultViewsSize{1100, 600};
@@ -172,8 +174,12 @@ void MainWindow::setUpDrawingPropertiesButtons() {
 }
 
 void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
-    QPixmap pixmap{QSize{kDefaultBtnIconSize}};
-    button->setIcon(pixmap);
+//    QPixmap pixmap{QSize{kDefaultBtnIconSize}};
+//    button->setIcon(pixmap);
+    button->setIcon(QIcon{});
+    button->setFixedSize(kDefaultBtnIconSize);
+    button->setAutoFillBackground(true);
+    //button->setPalette(QPalette{color});
     action = toolBar_->addWidget(button);
     action->setVisible(false);
     modePropertiesActions_.push_back(action);
@@ -280,32 +286,50 @@ void MainWindow::changeSceneState() {
     isModified_ = true;
 }
 
-void MainWindow::setStrokeColor() {
-    QColor color = QColorDialog::getColor();
+inline QColor getColor() {
+    return QColorDialog::getColor(Qt::white,
+                                  nullptr,
+                                  kChooseColorSuggestion.data(),
+                                  QColorDialog::ShowAlphaChannel);
+}
+
+enum class ColorButtonType {
+    FILL,
+    STROKE
+};
+
+template<ColorButtonType BtnType>
+void setColor(const QStackedWidget* stackedWidget,
+              const QList<DrawingGraphicsView*>& drawingViewsList,
+              QToolButton* toolButton) {
+    QColor color = getColor();
     if (color.isValid()) {
-        int viewIndex = stackedWidget_->currentIndex();
-        drawingViewsList_[viewIndex - 1]->setStrokeColor(color);
-        QPixmap pixmap{kDefaultBtnIconSize};
-        pixmap.fill(color);
-        strokeColorButton_->setIcon(pixmap);
+        int viewIndex = stackedWidget->currentIndex();
+
+        if constexpr (BtnType == ColorButtonType::STROKE)
+            drawingViewsList[viewIndex - 1]->setStrokeColor(color);
+        else if constexpr (BtnType == ColorButtonType::FILL)
+            drawingViewsList[viewIndex - 1]->setFillColor(color);
+
+        toolButton->setPalette(QPalette{color});
     }
+}
+
+void MainWindow::setStrokeColor() {
+    setColor<ColorButtonType::STROKE>(stackedWidget_,
+             drawingViewsList_,
+             strokeColorButton_);
 }
 
 void MainWindow::setFillColor() {
-    QColor color = QColorDialog::getColor();
-    if (color.isValid()) {
-        int viewIndex = stackedWidget_->currentIndex();
-        drawingViewsList_[viewIndex - 1]->setFillColor(color);
-        QPixmap pixmap{kDefaultBtnIconSize};
-        pixmap.fill(color);
-        fillColorButton_->setIcon(pixmap);
-    }
+    setColor<ColorButtonType::FILL>(stackedWidget_,
+             drawingViewsList_,
+             fillColorButton_);
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color) {
-    QPixmap pixmap{kDefaultBtnIconSize};
-    pixmap.fill(color);
-    button->setIcon(pixmap);
+    button->setAutoFillBackground(true);
+    button->setPalette(QPalette{color});
     action->setVisible(true);
 }
 
