@@ -14,10 +14,7 @@ BrushModeView::BrushModeView(QGraphicsScene* scene)
         : DrawingGraphicsView(scene, kDefaultBrushWidth),
           startEllipseItem_(nullptr),
           startCursorPos_(constants::kZeroPointF),
-          previousCursorPos_(constants::kZeroPointF)
-{
-    setRenderHint(QPainter::Antialiasing);
-}
+          previousCursorPos_(constants::kZeroPointF) {}
 
 void BrushModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

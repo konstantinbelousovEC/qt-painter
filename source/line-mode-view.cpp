@@ -13,10 +13,7 @@ namespace {
 LineModeView::LineModeView(QGraphicsScene *scene)
     : DrawingGraphicsView(scene, kDefaultLineWidth),
       currentItem_(nullptr),
-      startCursorPos_(constants::kZeroPointF)
-{
-    setRenderHint(QPainter::Antialiasing);
-}
+      startCursorPos_(constants::kZeroPointF) {}
 
 void LineModeView::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {

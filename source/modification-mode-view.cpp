@@ -45,6 +45,10 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
 {
     setSelectionAreaProperties();
     setMouseTracking(true);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setSceneRect(0, 0, 701, 531);
+    setFixedSize(703, 533);
 }
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {

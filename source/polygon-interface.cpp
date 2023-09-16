@@ -7,11 +7,7 @@
 
 Polygon::Polygon(QGraphicsScene* scene)
         : DrawingGraphicsView(scene),
-          lastClickPos_(constants::kZeroPointF)
-{
-    setRenderHint(QPainter::Antialiasing);
-    setMouseTracking(true);
-}
+          lastClickPos_(constants::kZeroPointF) {}
 
 void Polygon::deleteTemporaryLines() {
     for (auto* lineItem : lineItems_) {

@@ -9,10 +9,7 @@
 CircleModeView::CircleModeView(QGraphicsScene* scene)
     : DrawingGraphicsView(scene),
       currentItem_(nullptr),
-      ellipseCenterPos_(constants::kZeroPointF)
-{
-    setRenderHint(QPainter::Antialiasing);
-}
+      ellipseCenterPos_(constants::kZeroPointF) {}
 
 void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

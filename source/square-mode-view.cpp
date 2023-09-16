@@ -10,7 +10,10 @@ SquareModeView::SquareModeView(QGraphicsScene* scene)
       currentItem_(nullptr),
       centerPos_(constants::kZeroPointF)
 {
-    setRenderHint(QPainter::Antialiasing);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setSceneRect(0, 0, 400, 300);
+    setFixedSize(400, 300);
 }
 
 void SquareModeView::mousePressEvent(QMouseEvent* event) {

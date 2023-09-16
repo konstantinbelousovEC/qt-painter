@@ -8,10 +8,7 @@
 RectangleModeView::RectangleModeView(QGraphicsScene* scene)
     : DrawingGraphicsView(scene),
       currentItem_(nullptr),
-      startCursorPos_(constants::kZeroPointF)
-{
-    setRenderHint(QPainter::Antialiasing);
-}
+      startCursorPos_(constants::kZeroPointF) {}
 
 void RectangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

@@ -65,9 +65,9 @@ MainWindow::MainWindow(QWidget *parent)
       isModified_(false)
 {
     setUpScreen();
+    setUpWidgetsPlacement();
     setUpScene();
     addGraphicsViews();
-    setUpWidgetsPlacement();
     setUpApplicationStyles();
     setUpDrawingPropertiesButtons();
     setUpToolBarActionsConnections();
@@ -86,18 +86,22 @@ void MainWindow::setUpScreen() {
     auto [windowWidth, windowHeight] =
             detail::calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
 
-    setMinimumSize(windowWidth, windowHeight);
+    setMinimumSize(windowWidth / 2, windowHeight / 2);
     setGeometry((screenWidth - windowWidth) / 2,
                 (screenHeight - windowHeight) / 2,
                 windowWidth,
                 windowHeight);
 }
 
+void MainWindow::setUpWidgetsPlacement() {
+    addToolBar(toolBar_);
+    setStatusBar(statusBar_);
+    setCentralWidget(stackedWidget_);
+}
+
 void MainWindow::setUpScene() {
     graphicsScene_->setItemIndexMethod(QGraphicsScene::NoIndex);                    // setting up indexing of elements - https://doc.qt.io/qt-6/qgraphicsscene.html#itemIndexMethod-prop
     graphicsScene_->setBackgroundBrush(QBrush{kDefaultSceneBackgroundColor});
-    QSize sceneSize = detail::calcWindowRelativeSize(windowSize_, 0.1);
-    graphicsScene_->setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
 }
 
 void MainWindow::addGraphicsViews() {
@@ -110,12 +114,6 @@ void MainWindow::addGraphicsViews() {
     setUpGraphicView<LineModeView>(kLineModeIconPath);
     setUpGraphicView<BrushModeView>(kBrushModeIconPath);
     toolBar_->addSeparator();
-}
-
-void MainWindow::setUpWidgetsPlacement() {
-    addToolBar(toolBar_);
-    setStatusBar(statusBar_);
-    setCentralWidget(stackedWidget_);
 }
 
 template<typename Widget>
