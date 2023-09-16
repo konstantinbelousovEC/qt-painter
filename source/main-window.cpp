@@ -14,8 +14,9 @@
 #include <QSpinBox>
 #include <QStatusBar>
 #include <QColorDialog>
+#include <QScreen>
 #include <string_view>
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
 #include "../include/main-window.h"
 #include "../include/rectangle-mode-view.h"
 #include "../include/modification-mode-view.h"
@@ -48,6 +49,7 @@ namespace {
 }  // namespace
 
 QSize defineWindowSize(); // todo: change the way of screen settings
+QSize calcWindowRelativeSize(QSize wSize, double x);
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent},
@@ -77,22 +79,29 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 QSize defineWindowSize() {
-    auto windowSize = detail::getScreenSize();
-    return detail::calcWindowRelativeSize(windowSize, 0.15);
+    auto windowSize = QGuiApplication::primaryScreen()->size();
+    return calcWindowRelativeSize(windowSize, 0.15);
 }
 
 MainWindow::~MainWindow() = default;
 
 void MainWindow::setUpScreen() {
-    auto [screenWidth, screenHeight] = detail::getScreenSize();
+    auto [screenWidth, screenHeight] = QGuiApplication::primaryScreen()->size();
     auto [windowWidth, windowHeight] =
-            detail::calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
+            calcWindowRelativeSize(QSize{screenWidth, screenHeight}, 0.15);
 
     setMinimumSize(windowWidth / 2, windowHeight / 2);
     setGeometry((screenWidth - windowWidth) / 2,
                 (screenHeight - windowHeight) / 2,
                 windowWidth,
                 windowHeight);
+}
+
+QSize calcWindowRelativeSize(QSize wSize, double x) {
+    auto [screenWidth, screenHeight] = wSize;
+    int windowWidth = screenWidth - static_cast<int>(screenWidth * x);
+    int windowHeight = screenHeight - static_cast<int>(screenHeight * x);
+    return {windowWidth, windowHeight};
 }
 
 void MainWindow::setUpWidgetsPlacement() {

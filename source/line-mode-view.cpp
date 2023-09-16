@@ -3,7 +3,7 @@
 #include <QGraphicsLineItem>
 #include <QMouseEvent>
 #include "../include/line-mode-view.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
 #include "../include/constants.h"
 
 namespace {

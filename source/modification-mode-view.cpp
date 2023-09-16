@@ -9,7 +9,8 @@
 #include <qmath.h>
 #include <stdexcept>
 #include "../include/modification-mode-view.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
+#include "../include/rectangles-detail.h"
 #include "../include/constants.h"
 
 namespace {
@@ -86,9 +87,17 @@ void ModificationModeView::mouseReleaseEvent(QMouseEvent* event) {
     selectionArea_->hide();
 }
 
+template<typename GraphicScene>
+void deleteSelectedItems(GraphicScene* scene) {
+    for (auto* item : scene->selectedItems()) {
+        scene->removeItem(item);
+        delete item;
+    }
+}
+
 void ModificationModeView::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_D) {
-        detail::deleteSelectedItems(scene());
+        deleteSelectedItems(scene());
         emit changeStateOfScene();
     }
 }

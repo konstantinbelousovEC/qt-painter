@@ -19,25 +19,11 @@ namespace detail {
         delete item;
     }
 
-    template<typename GraphicScene>
-    void deleteSelectedItems(GraphicScene* scene) {
-        for (auto* item : scene->selectedItems()) {
-            scene->removeItem(item);
-            delete item;
-        }
-    }
-
     template<typename GraphicsItem>
     bool shouldDeleteZeroSizeItem(const GraphicsItem* currentItem,
                                   const QPointF& startPos) {
         auto rect = currentItem->rect();
         return rect.topLeft() == startPos && rect.size() == constants::kZeroSizeF;
     }
-
-    QSize getScreenSize();
-    QSize calcWindowRelativeSize(QSize wSize, double x);
-
-    QRectF updateRectangleSize(const QPointF& startCursorPos,
-                               const QPointF& currentCursorPos) noexcept;
 
 }  // namespace detail

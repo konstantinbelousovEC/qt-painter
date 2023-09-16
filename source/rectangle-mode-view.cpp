@@ -2,7 +2,8 @@
 
 #include <QMouseEvent>
 #include "../include/rectangle-mode-view.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
+#include "../include/rectangles-detail.h"
 #include "../include/constants.h"
 
 RectangleModeView::RectangleModeView(QGraphicsScene* scene, QSize viewSize)

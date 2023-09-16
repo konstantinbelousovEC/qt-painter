@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 #include <QGraphicsItem>
 #include "../include/circle-mode-view.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
 #include "../include/constants.h"
 
 CircleModeView::CircleModeView(QGraphicsScene* scene, QSize viewSize)

@@ -2,7 +2,7 @@
 
 #include <QMouseEvent>
 #include "../include/polygon-interface.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
 #include "../include/constants.h"
 
 Polygon::Polygon(QGraphicsScene* scene, QSize viewSize)

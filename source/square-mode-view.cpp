@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 #include <QGraphicsItem>
 #include "../include/square-mode-view.h"
-#include "../include/detail.h"
+#include "../include/graphics-items-detail.h"
 
 SquareModeView::SquareModeView(QGraphicsScene* scene, QSize viewSize)
     : DrawingGraphicsView(scene, viewSize),
