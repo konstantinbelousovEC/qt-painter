@@ -8,10 +8,9 @@ class ApplicationGraphicsView : public QGraphicsView {
     Q_OBJECT
 
  public:
-    ApplicationGraphicsView(QGraphicsScene* scene, int viewWidth, int viewHeight);
+    ApplicationGraphicsView(QGraphicsScene* scene, QSize viewSize);
     ~ApplicationGraphicsView() override = default;
 
  private: // todo: private or protected ?
-    int viewWidth_;
-    int viewHeight_;
+    QSize viewSize_;
 };

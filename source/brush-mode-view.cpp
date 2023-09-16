@@ -10,8 +10,8 @@ namespace {
     constexpr qreal kDefaultBrushWidth{10.0};
 }
 
-BrushModeView::BrushModeView(QGraphicsScene* scene)
-        : DrawingGraphicsView(scene, kDefaultBrushWidth),
+BrushModeView::BrushModeView(QGraphicsScene* scene, QSize viewSize)
+        : DrawingGraphicsView(scene, viewSize, kDefaultBrushWidth),
           startEllipseItem_(nullptr),
           startCursorPos_(constants::kZeroPointF),
           previousCursorPos_(constants::kZeroPointF) {}

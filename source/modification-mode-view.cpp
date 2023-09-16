@@ -35,8 +35,8 @@ qreal calculateRotationAngle(const QPointF& geometricCenterO,
 
 // ------------------------------------------------------------------------------------------------------------
 
-ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
-    : QGraphicsView(graphic_scene),
+ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene, QSize viewSize)
+    : ApplicationGraphicsView(graphic_scene, viewSize),
       selectionArea_(new QGraphicsRectItem()),
       selectionStartPos_(constants::kZeroPointF),
       lastClickPos_(constants::kZeroPointF),
@@ -44,11 +44,6 @@ ModificationModeView::ModificationModeView(QGraphicsScene* graphic_scene)
       isMoving_(false)
 {
     setSelectionAreaProperties();
-    setMouseTracking(true);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setSceneRect(0, 0, 701, 531);
-    setFixedSize(703, 533);
 }
 
 void ModificationModeView::mousePressEvent(QMouseEvent* event) {

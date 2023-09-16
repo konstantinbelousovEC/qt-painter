@@ -8,7 +8,7 @@ class RectangleModeView : public DrawingGraphicsView {
     Q_OBJECT
 
  public:
-    explicit RectangleModeView(QGraphicsScene* scene);
+    explicit RectangleModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

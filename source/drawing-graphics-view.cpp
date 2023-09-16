@@ -8,14 +8,13 @@ namespace {
     constexpr Qt::GlobalColor kDefaultColor{Qt::black};
 }
 
-DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene, int strokeWidth)
-    : QGraphicsView(scene),
+DrawingGraphicsView::DrawingGraphicsView(QGraphicsScene* scene, QSize viewSize, int strokeWidth)
+    : ApplicationGraphicsView(scene, viewSize),
       fillColor_(kDefaultColor),
       strokeColor_(kDefaultColor),
       strokeWidth_(strokeWidth)
 {
     setRenderHint(QPainter::Antialiasing);
-    setMouseTracking(true);
 }
 
 DrawingGraphicsView::~DrawingGraphicsView() = default;

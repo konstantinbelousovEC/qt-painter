@@ -3,12 +3,13 @@
 #pragma once
 
 #include <QGraphicsView>
+#include "graphics-view.h"
 
-class ModificationModeView : public QGraphicsView {
+class ModificationModeView : public ApplicationGraphicsView {
     Q_OBJECT
 
  public:
-    explicit ModificationModeView(QGraphicsScene* scene);
+    explicit ModificationModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

@@ -10,8 +10,8 @@ namespace {
     constexpr qreal kDefaultLineWidth{5.0};
 }
 
-LineModeView::LineModeView(QGraphicsScene *scene)
-    : DrawingGraphicsView(scene, kDefaultLineWidth),
+LineModeView::LineModeView(QGraphicsScene *scene, QSize viewSize)
+    : DrawingGraphicsView(scene, viewSize, kDefaultLineWidth),
       currentItem_(nullptr),
       startCursorPos_(constants::kZeroPointF) {}
 

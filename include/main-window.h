@@ -75,6 +75,7 @@ class MainWindow : public QMainWindow {
     QAction* strokeWidthAction_{};
 
     QSize windowSize_;
+    QSize graphicsViewsSize_;
     bool isModified_;
 };
 
@@ -85,7 +86,7 @@ void MainWindow::connectViewsSignals(GraphicsViewType view, Signal signal) {
 
 template<typename GraphicsViewType>
 void MainWindow::setUpGraphicView(std::string_view iconPath) {
-    auto* view = new GraphicsViewType{graphicsScene_};
+    auto* view = new GraphicsViewType{graphicsScene_, graphicsViewsSize_};
     auto viewIndex = stackedWidget_->addWidget(view);
     addModeButtonsAndConnections(iconPath, viewIndex);
     connectViewsSignals(view, &GraphicsViewType::changeStateOfScene);

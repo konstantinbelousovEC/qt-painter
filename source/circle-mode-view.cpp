@@ -6,8 +6,8 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
-CircleModeView::CircleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene),
+CircleModeView::CircleModeView(QGraphicsScene* scene, QSize viewSize)
+    : DrawingGraphicsView(scene, viewSize),
       currentItem_(nullptr),
       ellipseCenterPos_(constants::kZeroPointF) {}
 

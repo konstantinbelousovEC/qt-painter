@@ -4,8 +4,8 @@
 #include <QGraphicsLineItem>
 #include "../include/triangle-mode.h"
 
-TriangleModeView::TriangleModeView(QGraphicsScene* scene)
-    : Polygon(scene) {}
+TriangleModeView::TriangleModeView(QGraphicsScene* scene, QSize viewSize)
+    : Polygon(scene, viewSize) {}
 
 void TriangleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

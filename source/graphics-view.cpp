@@ -1,16 +1,13 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 #include "../include/graphics-view.h"
 
-ApplicationGraphicsView::ApplicationGraphicsView(QGraphicsScene* scene,
-                                                 int viewWidth,
-                                                 int viewHeight)
+ApplicationGraphicsView::ApplicationGraphicsView(QGraphicsScene* scene, QSize viewSize)
     : QGraphicsView(scene),
-      viewWidth_(viewWidth),
-      viewHeight_(viewHeight)
+      viewSize_(viewSize)
 {
     setMouseTracking(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setSceneRect(0, 0, viewWidth_ + 1, viewHeight_ + 1);
-    setFixedSize(viewWidth_ + 3, viewHeight_ + 3);
+    setSceneRect(0, 0, viewSize_.width() + 1, viewSize_.height() + 1);
+    setFixedSize(viewSize_.width() + 3, viewSize_.height() + 3);
 }

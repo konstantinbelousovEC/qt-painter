@@ -8,7 +8,7 @@ class PolygonModeView : public Polygon {
     Q_OBJECT
 
  public:
-    explicit PolygonModeView(QGraphicsScene* scene);
+    explicit PolygonModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

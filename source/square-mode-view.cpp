@@ -5,16 +5,10 @@
 #include "../include/square-mode-view.h"
 #include "../include/detail.h"
 
-SquareModeView::SquareModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene),
+SquareModeView::SquareModeView(QGraphicsScene* scene, QSize viewSize)
+    : DrawingGraphicsView(scene, viewSize),
       currentItem_(nullptr),
-      centerPos_(constants::kZeroPointF)
-{
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setSceneRect(0, 0, 400, 300);
-    setFixedSize(400, 300);
-}
+      centerPos_(constants::kZeroPointF) {}
 
 void SquareModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {

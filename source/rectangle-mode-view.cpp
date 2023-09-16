@@ -5,8 +5,8 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
-RectangleModeView::RectangleModeView(QGraphicsScene* scene)
-    : DrawingGraphicsView(scene),
+RectangleModeView::RectangleModeView(QGraphicsScene* scene, QSize viewSize)
+    : DrawingGraphicsView(scene, viewSize),
       currentItem_(nullptr),
       startCursorPos_(constants::kZeroPointF) {}
 

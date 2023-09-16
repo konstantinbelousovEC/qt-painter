@@ -3,12 +3,13 @@
 #pragma once
 
 #include <QGraphicsView>
+#include "graphics-view.h"
 
-class DrawingGraphicsView : public QGraphicsView {
+class DrawingGraphicsView : public ApplicationGraphicsView {
     Q_OBJECT
 
  public:
-    explicit DrawingGraphicsView(QGraphicsScene* scene, int strokeWidth = 1);
+    explicit DrawingGraphicsView(QGraphicsScene* scene, QSize viewSize, int strokeWidth = 1);
 
     ~DrawingGraphicsView() override;
 

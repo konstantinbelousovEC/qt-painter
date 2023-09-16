@@ -5,8 +5,8 @@
 #include "../include/detail.h"
 #include "../include/constants.h"
 
-Polygon::Polygon(QGraphicsScene* scene)
-        : DrawingGraphicsView(scene),
+Polygon::Polygon(QGraphicsScene* scene, QSize viewSize)
+        : DrawingGraphicsView(scene, viewSize),
           lastClickPos_(constants::kZeroPointF) {}
 
 void Polygon::deleteTemporaryLines() {

@@ -43,6 +43,7 @@ namespace {
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{24, 24};
+    constexpr QSize kDefaultViewsSize{800, 500};
 
 }  // namespace
 
@@ -62,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
       strokeColorAction_(nullptr),
       strokeWidthAction_(nullptr),
       windowSize_(defineWindowSize()),
+      graphicsViewsSize_(kDefaultViewsSize),
       isModified_(false)
 {
     setUpScreen();
@@ -96,7 +98,11 @@ void MainWindow::setUpScreen() {
 void MainWindow::setUpWidgetsPlacement() {
     addToolBar(toolBar_);
     setStatusBar(statusBar_);
-    setCentralWidget(stackedWidget_);
+    auto* layout = new QHBoxLayout{this};
+    layout->addWidget(stackedWidget_,0, Qt::AlignCenter);
+    auto* widget = new QWidget{this};
+    widget->setLayout(layout);
+    setCentralWidget(widget);
 }
 
 void MainWindow::setUpScene() {

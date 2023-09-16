@@ -8,7 +8,7 @@ class TriangleModeView : public Polygon {
     Q_OBJECT
 
  public:
-    explicit TriangleModeView(QGraphicsScene* scene);
+    explicit TriangleModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

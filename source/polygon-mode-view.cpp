@@ -4,8 +4,8 @@
 #include <QGraphicsLineItem>
 #include "../include/polygon-mode-view.h"
 
-PolygonModeView::PolygonModeView(QGraphicsScene* scene)
-    : Polygon(scene) {}
+PolygonModeView::PolygonModeView(QGraphicsScene* scene, QSize viewSize)
+    : Polygon(scene, viewSize) {}
 
 void PolygonModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
