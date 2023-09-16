@@ -11,6 +11,7 @@ class QGraphicsView;
 class QPushButton;
 class QSpinBox;
 class QToolButton;
+class QLabel;
 class ModificationModeView;
 class DrawingGraphicsView;
 QT_END_NAMESPACE
@@ -22,19 +23,24 @@ class MainWindow : public QMainWindow {
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
+ private: // todo: for feature's testing purposes
+    void testFeaturesMethod();
+
  private:
     QPushButton* addToolBarButton(std::string_view iconPath);
     void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
     void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
     void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
     void changeActionsVisibility(int btnIndex);
-    void setUpDrawingPropertiesButtons();
     void setUpToolBarActionsConnections();
+    void setUpDrawingPropertiesButtons();
     void setUpConnectionsForStatusBar();
     void hideAllPropertiesActions();
+    void setUpStackedWidgetLayout();
     void setUpApplicationStyles();
     void setUpWidgetsPlacement();
     void addGraphicsViews();
+    void setUpStatusBar();
     void setUpScreen();
     void setUpScene();
 
@@ -49,10 +55,14 @@ class MainWindow : public QMainWindow {
 
  private slots:
     void updateCursorPosition(QPointF position);
+    void hideCursorLabelsFromStatusBar();
     void setStrokeWidth(int width);
     void changeSceneState();
     void setStrokeColor();
     void setFillColor();
+
+ private slots:
+    void testFeatureSlot(); // todo: for feature's testing purposes
 
  private:
     QList<DrawingGraphicsView*> drawingViewsList_;
@@ -73,6 +83,9 @@ class MainWindow : public QMainWindow {
     QAction* fillColorAction_{};
     QAction* strokeColorAction_{};
     QAction* strokeWidthAction_{};
+
+    QLabel* labelCursorPosX_;
+    QLabel* labelCursorPosY_;
 
     QSize windowSize_;
     QSize graphicsViewsSize_;

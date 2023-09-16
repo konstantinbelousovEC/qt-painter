@@ -11,6 +11,12 @@ class ApplicationGraphicsView : public QGraphicsView {
     ApplicationGraphicsView(QGraphicsScene* scene, QSize viewSize);
     ~ApplicationGraphicsView() override = default;
 
- private: // todo: private or protected ?
+ protected:
+    bool event(QEvent* event) override;
+
+ signals:
+    void cursorHasLeavedView();
+
+ protected: // todo: private or protected ?
     QSize viewSize_;
 };

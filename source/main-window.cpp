@@ -1,6 +1,5 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
-#include <QCoreApplication>
 #include <QGuiApplication>
 #include <QGraphicsView>
 #include <QToolBar>
@@ -15,6 +14,7 @@
 #include <QStatusBar>
 #include <QColorDialog>
 #include <QScreen>
+#include <QLabel>
 #include <string_view>
 #include "../include/graphics-items-detail.h"
 #include "../include/main-window.h"
@@ -44,7 +44,9 @@ namespace {
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{24, 24};
-    constexpr QSize kDefaultViewsSize{800, 500};
+    constexpr QSize kDefaultViewsSize{1100, 600};
+
+    constexpr int kDefaultStatusBarCursorLabelSize{45};
 
 }  // namespace
 
@@ -64,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent)
       fillColorAction_(nullptr),
       strokeColorAction_(nullptr),
       strokeWidthAction_(nullptr),
+      labelCursorPosX_(new QLabel{this}),
+      labelCursorPosY_(new QLabel{this}),
       windowSize_(defineWindowSize()),
       graphicsViewsSize_(kDefaultViewsSize),
       isModified_(false)
@@ -75,7 +79,18 @@ MainWindow::MainWindow(QWidget *parent)
     setUpApplicationStyles();
     setUpDrawingPropertiesButtons();
     setUpToolBarActionsConnections();
+    setUpStatusBar();
     setUpConnectionsForStatusBar();
+
+    // testFeaturesMethod(); // todo: feature's testing
+}
+
+void MainWindow::testFeaturesMethod() {
+
+}
+
+void MainWindow::testFeatureSlot() {
+
 }
 
 QSize defineWindowSize() {
@@ -97,21 +112,24 @@ void MainWindow::setUpScreen() {
                 windowHeight);
 }
 
-QSize calcWindowRelativeSize(QSize wSize, double x) {
+QSize calcWindowRelativeSize(QSize wSize, double x) { // todo: i don't like it
     auto [screenWidth, screenHeight] = wSize;
     int windowWidth = screenWidth - static_cast<int>(screenWidth * x);
     int windowHeight = screenHeight - static_cast<int>(screenHeight * x);
     return {windowWidth, windowHeight};
 }
 
+void MainWindow::setUpStackedWidgetLayout() {
+    auto* centralWidget = new QWidget{this};
+    auto* layout = new QVBoxLayout{centralWidget};
+    layout->addWidget(stackedWidget_, 0, Qt::AlignCenter);
+    setCentralWidget(centralWidget);
+}
+
 void MainWindow::setUpWidgetsPlacement() {
     addToolBar(toolBar_);
     setStatusBar(statusBar_);
-    auto* layout = new QHBoxLayout{this};
-    layout->addWidget(stackedWidget_,0, Qt::AlignCenter);
-    auto* widget = new QWidget{this};
-    widget->setLayout(layout);
-    setCentralWidget(widget);
+    setUpStackedWidgetLayout();
 }
 
 void MainWindow::setUpScene() {
@@ -128,7 +146,7 @@ void MainWindow::addGraphicsViews() {
     setUpGraphicView<CircleModeView>(kCircleModeIconPath);
     setUpGraphicView<LineModeView>(kLineModeIconPath);
     setUpGraphicView<BrushModeView>(kBrushModeIconPath);
-    toolBar_->addSeparator();
+    toolBar_->addSeparator(); // todo: i don't like it
 }
 
 template<typename Widget>
@@ -176,10 +194,22 @@ void MainWindow::setUpToolBarActionsConnections() {
     connect(strokeWidthSpinBox_, &QSpinBox::valueChanged, this, &MainWindow::setStrokeWidth);
 }
 
+inline void addLabelToStatusBar(QStatusBar* statusBar, QLabel* label) {
+    label->setFixedWidth(kDefaultStatusBarCursorLabelSize);
+    statusBar->addWidget(label);
+}
+
+void MainWindow::setUpStatusBar() {
+    addLabelToStatusBar(statusBar_, labelCursorPosX_);
+    addLabelToStatusBar(statusBar_, labelCursorPosY_);
+}
+
 void MainWindow::setUpConnectionsForStatusBar() {
     connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    connect(modificationModeView_, &ApplicationGraphicsView::cursorHasLeavedView, this, &MainWindow::hideCursorLabelsFromStatusBar);
     for (auto* view : drawingViewsList_) {
         connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+        connect(view, &ApplicationGraphicsView::cursorHasLeavedView, this, &MainWindow::hideCursorLabelsFromStatusBar);
     }
 }
 
@@ -228,8 +258,16 @@ void MainWindow::hideAllPropertiesActions() {
 
 // Slots:
 
-void MainWindow::updateCursorPosition(QPointF position) {
-    statusBar()->showMessage(QString("x: %1 | y: %2").arg(position.x()).arg(position.y()));
+void MainWindow::updateCursorPosition(QPointF position) { // todo: make it serious
+    labelCursorPosX_->setVisible(true);
+    labelCursorPosY_->setVisible(true);
+    labelCursorPosX_->setText(QString{"x: %1"}.arg(position.x()));
+    labelCursorPosY_->setText(QString{"y: %1"}.arg(position.y()));
+}
+
+void MainWindow::hideCursorLabelsFromStatusBar() {
+    labelCursorPosX_->setVisible(false);
+    labelCursorPosY_->setVisible(false);
 }
 
 void MainWindow::setStrokeWidth(int width) {
