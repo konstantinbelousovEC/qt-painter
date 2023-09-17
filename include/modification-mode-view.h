@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include <QGraphicsView>
 #include "graphics-view.h"
+
+class RotationInfo;
 
 class ModificationModeView : public ApplicationGraphicsView {
  public:
@@ -29,31 +30,8 @@ class ModificationModeView : public ApplicationGraphicsView {
                                const QPointF& currentCursorPos);
 
  private:
-    /*
-     An auxiliary class for performing rotation of graphic elements,
-     storing selected scene elements and their corresponding initial rotation angles.
-     If you do not store this information, then each new rotation begins without taking into account the previous one,
-     which leads to a visual "jump" of the figure and does not meet the requirements of the application functionality.
-
-     This information is filled in when the right mouse button is pressed and cleared when the right mouse button is released.
-    */
-    class RotationInfo {
-     public:
-        void clear();
-        bool fillInfo(const QList<QGraphicsItem*>& items);
-        [[nodiscard]] qsizetype size() const noexcept;
-        [[nodiscard]] bool isEmpty() const noexcept;
-        [[nodiscard]] const QList<QGraphicsItem*>& getItems() const noexcept;
-        [[nodiscard]] const QList<qreal>& getAngles() const noexcept;
-
-     private:
-        QList<QGraphicsItem*> items_;
-        QList<qreal> angles_;
-    };
-
- private:
-    RotationInfo rotationInfo_;  // todo: to think about making this field a pointer -> RotationInfo* or std::unique_ptr for moving it to realization cpp-file
     QGraphicsRectItem* selectionArea_;
+    std::unique_ptr<RotationInfo> rotationInfo_;
     QPointF selectionStartPos_;
     QPointF lastClickPos_;
     QPointF initialCursorPosA_;
