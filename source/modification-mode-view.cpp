@@ -143,10 +143,8 @@ void ModificationModeView::handleRightButtonClick(QMouseEvent* event,
 void ModificationModeView::updateSelectionArea(QMouseEvent* event,
                                                const QPointF& mouseCurrentPos) {
     selectionArea_->show();
-    QRectF updatedRectangle =
-            detail::updateRectangleSize(selectionStartPos_, mouseCurrentPos);
-
-    selectionArea_->setRect(updatedRectangle.normalized());
+    selectionArea_->setRect(detail::makeRectangle(selectionStartPos_,
+                                                  mouseCurrentPos));
     updateItemsSelection(event, selectionArea_->rect());
 }
 

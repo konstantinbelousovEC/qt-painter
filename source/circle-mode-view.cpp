@@ -1,21 +1,21 @@
 // @copyright Copyright (c) 2023 by Konstantin Belousov
 
 #include <QMouseEvent>
-#include <QGraphicsItem>
 #include "../include/circle-mode-view.h"
 #include "../include/graphics-items-detail.h"
+#include "../include/rectangles-detail.h"
 #include "../include/constants.h"
 
 CircleModeView::CircleModeView(QGraphicsScene* scene, QSize viewSize)
     : DrawingGraphicsView(scene, viewSize),
       currentItem_(nullptr),
-      ellipseCenterPos_(constants::kZeroPointF) {}
+      startCursorPos_(constants::kZeroPointF) {}
 
 void CircleModeView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
-        ellipseCenterPos_ = mapToScene(event->pos());
+        startCursorPos_ = mapToScene(event->pos());
         currentItem_ = scene()->addEllipse(
-                QRectF{ellipseCenterPos_, constants::kZeroSizeF},
+                QRectF{startCursorPos_, constants::kZeroSizeF},
                 QPen{strokeColor_, strokeWidth_, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin},
                 QBrush{fillColor_}
         );
@@ -28,21 +28,19 @@ void CircleModeView::mousePressEvent(QMouseEvent* event) {
 void CircleModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
     emit cursorPositionChanged(currentCursorPos);
-    if (currentItem_ != nullptr && (event->buttons() & Qt::LeftButton)) {
-        qreal radius = QLineF{ellipseCenterPos_, currentCursorPos}.length();
-        QRectF describingRectangle{ellipseCenterPos_.x() - radius,
-                                   ellipseCenterPos_.y() - radius,
-                                   radius * 2,
-                                   radius * 2};
-
-        currentItem_->setRect(describingRectangle.normalized());
+    if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
+        if (event->modifiers() & Qt::ShiftModifier) {
+            currentItem_->setRect(detail::makeSquare(startCursorPos_, currentCursorPos));
+        } else {
+            currentItem_->setRect(detail::makeRectangle(startCursorPos_, currentCursorPos));
+        }
         emit changeStateOfScene();
     }
 }
 
 void CircleModeView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && currentItem_ != nullptr) {
-        if (detail::shouldDeleteZeroSizeItem(currentItem_, ellipseCenterPos_)) {
+        if (detail::shouldDeleteZeroSizeItem(currentItem_, startCursorPos_)) {
             detail::deleteItem(scene(), currentItem_);
         }
         currentItem_ = nullptr;

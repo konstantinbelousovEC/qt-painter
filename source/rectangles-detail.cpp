@@ -4,11 +4,25 @@
 
 namespace detail {
 
-    QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept {
-        qreal currentWidth = currentCursorPos.x() - startCursorPos.x();
-        qreal currentHeight = currentCursorPos.y() - startCursorPos.y();
+    QRectF makeRectangle(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept {
+        auto currentWidth = currentCursorPos.x() - startCursorPos.x();
+        auto currentHeight = currentCursorPos.y() - startCursorPos.y();
         QRectF rectangle{startCursorPos, QSizeF{currentWidth, currentHeight}};
-        return rectangle;
+        return rectangle.normalized();
     }
 
-}
+    QRectF makeSquare(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept {
+        auto currentWidth = currentCursorPos.x() - startCursorPos.x();
+        auto currentHeight = currentCursorPos.y() - startCursorPos.y();
+        QRectF rectangle;
+        if (std::abs(currentWidth) < std::abs(currentHeight)) {
+            if ((currentWidth < 0 && currentHeight < 0) || (currentWidth >= 0 && currentHeight >= 0)) rectangle = QRectF{startCursorPos, QSizeF{currentWidth, currentWidth}};
+            else rectangle = QRectF{startCursorPos, QSizeF{currentWidth, -currentWidth}};
+        } else {
+            if ((currentWidth < 0 && currentHeight < 0) || (currentWidth >= 0 && currentHeight >= 0)) rectangle = QRectF{startCursorPos, QSizeF{currentHeight, currentHeight}};
+            else rectangle = QRectF{startCursorPos, QSizeF{-currentHeight, currentHeight}};
+        }
+        return rectangle.normalized();
+    }
+
+}  // namespace

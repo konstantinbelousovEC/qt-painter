@@ -20,5 +20,5 @@ class CircleModeView : public DrawingGraphicsView {
 
  private:
     QGraphicsEllipseItem* currentItem_;
-    QPointF ellipseCenterPos_;
+    QPointF startCursorPos_;
 };

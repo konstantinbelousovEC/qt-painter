@@ -7,6 +7,7 @@
 
 namespace detail {
 
-    QRectF updateRectangleSize(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept;
+    QRectF makeRectangle(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept;
+    QRectF makeSquare(const QPointF& startCursorPos, const QPointF& currentCursorPos) noexcept;
 
 }

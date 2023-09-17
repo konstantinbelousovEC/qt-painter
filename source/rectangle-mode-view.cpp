@@ -29,10 +29,11 @@ void RectangleModeView::mouseMoveEvent(QMouseEvent* event) {
     QPointF currentCursorPos = mapToScene(event->pos());
     emit cursorPositionChanged(currentCursorPos);
     if (currentItem_ != nullptr && event->buttons() & Qt::LeftButton) {
-        QRectF updatedRectangle = detail::updateRectangleSize(startCursorPos_,
-                                                              currentCursorPos);
-
-        currentItem_->setRect(updatedRectangle.normalized());
+        if (event->modifiers() & Qt::ShiftModifier) {
+            currentItem_->setRect(detail::makeSquare(startCursorPos_, currentCursorPos));
+        } else {
+            currentItem_->setRect(detail::makeRectangle(startCursorPos_, currentCursorPos));
+        }
         emit changeStateOfScene();
     }
 }
