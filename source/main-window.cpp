@@ -18,11 +18,8 @@
 #include <string_view>
 #include "../include/graphics-items-detail.h"
 #include "../include/main-window.h"
-#include "../include/rectangle-mode-view.h"
+#include "../include/rect-like-shapes-mode.h"
 #include "../include/modification-mode-view.h"
-#include "../include/square-mode-view.h"
-#include "../include/triangle-mode.h"
-#include "../include/circle-mode-view.h"
 #include "../include/brush-mode-view.h"
 #include "../include/line-mode-view.h"
 #include "../include/polygon-mode-view.h"
@@ -33,8 +30,6 @@ namespace {
 
     constexpr auto kModificationModeIconPath{":/images/buttons/imgs/modimg.png"sv};
     constexpr auto kSquareModeIconPath{":/images/buttons/imgs/squareimg.png"sv};
-    constexpr auto kRectangleModeIconPath{":/images/buttons/imgs/rectimg.png"sv};
-    constexpr auto kTriangleModeIconPath{":/images/buttons/imgs/trianimg.png"sv};
     constexpr auto kCircleModeIconPath{":/images/buttons/imgs/circleimg.png"sv};
     constexpr auto kBrushModeIconPath{":/images/buttons/imgs/brushimg.png"sv};
     constexpr auto kLineModeIconPath{":/images/buttons/imgs/lineimg.png"sv};
@@ -141,11 +136,9 @@ void MainWindow::setUpScene() {
 
 void MainWindow::addGraphicsViews() {
     setUpGraphicView<ModificationModeView>(kModificationModeIconPath);
-    setUpGraphicView<SquareModeView>(kSquareModeIconPath);
-    setUpGraphicView<RectangleModeView>(kRectangleModeIconPath);
-    setUpGraphicView<TriangleModeView>(kTriangleModeIconPath);
+    setUpGraphicView<RectangleLikeShapeModeView<QGraphicsRectItem>>(kSquareModeIconPath);
+    setUpGraphicView<RectangleLikeShapeModeView<QGraphicsEllipseItem>>(kCircleModeIconPath);
     setUpGraphicView<PolygonModeView>(kPolygonModeIconPath);
-    setUpGraphicView<CircleModeView>(kCircleModeIconPath);
     setUpGraphicView<LineModeView>(kLineModeIconPath);
     setUpGraphicView<BrushModeView>(kBrushModeIconPath);
     toolBar_->addSeparator(); // todo: i don't like it
@@ -245,7 +238,7 @@ void MainWindow::addModeButtonsAndConnections(std::string_view iconPath, int btn
 }
 
 void MainWindow::changeActionsVisibility(int btnIndex) {
-    if (btnIndex == 6 || btnIndex == 7) {
+    if (btnIndex == 4 || btnIndex == 5) {
         setUpModePropertiesToolButtons<2>(drawingViewsList_[btnIndex - 1]);
     } else {
         setUpModePropertiesToolButtons<3>(drawingViewsList_[btnIndex - 1]);

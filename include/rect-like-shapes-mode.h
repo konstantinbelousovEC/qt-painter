@@ -8,8 +8,6 @@
 #include "rectangles-detail.h"
 #include "constants.h"
 
-class QObjectR;
-
 template<typename ShapeType>
 class RectangleLikeShapeModeView : public DrawingGraphicsView {
  public:
