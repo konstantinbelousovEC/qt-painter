@@ -46,7 +46,7 @@ namespace {
 
     constexpr Qt::GlobalColor kDefaultSceneBackgroundColor{Qt::white};
     constexpr QSize kDefaultBtnIconSize{24, 24};
-    constexpr QSize kDefaultViewsSize{1100, 600};
+    constexpr QSize kDefaultViewsSize{1700, 600};
 
     constexpr int kDefaultStatusBarCursorLabelSize{45};
 
@@ -174,12 +174,8 @@ void MainWindow::setUpDrawingPropertiesButtons() {
 }
 
 void MainWindow::setUpToolBarColorButtons(QToolButton* button, QAction*& action) {
-//    QPixmap pixmap{QSize{kDefaultBtnIconSize}};
-//    button->setIcon(pixmap);
-    button->setIcon(QIcon{});
     button->setFixedSize(kDefaultBtnIconSize);
     button->setAutoFillBackground(true);
-    //button->setPalette(QPalette{color});
     action = toolBar_->addWidget(button);
     action->setVisible(false);
     modePropertiesActions_.push_back(action);
@@ -200,14 +196,14 @@ void MainWindow::setUpToolBarActionsConnections() {
     connect(strokeWidthSpinBox_, &QSpinBox::valueChanged, this, &MainWindow::setStrokeWidth);
 }
 
-inline void addLabelToStatusBar(QStatusBar* statusBar, QLabel* label) {
-    label->setFixedWidth(kDefaultStatusBarCursorLabelSize);
+inline void addLabelToStatusBar(QStatusBar* statusBar, QLabel* label, int labelWidth) {
+    label->setFixedWidth(labelWidth);
     statusBar->addWidget(label);
 }
 
 void MainWindow::setUpStatusBar() {
-    addLabelToStatusBar(statusBar_, labelCursorPosX_);
-    addLabelToStatusBar(statusBar_, labelCursorPosY_);
+    addLabelToStatusBar(statusBar_, labelCursorPosX_, kDefaultStatusBarCursorLabelSize);
+    addLabelToStatusBar(statusBar_, labelCursorPosY_, kDefaultStatusBarCursorLabelSize);
 }
 
 void MainWindow::setUpConnectionsForStatusBar() {
@@ -286,13 +282,6 @@ void MainWindow::changeSceneState() {
     isModified_ = true;
 }
 
-inline QColor getColor() {
-    return QColorDialog::getColor(Qt::white,
-                                  nullptr,
-                                  kChooseColorSuggestion.data(),
-                                  QColorDialog::ShowAlphaChannel);
-}
-
 enum class ColorButtonType {
     FILL,
     STROKE
@@ -301,8 +290,29 @@ enum class ColorButtonType {
 template<ColorButtonType BtnType>
 void setColor(const QStackedWidget* stackedWidget,
               const QList<DrawingGraphicsView*>& drawingViewsList,
-              QToolButton* toolButton) {
-    QColor color = getColor();
+              QToolButton* toolButton);
+
+void MainWindow::setStrokeColor() {
+    setColor<ColorButtonType::STROKE>(stackedWidget_,
+                                      drawingViewsList_,
+                                      strokeColorButton_);
+}
+
+void MainWindow::setFillColor() {
+    setColor<ColorButtonType::FILL>(stackedWidget_,
+                                    drawingViewsList_,
+                                    fillColorButton_);
+}
+
+template<ColorButtonType BtnType>
+void setColor(const QStackedWidget* stackedWidget,
+              const QList<DrawingGraphicsView*>& drawingViewsList,
+              QToolButton* toolButton)
+{
+    QColor color = QColorDialog::getColor(Qt::white,
+                                          nullptr,
+                                          kChooseColorSuggestion.data(),
+                                          QColorDialog::ShowAlphaChannel);
     if (color.isValid()) {
         int viewIndex = stackedWidget->currentIndex();
 
@@ -313,18 +323,6 @@ void setColor(const QStackedWidget* stackedWidget,
 
         toolButton->setPalette(QPalette{color});
     }
-}
-
-void MainWindow::setStrokeColor() {
-    setColor<ColorButtonType::STROKE>(stackedWidget_,
-             drawingViewsList_,
-             strokeColorButton_);
-}
-
-void MainWindow::setFillColor() {
-    setColor<ColorButtonType::FILL>(stackedWidget_,
-             drawingViewsList_,
-             fillColorButton_);
 }
 
 void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color) {

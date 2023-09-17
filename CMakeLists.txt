@@ -8,6 +8,7 @@ project(qt_painter)
 
 file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
 file(GLOB SOURCE_FILES "${CMAKE_SOURCE_DIR}/source/*.cpp")
+file(GLOB UI_FILES "${CMAKE_SOURCE_DIR}/ui/*.ui")
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -25,7 +26,7 @@ find_package(Qt6 COMPONENTS
 
 qt_add_resources(QRC_RESOURCES ${QRC_FILE_PATH})
 
-add_executable(qt_painter main.cpp ${HEADER_FILES} ${SOURCE_FILES} ${QRC_RESOURCES})
+add_executable(qt_painter main.cpp ${HEADER_FILES} ${SOURCE_FILES} ${QRC_RESOURCES} ${UI_FILES})
 
 target_link_libraries(qt_painter
   Qt::Core
