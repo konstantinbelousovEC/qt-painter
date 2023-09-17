@@ -6,8 +6,6 @@
 #include "graphics-view.h"
 
 class ModificationModeView : public ApplicationGraphicsView {
-    Q_OBJECT
-
  public:
     explicit ModificationModeView(QGraphicsScene* scene, QSize viewSize);
 
@@ -16,10 +14,6 @@ class ModificationModeView : public ApplicationGraphicsView {
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
-
- signals:
-    void cursorPositionChanged(QPointF position);
-    void changeStateOfScene();
 
  private:
     void setSelectionAreaProperties();

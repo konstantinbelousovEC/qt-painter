@@ -5,8 +5,6 @@
 #include "drawing-graphics-view.h"
 
 class CircleModeView : public DrawingGraphicsView {
-    Q_OBJECT
-
  public:
     explicit CircleModeView(QGraphicsScene* scene, QSize viewSize);
 
@@ -14,9 +12,6 @@ class CircleModeView : public DrawingGraphicsView {
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
-
- signals:
-    void changeStateOfScene();
 
  private:
     QGraphicsEllipseItem* currentItem_;

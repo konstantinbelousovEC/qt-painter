@@ -11,8 +11,8 @@ class WelcomeDialog : public QDialog
  Q_OBJECT
 
  public:
-    WelcomeDialog(QWidget *parent = nullptr);
-    ~WelcomeDialog();
+    explicit WelcomeDialog(QWidget *parent = nullptr);
+    ~WelcomeDialog() override;
 
     [[nodiscard]] QSize getViewSize() const noexcept;
 

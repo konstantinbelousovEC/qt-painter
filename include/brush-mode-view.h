@@ -5,8 +5,6 @@
 #include "drawing-graphics-view.h"
 
 class BrushModeView : public DrawingGraphicsView {
-    Q_OBJECT
-
  public:
     explicit BrushModeView(QGraphicsScene* scene, QSize viewSize);
 
@@ -14,9 +12,6 @@ class BrushModeView : public DrawingGraphicsView {
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
-
- signals:
-    void changeStateOfScene();
 
  private:
     QList<QGraphicsLineItem*> temporaryLines_;

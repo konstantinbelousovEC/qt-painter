@@ -6,8 +6,6 @@
 #include "graphics-view.h"
 
 class DrawingGraphicsView : public ApplicationGraphicsView {
-    Q_OBJECT
-
  public:
     explicit DrawingGraphicsView(QGraphicsScene* scene, QSize viewSize, int strokeWidth = 1);
 
@@ -25,7 +23,4 @@ class DrawingGraphicsView : public ApplicationGraphicsView {
     QColor fillColor_;
     QColor strokeColor_;
     qreal strokeWidth_;
-
- signals:
-    void cursorPositionChanged(QPointF position);
 };

@@ -5,15 +5,10 @@
 #include "polygon-interface.h"
 
 class TriangleModeView : public Polygon {
-    Q_OBJECT
-
  public:
     explicit TriangleModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
-
- signals:
-    void changeStateOfScene();
 };

@@ -207,10 +207,10 @@ void MainWindow::setUpStatusBar() {
 }
 
 void MainWindow::setUpConnectionsForStatusBar() {
-    connect(modificationModeView_, &ModificationModeView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    connect(modificationModeView_, &ApplicationGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
     connect(modificationModeView_, &ApplicationGraphicsView::cursorHasLeavedView, this, &MainWindow::hideCursorLabelsFromStatusBar);
     for (auto* view : drawingViewsList_) {
-        connect(view, &DrawingGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+        connect(view, &ApplicationGraphicsView::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
         connect(view, &ApplicationGraphicsView::cursorHasLeavedView, this, &MainWindow::hideCursorLabelsFromStatusBar);
     }
 }

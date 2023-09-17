@@ -16,7 +16,9 @@ class ApplicationGraphicsView : public QGraphicsView {
 
  signals:
     void cursorHasLeavedView();
+    void changeStateOfScene();
+    void cursorPositionChanged(QPointF position);
 
- protected: // todo: private or protected ?
+ protected:
     QSize viewSize_;
 };
