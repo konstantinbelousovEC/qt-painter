@@ -19,13 +19,13 @@
 - **Rectangle**: when the left mouse button is pressed, the vertex of one of the corners of the rectangle is determined, when moving with the left mouse button held down, the diagonal vertex of the corner of the rectangle is determined. The rectangle assumes its final state after releasing the left mouse button. When the _"Shift"_ button is pressed, a square is drawn, one of the vertices of which is the point with the coordinates of the first click of the left mouse button, the length of the side of the square is determined to be equal to the length of the smaller of the two straight segments formed from the current cursor position to the X and Y axes.
 
 <div align="center">
-  <img src="../media/gifs/rectangle.gif" alt="Rectangle">
+  <img src="../media/gifs/rect.gif" alt="Rectangle">
 </div>
 
 - **Circle**: The circle is drawn as inscribed in a polygon created according to the rules described above. The circle is drawn according to the appropriate rules, as inscribed in a square with the _"Shift"_ button pressed.
 
 <div align="center">
-  <img src="../media/gifs/circle.gif" alt="Circle">
+  <img src="../media/gifs/ellipse.gif" alt="Circle">
 </div>
 
 - **Polygon**: A polygon is created according to the coordinates defined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
