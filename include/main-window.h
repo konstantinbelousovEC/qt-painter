@@ -10,7 +10,6 @@ class QGraphicsScene;
 class QGraphicsView;
 class QPushButton;
 class QSpinBox;
-class QToolButton;
 class QLabel;
 class ModificationModeView;
 class DrawingGraphicsView;
@@ -20,16 +19,13 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
  public:
-    explicit MainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(QSize viewSize, QWidget* parent = nullptr);
     ~MainWindow() override;
-
- private: // todo: for feature's testing purposes
-    void testFeaturesMethod();
 
  private:
     QPushButton* addToolBarButton(std::string_view iconPath);
     void addModeButtonsAndConnections(std::string_view iconPath, int btnIndex);
-    void setUpToolBarColorButtons(QToolButton* button, QAction*& action);
+    void setUpToolBarColorButtons(QAction*& action);
     void setUpToolBarSpinBox(QSpinBox* spinBox, QAction*& action);
     void changeActionsVisibility(int btnIndex);
     void setUpToolBarActionsConnections();
@@ -61,9 +57,6 @@ class MainWindow : public QMainWindow {
     void setStrokeColor();
     void setFillColor();
 
- private slots:
-    void testFeatureSlot(); // todo: for feature's testing purposes
-
  private:
     QList<DrawingGraphicsView*> drawingViewsList_;
     QList<QPushButton*> modeButtonsList_;
@@ -76,10 +69,7 @@ class MainWindow : public QMainWindow {
 
     ModificationModeView* modificationModeView_;
 
-    QToolButton* fillColorButton_;
-    QToolButton* strokeColorButton_;
     QSpinBox* strokeWidthSpinBox_;
-
     QAction* fillColorAction_{};
     QAction* strokeColorAction_{};
     QAction* strokeWidthAction_{};
@@ -107,17 +97,17 @@ void MainWindow::setUpGraphicView(std::string_view iconPath) {
     else modificationModeView_ = view;
 }
 
-void showPropertiesButtons(QToolButton* button, QAction* action, const QColor& color);
+void showPropertiesButtons(QAction* action, const QColor& color);
 void showPropertiesButtons(QSpinBox* spinBox, QAction* action, int width);
 
 template<int PropertiesAmount, typename ModeView>
 void MainWindow::setUpModePropertiesToolButtons(ModeView view) {
     if constexpr (PropertiesAmount == 3) {
-        showPropertiesButtons(fillColorButton_, fillColorAction_, view->getFillColor());
+        showPropertiesButtons(fillColorAction_, view->getFillColor());
     } else if constexpr (PropertiesAmount == 2) {
         fillColorAction_->setVisible(false);
     }
 
-    showPropertiesButtons(strokeColorButton_, strokeColorAction_, view->getStrokeColor());
+    showPropertiesButtons(strokeColorAction_, view->getStrokeColor());
     showPropertiesButtons(strokeWidthSpinBox_, strokeWidthAction_, view->getStrokeWidth());
 }

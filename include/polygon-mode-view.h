@@ -6,7 +6,7 @@
 
 class PolygonModeView : public DrawingGraphicsView {
  public:
-    explicit PolygonModeView(QGraphicsScene* scene, QSize viewSize);
+    PolygonModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

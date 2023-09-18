@@ -5,35 +5,30 @@
 #### At the moment, the application supports the following functionality:
 
 - Shape modification mode
-- Square creation mode
 - Rectangle creation mode
-- Triangle creation mode
-- Circle creation mode
-- Straight line creation mode
+- Ellipse creation mode
 - Polygon creation mode
+- Mode for creating straight lines
 - Brush drawing mode
+- Ability to choose the fill color
+- Ability to choose the stroke color
+- Ability to select the stroke width
 
 #### Rules defined for creating geometric shapes:
 
-- **Square**: when the left mouse button is pressed, the center of the square is determined, when moving with the left mouse button pressed, the side of the square is determined by the distance from the center of the square to the current mouse position, divided in two. The square assumes the final state after releasing the left mouse button.
-
-<div align="center">
-  <img src="../media/gifs/square.gif" alt="Square">
-</div>
-
-- **Rectangle**: when the left mouse button is pressed, the vertex of one of the corners of the rectangle is determined, when moving with the left mouse button pressed, the diagonal vertex of the corner of the rectangle is determined. The rectangle assumes the final state after releasing the left mouse button.
+- **Rectangle**: when the left mouse button is pressed, the vertex of one of the corners of the rectangle is determined, when moving with the left mouse button held down, the diagonal vertex of the corner of the rectangle is determined. The rectangle assumes its final state after releasing the left mouse button. When the _"Shift"_ button is pressed, a square is drawn, one of the vertices of which is the point with the coordinates of the first click of the left mouse button, the length of the side of the square is determined to be equal to the length of the smaller of the two straight segments formed from the current cursor position to the X and Y axes.
 
 <div align="center">
   <img src="../media/gifs/rectangle.gif" alt="Rectangle">
 </div>
 
-- **Triangle**: A triangle is created by three coordinates, which are determined by clicking the left mouse button sequentially. After the first click of the left mouse button and further movement of the mouse (it does not matter whether the mouse button is pressed or not) a segment is drawn from the moment of clicking to the current cursor position. It also happens after the second click, and after the third click, a triangle is created.
+- **Polygon**: A polygon is created according to the coordinates defined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
 
 <div align="center">
-  <img src="../media/gifs/triangle.gif" alt="Triangle">
+  <img src="../media/gifs/polygon.gif" alt="Polygon">
 </div>
 
-- **Circle**: when the left mouse button is pressed, the center of the circle is determined, when moving with the mouse button pressed, the radius of the circle is equal to the distance from the center of the circle to the current mouse position. The circle assumes its final state after releasing the left mouse button.
+- **Circle**: The circle is drawn as inscribed in a polygon created according to the rules described above. The circle is drawn according to the appropriate rules, as inscribed in a square with the _"Shift"_ button pressed.
 
 <div align="center">
   <img src="../media/gifs/circle.gif" alt="Circle">
@@ -43,12 +38,6 @@
 
 <div align="center">
   <img src="../media/gifs/line.gif" alt="Line">
-</div>
-
-- **Polygon**: the polygon is created according to the coordinates determined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
-
-<div align="center">
-  <img src="../media/gifs/polygon.gif" alt="Polygon">
 </div>
 
 - **Brush**: when you click on the left mouse button, a rounded point is drawn with the size defined by default in the settings - 10px. When the mouse moves with the left button held down, a line is drawn, which is drawn according to the coordinates of the mouse movement path. The line thickness is also determined by the default settings - 10px.
@@ -93,12 +82,12 @@ The process of creating all shapes is drawn dynamically.
 
 ## TODO:
 
-- Add brush drawing mode ✅
-- Add polygon creation mode ✅
-- Add straight line creation mode ✅
-- Add polyline creation mode
-- Add text writing mode
-- Add export to svg-format
-- Add the ability to select colors for the created shapes
+- Add a mode for drawing broken lines
+- Add a text drawing mode
+- Add a display list of graphic scene layers
+- Add hotkeys for app modes
+- Add saving images in raster format
+- Add export to svg format
 - Add the ability to change colors for created shapes
-- Add a serialization/deserialization of a graphic scene using Google Protocol Buffers
+- Add the ability to edit the sizes of shapes
+- Add serialization/deserialization of a graphic scene using Google Protocol Buffers

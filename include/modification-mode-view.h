@@ -8,7 +8,7 @@ class RotationInfo;
 
 class ModificationModeView : public ApplicationGraphicsView {
  public:
-    explicit ModificationModeView(QGraphicsScene* scene, QSize viewSize);
+    ModificationModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

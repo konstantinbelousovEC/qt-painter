@@ -7,7 +7,7 @@
 
 class DrawingGraphicsView : public ApplicationGraphicsView {
  public:
-    explicit DrawingGraphicsView(QGraphicsScene* scene, QSize viewSize, int strokeWidth = 1);
+    DrawingGraphicsView(QGraphicsScene* scene, QSize viewSize, int strokeWidth = 1);
 
     ~DrawingGraphicsView() override;
 

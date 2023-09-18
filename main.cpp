@@ -6,17 +6,13 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-
-#if 0
     WelcomeDialog dialog;
-    if (dialog.exec() != QDialog::Accepted) {
-        qDebug() << "cancel";
-        return 0;
-    }
-    qDebug() << "ok" << dialog.getViewSize();
-#endif
 
-    MainWindow w;
+    if (dialog.exec() != QDialog::Accepted) return 0;
+    QSize viewSize{dialog.getViewSize()};
+
+    MainWindow w{viewSize};
     w.show();
+
     return QApplication::exec();
 }

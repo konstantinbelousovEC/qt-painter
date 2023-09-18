@@ -6,7 +6,7 @@
 
 class BrushModeView : public DrawingGraphicsView {
  public:
-    explicit BrushModeView(QGraphicsScene* scene, QSize viewSize);
+    BrushModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

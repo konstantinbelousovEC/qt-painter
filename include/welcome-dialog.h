@@ -1,3 +1,5 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
 #pragma once
 
 #include <QDialog>
@@ -15,6 +17,9 @@ class WelcomeDialog : public QDialog
     ~WelcomeDialog() override;
 
     [[nodiscard]] QSize getViewSize() const noexcept;
+
+ protected:
+    void keyPressEvent(QKeyEvent* event) override;
 
  private:
     Ui::WelcomeDialog *ui;

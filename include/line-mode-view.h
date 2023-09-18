@@ -6,7 +6,7 @@
 
 class LineModeView : public DrawingGraphicsView {
  public:
-    explicit LineModeView(QGraphicsScene* scene, QSize viewSize);
+    LineModeView(QGraphicsScene* scene, QSize viewSize);
 
  protected:
     void mousePressEvent(QMouseEvent* event) override;

@@ -1,3 +1,6 @@
+// @copyright Copyright (c) 2023 by Konstantin Belousov
+
+#include <QKeyEvent>
 #include "../include/welcome-dialog.h"
 #include "../ui/ui_welcome-dialog.h"
 
@@ -18,4 +21,10 @@ WelcomeDialog::~WelcomeDialog()
 
 QSize WelcomeDialog::getViewSize() const noexcept {
     return {ui->widthSpinBox_->value(), ui->heightSpinBox_->value()};
+}
+
+void WelcomeDialog::keyPressEvent(QKeyEvent* event) {
+    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        emit accept();
+    }
 }
