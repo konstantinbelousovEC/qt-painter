@@ -22,16 +22,16 @@
   <img src="../media/gifs/rectangle.gif" alt="Rectangle">
 </div>
 
-- **Polygon**: A polygon is created according to the coordinates defined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
-
-<div align="center">
-  <img src="../media/gifs/polygon.gif" alt="Polygon">
-</div>
-
 - **Circle**: The circle is drawn as inscribed in a polygon created according to the rules described above. The circle is drawn according to the appropriate rules, as inscribed in a square with the _"Shift"_ button pressed.
 
 <div align="center">
   <img src="../media/gifs/circle.gif" alt="Circle">
+</div>
+
+- **Polygon**: A polygon is created according to the coordinates defined by successive left mouse clicks. The last coordinate is determined by right-clicking. Between clicks, a segment is drawn from the previous coordinates of the left mouse button click to the current cursor coordinates.
+
+<div align="center">
+  <img src="../media/gifs/polygon.gif" alt="Polygon">
 </div>
 
 - **Straight line**: when you click on the left mouse button, the initial coordinate of the line is fixed. When the mouse moves with the left button held down, a line of two points is drawn: 1 - the initial coordinates of the mouse click, 2 - the current coordinates of the cursor. The line assumes its final state after releasing the left mouse button.
