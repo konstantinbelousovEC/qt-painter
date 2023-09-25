@@ -6,7 +6,7 @@
 
 class RotationInfo;
 
-class ModificationModeView : public ApplicationGraphicsView {
+class ModificationModeView final : public ApplicationGraphicsView {
  public:
     ModificationModeView(QGraphicsScene* scene, QSize viewSize);
 

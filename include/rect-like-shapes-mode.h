@@ -9,7 +9,7 @@
 #include "constants.h"
 
 template<typename ShapeType>
-class RectangleLikeShapeModeView : public DrawingGraphicsView {
+class RectangleLikeShapeModeView final : public DrawingGraphicsView {
  public:
     RectangleLikeShapeModeView(QGraphicsScene* scene, QSize viewSize);
 

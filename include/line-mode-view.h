@@ -4,7 +4,7 @@
 
 #include "drawing-graphics-view.h"
 
-class LineModeView : public DrawingGraphicsView {
+class LineModeView final : public DrawingGraphicsView {
  public:
     LineModeView(QGraphicsScene* scene, QSize viewSize);
 

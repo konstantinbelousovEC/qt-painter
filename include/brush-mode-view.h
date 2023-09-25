@@ -4,7 +4,7 @@
 
 #include "drawing-graphics-view.h"
 
-class BrushModeView : public DrawingGraphicsView {
+class BrushModeView final : public DrawingGraphicsView {
  public:
     BrushModeView(QGraphicsScene* scene, QSize viewSize);
 

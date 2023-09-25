@@ -4,7 +4,7 @@
 
 #include "drawing-graphics-view.h"
 
-class PolygonModeView : public DrawingGraphicsView {
+class PolygonModeView final : public DrawingGraphicsView {
  public:
     PolygonModeView(QGraphicsScene* scene, QSize viewSize);
 
